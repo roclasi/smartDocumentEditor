@@ -268,55 +268,57 @@ function($sabloConstants, $sabloApplication, $window) {
 
             function getFeeds() {
                 var result = [];
-                for (let i = 0; i < $scope.model.mentionFeeds.length; i++) {
-                    const feed = $scope.model.mentionFeeds[i];
-                    if (!feed.marker) {
-                        console.warn('No marker provided for mention feed');
-                        continue;
-                    } 
-                    result.push(
-                        {
-                            marker: feed.marker,
-                            feed: function(queryText) {
-                                if (feed.valueList) {
-                                    return new Promise( resolve => {
-                                        const list = feed.valueList
-                                                    // Filter out the full list of all items to only those matching the query text.
-                                                    .filter( (item) => {
-                                                        const searchString = queryText.toLowerCase();
-                                                        return item.displayValue.toString().toLowerCase().includes(searchString);
-                                                    } )
-                                                    // Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
-                                                    .slice(0, 10)
-                                                    //Map /Convert default valuelist names to matching object keys for tags
-                                                    .map((item) => {
-                                                        return { 
-                                                            name: item.displayValue.toString(), 
-                                                            id: feed.marker.toString() + item.displayValue.toString(),
-                                                            realValue: item.realValue,
-                                                            editable: feed.itemEditable
-                                                        }
-                                                    });
-                    
-                                        resolve(list);
-                                    });
-                                } else if (feed.feedItems) {
-                                    return feed.feedItems.map((entry) => {
-                                        return { 
-                                            name: entry.displayValue.toString(), 
-                                            id: feed.marker.toString() + entry.displayValue.toString(),
-                                            realValue: entry.realValue,
-                                            editable: feed.itemEditable
-                                        }
-                                    })
-                                } else {
-                                    return [];
-                                }
-                            },
-                            minimumCharacters: feed.minimumCharacters || 0,
-                            itemRenderer: svyTagRenderer
-                        }
-                    )
+                if($scope.model.mentionFeeds) {
+                    for (let i = 0; i < $scope.model.mentionFeeds.length; i++) {
+                        const feed = $scope.model.mentionFeeds[i];
+                        if (!feed.marker) {
+                            console.warn('No marker provided for mention feed');
+                            continue;
+                        } 
+                        result.push(
+                            {
+                                marker: feed.marker,
+                                feed: function(queryText) {
+                                    if (feed.valueList) {
+                                        return new Promise( resolve => {
+                                            const list = feed.valueList
+                                                        // Filter out the full list of all items to only those matching the query text.
+                                                        .filter( (item) => {
+                                                            const searchString = queryText.toLowerCase();
+                                                            return item.displayValue.toString().toLowerCase().includes(searchString);
+                                                        } )
+                                                        // Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
+                                                        .slice(0, 10)
+                                                        //Map /Convert default valuelist names to matching object keys for tags
+                                                        .map((item) => {
+                                                            return { 
+                                                                name: item.displayValue.toString(), 
+                                                                id: feed.marker.toString() + item.displayValue.toString(),
+                                                                realValue: item.realValue,
+                                                                editable: feed.itemEditable
+                                                            }
+                                                        });
+                        
+                                            resolve(list);
+                                        });
+                                    } else if (feed.feedItems) {
+                                        return feed.feedItems.map((entry) => {
+                                            return { 
+                                                name: entry.displayValue.toString(), 
+                                                id: feed.marker.toString() + entry.displayValue.toString(),
+                                                realValue: entry.realValue,
+                                                editable: feed.itemEditable
+                                            }
+                                        })
+                                    } else {
+                                        return [];
+                                    }
+                                },
+                                minimumCharacters: feed.minimumCharacters || 0,
+                                itemRenderer: svyTagRenderer
+                            }
+                        )
+                    }
                 }
                 return result;
             }
@@ -542,7 +544,9 @@ function($sabloConstants, $sabloApplication, $window) {
                         } );                    
                     }
 
-                    console.log(editor.config.plugins.map( plugin => plugin.pluginName ));
+                    if(editor.config.plugins) {
+                        console.log(editor.config.plugins.map( plugin => plugin.pluginName ));
+                    }
 
                 }).then(() => {
                     // data can already be here, if so call the modelChange function so
