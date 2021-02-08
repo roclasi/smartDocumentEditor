@@ -10,6 +10,8 @@
 * Afbeeldingen tonen vanuit een soort van Media
 * PDF callback voor printen??
 * N/A: Auto pagebreak when enter
+* 
+* proper sizing in css layout (make the editor fill full height)
 */
 
 /**
@@ -31,8 +33,19 @@ function($sabloConstants, $sabloApplication, $window) {
         },
         link: function($scope, $element, $attrs) {
 
-            $scope.editor;
+            $scope.editor = null;
 
+            if ($scope.model.editorStyleSheet) {
+                var url = $scope.model.editorStyleSheet;
+                url = url.split('?')[0];
+                var head = document.getElementsByTagName('head')[0];
+                var cssHref = document.createElement('link');
+                cssHref.setAttribute("rel", "stylesheet");
+                cssHref.setAttribute("type", "text/css");
+                cssHref.setAttribute("href", url);
+                head.appendChild(cssHref);
+            }
+            
             /*********************************************
              * Sablo Contant listner for properties
              *********************************************/
@@ -69,7 +82,7 @@ function($sabloConstants, $sabloApplication, $window) {
              * General Functions / Classes for CKEditor
              *********************************************/
             class ServoyUploadAdapter {
-                constructor( loader ) {
+                constructor(loader) {
                     // The file loader instance to use during the upload.
                     this.loader = loader;
                 }
@@ -77,8 +90,8 @@ function($sabloConstants, $sabloApplication, $window) {
                 _initRequest() {
                     const xhr = this.xhr = new XMLHttpRequest();
                     var uploadUrl = this._getFileUploadURL();
-                    if(uploadUrl) {
-                        xhr.open( 'POST', uploadUrl, true );
+                    if (uploadUrl) {
+                        xhr.open('POST', uploadUrl, true);
                         xhr.responseType = 'json';
                     } else {
                         throw Error('No onFileUploadMethod defined');
@@ -86,33 +99,33 @@ function($sabloConstants, $sabloApplication, $window) {
                 }
 
                 // Initializes XMLHttpRequest listeners.
-                _initListeners( resolve, reject, file , uniekFileId) {
+                _initListeners(resolve, reject, file, uniekFileId) {
                     const xhr = this.xhr;
                     const loader = this.loader;
-                    const genericErrorText = `Couldn't upload file: ${ file.name }.`;
+                    const genericErrorText = `Couldn't upload file: ${file.name}.`;
 
-                    xhr.addEventListener( 'error', () => reject( genericErrorText ) );
-                    xhr.addEventListener( 'abort', () => reject() );
-                    xhr.addEventListener( 'load', () => {
+                    xhr.addEventListener('error', () => reject(genericErrorText));
+                    xhr.addEventListener('abort', () => reject());
+                    xhr.addEventListener('load', () => {
                         //TODO: Maybe not a rest call back??
-                        resolve({default: '/servoy-service/rest_ws/ckEditorUtils/imageUtils/' + uniekFileId + '.' + new RegExp(/(?:\.([^.]+))?$/).exec(file.name)[1]})
-                    } );
+                        resolve({ default: '/servoy-service/rest_ws/ckEditorUtils/imageUtils/' + uniekFileId + '.' + new RegExp(/(?:\.([^.]+))?$/).exec(file.name)[1] })
+                    });
 
-                    if ( xhr.upload ) {
-                        xhr.upload.addEventListener( 'progress', evt => {
-                            if ( evt.lengthComputable ) {
+                    if (xhr.upload) {
+                        xhr.upload.addEventListener('progress', evt => {
+                            if (evt.lengthComputable) {
                                 loader.uploadTotal = evt.total;
                                 loader.uploaded = evt.loaded;
                             }
-                        } );
+                        });
                     }
                 }
 
                 // Prepares the data and sends the request.
-                _sendRequest( file , uniekFileId) {
-                    var data = this._createFormDataUpload(file, {'imageID' : uniekFileId})
+                _sendRequest(file, uniekFileId) {
+                    var data = this._createFormDataUpload(file, { 'imageID': uniekFileId })
                     // Send the request.
-                    this.xhr.send( data );
+                    this.xhr.send(data);
                 }
 
                 //Create formDataUpload
@@ -123,63 +136,63 @@ function($sabloConstants, $sabloApplication, $window) {
                         formPost.append(item, metadata[item]);
                     });
                     formPost.append('upload', file, file.name);
-                
+
                     return formPost;
                 };
 
                 //Get servoy fileUpload url
-                _getFileUploadURL(){
-                   var parent = $scope.$parent;
-   
-                   var beanname = $element.attr("name");
-                   if (!beanname) {
-                       var nameParentEl = $element.parents("[name]").first();
-                       if (nameParentEl) beanname = nameParentEl.attr("name");
-                   }
-                   if (!beanname) {
-                       for (var key in parent['model']) {
-                           if (parent['model'][key] === beanModel) {
-                               beanname = key;
-                               break;
-                           }
-                       }
-                   }
-                   var rowID = parent['rowID'];
-                   var formname = parent['formname'];
-                   while (!formname) {
-                       if (parent.$parent) {
-                           parent = parent.$parent;
-                           formname = parent['formname'];
-                       } else {
-                           break;
-                       }
-                   }
-                   var uploadURL;
-                   if (beanname && formname) {
-                       if($scope.handlers.onFileUploadedMethodID) {
-                           uploadURL = "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/onFileUploadedMethodID";
-                           if (rowID) {
-                               uploadURL += "/" + encodeURIComponent(rowID)
-                           }
-                       }
-                   }
-   
-                   return uploadURL;
-               }
-            
+                _getFileUploadURL() {
+                    var parent = $scope.$parent;
+
+                    var beanname = $element.attr("name");
+                    if (!beanname) {
+                        var nameParentEl = $element.parents("[name]").first();
+                        if (nameParentEl) beanname = nameParentEl.attr("name");
+                    }
+                    if (!beanname) {
+                        for (var key in parent['model']) {
+                            if (parent['model'][key] === beanModel) {
+                                beanname = key;
+                                break;
+                            }
+                        }
+                    }
+                    var rowID = parent['rowID'];
+                    var formname = parent['formname'];
+                    while (!formname) {
+                        if (parent.$parent) {
+                            parent = parent.$parent;
+                            formname = parent['formname'];
+                        } else {
+                            break;
+                        }
+                    }
+                    var uploadURL;
+                    if (beanname && formname) {
+                        if ($scope.handlers.onFileUploadedMethodID) {
+                            uploadURL = "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/onFileUploadedMethodID";
+                            if (rowID) {
+                                uploadURL += "/" + encodeURIComponent(rowID)
+                            }
+                        }
+                    }
+
+                    return uploadURL;
+                }
+
                 // Starts the upload process.
                 upload() {
-                    return this.loader.file.then( file => new Promise( ( resolve, reject ) => {
+                    return this.loader.file.then(file => new Promise((resolve, reject) => {
                         var uniekFileId = uuidv4();
                         this._initRequest();
-                        this._initListeners( resolve, reject, file , uniekFileId);
-                        this._sendRequest( file, uniekFileId );
+                        this._initListeners(resolve, reject, file, uniekFileId);
+                        this._sendRequest(file, uniekFileId);
                     }));
                 }
-            
+
                 // Aborts the upload process.
                 abort() {
-                    if ( this.xhr ) {
+                    if (this.xhr) {
                         this.xhr.abort();
                     }
                 }
@@ -210,7 +223,7 @@ function($sabloConstants, $sabloApplication, $window) {
              * Mention
              *********************************************/
 
-            function SvyTagConverter(editor) {
+            function SvyMentionConverter(editor) {
                 editor.conversion.for( 'upcast' ).elementToAttribute( {
                     view: {
                         name: 'span',
@@ -240,13 +253,29 @@ function($sabloConstants, $sabloApplication, $window) {
                         if ( !modelAttributeValue ) {
                             return;
                         }
+
+                        var attributes,
+                            elementType;
+                        if (modelAttributeValue.isPlaceholderMention) {
+                            elementType = 'span';
+                            attributes = {
+                                class: 'svy-placeholder ck-widget',
+                                'name': modelAttributeValue.name,
+                                'dataprovider': modelAttributeValue.dataProvider,
+                                'format': modelAttributeValue.format,
+                                'contenteditable': false
+                            }
+                        } else {
+                            elementType = 'span';
+                            attributes = {
+                                class: 'mention svy-mention',
+                                'data-mention': modelAttributeValue.id,
+                                'data-real-value': modelAttributeValue.realValue,
+                                'contenteditable': modelAttributeValue.editable
+                            }
+                        }
             
-                        return writer.createAttributeElement( 'span', {
-                            class: 'mention svy-tag',
-                            'data-mention': modelAttributeValue.id,
-                            'data-real-value': modelAttributeValue.realValue,
-                            'contenteditable': modelAttributeValue.editable
-                        }, {
+                        return writer.createAttributeElement( elementType, attributes, {
                             // Make mention attribute to be wrapped by other attribute elements.
                             priority: 20,
                             // Prevent merging mentions together.
@@ -257,10 +286,13 @@ function($sabloConstants, $sabloApplication, $window) {
                 } );
             }
 
-            function svyTagRenderer(item) {
+            function svyMentionRenderer(item) {
+                // if ($scope.editor) {
+                //     $scope.editor.execute('servoyPlaceholder', { displayName: item.name, dataProvider: item.dataProvider, format: item.format });
+                // }
                 const itemElement = document.createElement('span');
-                itemElement.classList.add('svy-tag-item');
-                itemElement.id = 'mention-list-item-id-' & item.id;
+                itemElement.classList.add('svy-mention');
+                itemElement.id = 'mention-id-' & item.id;
                 itemElement.textContent = item.name;
 
                 return itemElement;
@@ -268,43 +300,84 @@ function($sabloConstants, $sabloApplication, $window) {
 
             function getFeeds() {
                 var result = [];
-                if($scope.model.mentionFeeds) {
+
+                //add placeholder mention
+                if ($scope.model.placeholderMarker) {
+                    const plcHolderMention = {
+                        marker : $scope.model.placeholderMarker,
+                        itemRenderer : svyMentionRenderer,
+                        minimumCharacters: 0,
+                        feed : function(queryText) {
+                            var plcHolderItems = getPlaceholderItems();
+                            if (plcHolderItems.length) {
+                                return new Promise(resolve => {
+                                    const list = plcHolderItems
+                                        // Filter out the full list of all items to only those matching the query text.
+                                        .filter((item) => {
+                                            const searchString = queryText.toLowerCase();
+                                            return item.displayName.toLowerCase().includes(searchString);
+                                        })
+                                        // Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
+                                        .slice(0, 10)
+                                        //Map /Convert default valuelist names to matching object keys for tags
+                                        .map((item) => {
+                                            return {
+                                                name: item.displayName,
+                                                id: $scope.model.placeholderMarker + item.displayName,
+                                                dataProvider: item.dataProvider,
+                                                format: item.format || '',
+                                                editable: false,
+                                                isPlaceholderMention: true
+                                            }
+                                        });
+                                    resolve(list);
+                                })
+                            } else {
+                                return [];
+                            }
+                        }
+                    }
+                    result.push(plcHolderMention);
+                }
+
+                //add other mentions
+                if ($scope.model.mentionFeeds) {
                     for (let i = 0; i < $scope.model.mentionFeeds.length; i++) {
                         const feed = $scope.model.mentionFeeds[i];
                         if (!feed.marker) {
                             console.warn('No marker provided for mention feed');
                             continue;
-                        } 
+                        }
                         result.push(
                             {
                                 marker: feed.marker,
-                                feed: function(queryText) {
+                                feed: function (queryText) {
                                     if (feed.valueList) {
-                                        return new Promise( resolve => {
+                                        return new Promise(resolve => {
                                             const list = feed.valueList
-                                                        // Filter out the full list of all items to only those matching the query text.
-                                                        .filter( (item) => {
-                                                            const searchString = queryText.toLowerCase();
-                                                            return item.displayValue.toString().toLowerCase().includes(searchString);
-                                                        } )
-                                                        // Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
-                                                        .slice(0, 10)
-                                                        //Map /Convert default valuelist names to matching object keys for tags
-                                                        .map((item) => {
-                                                            return { 
-                                                                name: item.displayValue.toString(), 
-                                                                id: feed.marker.toString() + item.displayValue.toString(),
-                                                                realValue: item.realValue,
-                                                                editable: feed.itemEditable
-                                                            }
-                                                        });
-                        
+                                                // Filter out the full list of all items to only those matching the query text.
+                                                .filter((item) => {
+                                                    const searchString = queryText.toLowerCase();
+                                                    return item.displayValue.toString().toLowerCase().includes(searchString);
+                                                })
+                                                // Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
+                                                .slice(0, 10)
+                                                //Map /Convert default valuelist names to matching object keys for tags
+                                                .map((item) => {
+                                                    return {
+                                                        name: item.displayValue.toString(),
+                                                        id: feed.marker.toString() + item.displayValue.toString(),
+                                                        realValue: item.realValue,
+                                                        editable: feed.itemEditable
+                                                    }
+                                                });
+
                                             resolve(list);
                                         });
                                     } else if (feed.feedItems) {
                                         return feed.feedItems.map((entry) => {
-                                            return { 
-                                                name: entry.displayValue.toString(), 
+                                            return {
+                                                name: entry.displayValue.toString(),
                                                 id: feed.marker.toString() + entry.displayValue.toString(),
                                                 realValue: entry.realValue,
                                                 editable: feed.itemEditable
@@ -315,7 +388,7 @@ function($sabloConstants, $sabloApplication, $window) {
                                     }
                                 },
                                 minimumCharacters: feed.minimumCharacters || 0,
-                                itemRenderer: svyTagRenderer
+                                itemRenderer: svyMentionRenderer
                             }
                         )
                     }
@@ -327,32 +400,43 @@ function($sabloConstants, $sabloApplication, $window) {
              * Placeholder
              *********************************************/
 
+            /**
+             * Returns an array of all placeholder items that could be used in mention or a toolbar dropdown
+             */
             function getPlaceholderItems() {
-                var result = {};
-                if ($scope.model.toolbar && $scope.model.toolbar.items && $scope.model.toolbar.items.length > 0) {
-                    var placeHolderItem = $scope.model.toolbar.items.filter((item) => {
+                if ($scope.model.placeholders && $scope.model.placeholders.length) {
+                    return $scope.model.placeholders.map(function(placeholderEntry) {
+                        return {
+                            displayName: placeholderEntry.displayName || placeholderEntry.dataProvider,
+                            dataProvider: placeholderEntry.dataProvider,
+                            format: placeholderEntry.format || ''
+                        }
+                    })
+                } else {
+                    return [];
+                }
+            }
+
+            /**
+             * Returns the config used for the placeholder toolbar drop down
+             */
+            function getPlaceholderUIConfig() {
+                if ($scope.model.toolbarItems && $scope.model.toolbarItems.length > 0) {
+                    var placeHolderItem = $scope.model.toolbarItems.filter((item) => {
                         return item.type === 'servoyPlaceholder';
                     });
-                    if (placeHolderItem && placeHolderItem.length > 0) {
-                        placeHolderItem = placeHolderItem[0];
+                    if (placeHolderItem.length) {
                         return {
-                                name: placeHolderItem.name || 'Placeholder',
-                                label: placeHolderItem.label,
-                                withText: placeHolderItem.withText,
-                                isEnabled: placeHolderItem.isEnabled,
-                                withTooltip: placeHolderItem.tooltip || null,
-                                icon: placeHolderItem.iconSvg || null,
-                                values: !placeHolderItem.valueList ? null : placeHolderItem.valueList
-                                        .map((item) => {
-                                            return { 
-                                                name: item.displayValue.toString(), 
-                                                dataProvider: item.realValue
-                                            }
-                                        })
+                                name: placeHolderItem[0].name,
+                                label: placeHolderItem[0].label || 'Placeholder',
+                                withText: placeHolderItem[0].withText,
+                                isEnabled: placeHolderItem[0].isEnabled,
+                                withTooltip: placeHolderItem[0].tooltip || null,
+                                icon: placeHolderItem[0].iconSvg || null
                             };
                     }
                 }
-                return result;
+                return null;
             }
 
              /*********************************************
@@ -360,11 +444,27 @@ function($sabloConstants, $sabloApplication, $window) {
              *********************************************/
 
              /**
+             * Create a JSEvent
+             *
+             * @return {JSEvent}
+             * */
+            function createJSEvent() {
+                var element = $element;
+                var offset = element.offset();
+                var x = offset.left;
+                var y = offset.top;
+
+                var event = document.createEvent("MouseEvents");
+                event.initMouseEvent("click", false, true, window, 1, x, y, x, y, false, false, false, false, 0, null);
+                return event;
+            }
+
+             /**
               * Returns all custom servoy toolbar items
               */
             function getSvyToolbarItems() {
-                if ($scope.model.toolbar && $scope.model.toolbar.items && $scope.model.toolbar.items.length > 0) {
-                    return $scope.model.toolbar.items.filter((item) => {
+                if ($scope.model.toolbarItems && $scope.model.toolbarItems.length > 0) {
+                    return $scope.model.toolbarItems.filter((item) => {
                         return item.type === 'servoyToolbarItem';
                     }).map((item) => {
                         return {
@@ -374,7 +474,9 @@ function($sabloConstants, $sabloApplication, $window) {
                             isEnabled: item.isEnabled || false,
                             tooltip: item.tooltip || null,
                             icon: item.iconSvg || null,
-                            onClick: item.onClick ? (buttonView) => { $window.executeInlineScript(item.onClick.formname, item.onClick.script) } : null
+                            onClick: item.onClick ? (buttonView) => { 
+                                $window.executeInlineScript(item.onClick.formname, item.onClick.script, [item.name])
+                            } : null
                         }
                     })
                 }
@@ -385,8 +487,8 @@ function($sabloConstants, $sabloApplication, $window) {
              * @returns {Array<String>}
              */
             function getToolbarItems() {
-                if ($scope.model.toolbar && $scope.model.toolbar.items && $scope.model.toolbar.items.length > 0) {
-                    return $scope.model.toolbar.items.map((item) => {
+                if ($scope.model.showToolbar && $scope.model.toolbarItems && $scope.model.toolbarItems.length > 0) {
+                    return $scope.model.toolbarItems.map((item) => {
                         if (item.type === 'separator') {
                             return '|'
                         } else if (item.type === 'wrappingBreakpoint') {
@@ -397,42 +499,33 @@ function($sabloConstants, $sabloApplication, $window) {
                             return item.type;
                         }
                     })
-                } else {
-                    //When nothing defined take default:
-                    items = [
+                } else if ($scope.model.showToolbar) {
+                    return [
                         'heading',
-                        'simpleBox',
                         '|',
                         'fontfamily',
                         'fontsize',
                         'fontColor',
-                        'fontBackgroundColor',
                         '|',
                         'bold',
                         'italic',
                         'underline',
                         'strikethrough',
-                        'highlight',
                         '|',
                         'alignment',
                         '|',
                         'numberedList',
                         'bulletedList',
-                        'TodoList',
                         '|',
                         'indent',
                         'outdent',
                         '|',
                         'link',
-                        'pageBreak',
-                        'blockquote',
                         'imageUpload',
-                        'insertTable',
-                        'mediaEmbed',
-                        '|',
-                        'undo',
-                        'redo'
+                        'insertTable'
                     ]
+                } else {
+                    return null;
                 }
             }
 
@@ -450,102 +543,146 @@ function($sabloConstants, $sabloApplication, $window) {
                 }
                 return 'en';
             }
+
+            $scope.$watch('model.config', (newVal, oldVal) => {
+                if (newVal != oldVal) {
+                    //(re)create editor
+                    if ($scope.editor) {
+                        $scope.editor.destroy().then(() => {
+                            createEditor(newVal);
+                        });
+                    } else {
+                        createEditor(newVal);
+                    }
+                }
+            })
+
             /*********************************************
              * Init & Setup CKEditor
              *********************************************/
 
-            var config = {
-                fontSize:{
-                    options: [5, 5.5, 6.5, 7.5, 8, 9, 10, 10.5, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 62]
-                },
-                autosave: {
-                    save( editor ) {
-                        return new Promise( resolve => {
-                            setTimeout( () => {
-                                forceSaveData( editor.getData() )
-                                resolve();
-                            }, 200 );
-                        } );
+            if (!$scope.model.config) {
+                var config = {
+                    autosave: {
+                        save( editor ) {
+                            return new Promise( resolve => {
+                                setTimeout( () => {
+                                    forceSaveData( editor.getData() )
+                                    resolve();
+                                }, 200 );
+                            } );
+                        }
+                    },
+                    language: getCurrentLanguage()
+                }
+
+                if ($scope.model.showToolbar) {
+                    config.toolbar = {
+                        items: getToolbarItems()
                     }
-                },
-                extraPlugins: [SvyTagConverter], 
-                mention: {
-                    feeds: getFeeds()
-                },
-                language: getCurrentLanguage(),
-                image: {
-                    toolbar: [
-                        'imageTextAlternative',
-                        'imageStyle:full'
-                    ]
-                },
-                svyToolbarItems: getSvyToolbarItems(),
-                svyPlaceholderConfig: getPlaceholderItems(),
-                toolbar: {
-                   items: getToolbarItems(),
-                   shouldNotGroupWhenFull: $scope.model.toolbar && $scope.model.toolbar.shouldNotGroupWhenFull ? true : false
-                },
-                table: {
-                    contentToolbar: [
-                        'tableColumn',
-                        'tableRow',
-                        'mergeTableCells',
-                        'tableCellProperties',
-                        'tableProperties'
-                    ]
-                },
-                licenseKey: ''
+                    config.svyToolbarItems = getSvyToolbarItems();
+                }
+
+                $scope.model.config = config;
             }
 
-            if (!$scope.svyServoyapi.isInDesigner()) {
-                DecoupledEditor.create( document.querySelector('.ckeditor'), config).then(editor => {
+            /**
+             * Creates an editor instance
+             * @param {*} config 
+             */
+            function createEditor(config) {
+                console.log(config);
+
+                 //make sure toolbar items are taken from the model.toolbarItems array
+                 if (config.toolbar && config.toolbar.items) {
+                     //toolbar property is an object with items array
+                     //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
+                    config.toolbar.items = getToolbarItems();
+                } else if (config.toolbar) {
+                    //toolbar property is a plain array
+                    //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
+                    config.toolbar = {
+                        items: getToolbarItems()
+                    }
+                }
+
+                if (!config.svyToolbarItems) {
+                    //make sure custom toolbar items are created
+                    config.svyToolbarItems = getSvyToolbarItems();
+                }
+
+                if (!config.svyPlaceholderConfig) {
+                    //get config for a possible servoyPlaceholder toolbar entry
+                    config.svyPlaceholderConfig = getPlaceholderUIConfig();
+                }
+
+                if (!config.svyPlaceholderItems) {
+                    //get config for a servoyPlaceholder items
+                    config.svyPlaceholderItems = getPlaceholderItems();
+                }
+                
+                if ($scope.model.placeholderMarker || ($scope.model.mentionFeeds && $scope.model.mentionFeeds.length)) {
+                    //add placeholder mention feed
+                    config.mention = {
+                        feeds: getFeeds()
+                    }
+
+                    if (!config.hasOwnProperty('extraPlugins') || config.extraPlugins.indexOf(SvyMentionConverter) === -1) {
+                        if (config.hasOwnProperty('extraPlugins')) {
+                            config.extraPlugins.push(SvyMentionConverter);
+                        } else {
+                            config.extraPlugins = [SvyMentionConverter];
+                        }
+                    }
+                }
+
+                DecoupledEditor.create($element.querySelectorAll('.ckeditor')[0], config).then(editor => {
                     $scope.editor = editor;
 
                     const view = editor.editing.view;
                     const viewDocument = view.document;
-                    
+
                     if ($scope.model.showInspector == true) {
-                        CKEditorInspector.attach( editor )
+                        CKEditorInspector.attach(editor)
                     }
 
-                    // Set a custom container for the toolbar.
-                    // if($scope.model.menubar) {
-                        document.querySelector( '.document-editor__toolbar' ).appendChild( editor.ui.view.toolbar.element );
-                        document.querySelector( '.ck-toolbar' ).classList.add( 'ck-reset_all' );
-                    // }
-                    
+                    // Set a custom container for the toolbar
+                    if ($scope.model.showToolbar) {
+                        $element.querySelectorAll('.document-editor__toolbar')[0].replaceChildren( editor.ui.view.toolbar.element );
+                        $element.querySelectorAll('.ck-toolbar')[0].classList.add( 'ck-reset_all' );
+                    } 
+
                     const setData = () => {
                         const data = editor.getData();
-                        const value = $scope.model.dataProviderID||''
-                        if(data !== value) {
+                        const value = $scope.model.dataProviderID || ''
+                        if (data !== value) {
                             editor.setData(value);
                         }
                     }
-
                     $scope.$watch('model.dataProviderID', (newVal, oldVal) => {
-                        console.log( 'Update CKEditor Context: The data has changed from external!' );
+                        console.log('Update CKEditor Context: The data has changed from external!');
                         setData();
                     })
 
-                    editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
-                        return new ServoyUploadAdapter( loader );
+                    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                        return new ServoyUploadAdapter(loader);
                     };
 
-                    if($scope.model.overWriteTabForEditor == true) {
-                        viewDocument.on( 'keydown', ( evt, data ) => {
-                            if( (data.keyCode == 9) && viewDocument.isFocused ){
+                    if ($scope.model.overWriteTabForEditor == true) {
+                        viewDocument.on('keydown', (evt, data) => {
+                            if ((data.keyCode == 9) && viewDocument.isFocused) {
                                 // $scope.editor.execute( 'input', { text: "\t" } );
-                                editor.execute( 'input', { text: "     " } );
-                        
+                                editor.execute('input', { text: "     " });
+
                                 evt.stop(); // Prevent executing the default handler.
                                 data.preventDefault();
                                 view.scrollToTheSelection();
                             }
-                        } );                    
+                        });
                     }
 
-                    if(editor.config.plugins) {
-                        console.log(editor.config.plugins.map( plugin => plugin.pluginName ));
+                    if (editor.config.plugins) {
+                        console.log(editor.config.plugins.map(plugin => plugin.pluginName));
                     }
 
                 }).then(() => {
@@ -556,19 +693,29 @@ function($sabloConstants, $sabloApplication, $window) {
                         modelChangFunction(key, $scope.model[key]);
                     }
 
-                    
-                })
-                .catch( function(error) {
-                    console.error( error );
+                    if ($scope.handlers.onReady) {
+                        $scope.handlers.onReady();
+                    }
+
+                }).catch(function (error) {
+                    console.error(error);
+                    if ($scope.handlers.onError) {
+                        $scope.handlers.onError(error.message, error.stack);
+                    }
                 });
+            }
+
+            if (!$scope.svyServoyapi.isInDesigner()) {
+                createEditor($scope.model.config);
             }
 
             /*********************************************
              * Init & Setup CKEditor
              *********************************************/
+
             /**
              * Force the autosave trigger of the editor to get all latest changes
-             * @example %%prefix%%%%elementName%%.saveData();
+             * @example elements.%%elementName%%.saveData();
              * @returns {Boolean}
              */
             $scope.api.saveData = function() {
@@ -581,7 +728,7 @@ function($sabloConstants, $sabloApplication, $window) {
 
             /**
              * Add input to current cursor position, will return false when in readOnly mode
-             * @example %%prefix%%%%elementName%%.addInputAtCursor(input);
+             * @example elements.%%elementName%%.addInputAtCursor(input);
              * @param {String} input
              * @returns {Boolean}
              */
@@ -597,7 +744,7 @@ function($sabloConstants, $sabloApplication, $window) {
 
             /**
              * Add tag to current cursor position, will return false when in readOnly mode
-             * @example %%prefix%%%%elementName%%.addTagAtCursor(tag);
+             * @example elements.%%elementName%%.addTagAtCursor(tag);
              * @param {String} tag
              * @returns {Boolean}
              */
@@ -610,6 +757,18 @@ function($sabloConstants, $sabloApplication, $window) {
                     $scope.editor.execute('mention', { marker: $scope.model.tagsStartChar.toString(), mention:  $scope.model.tagsStartChar.toString() + tag.toString() } );
                 }
                 return true;
+            }
+
+            /**
+             * Executes the specified command with given parameters.
+             * @example elements.%%elementName%%.executeCommand(command, commandParameters);
+             * @param {String} command the name of the command to execute
+             * @param {*} [commandParameters] optional command parameters
+             */
+            $scope.api.executeCommand = function(command, commandParameters) {
+                if ($scope.editor) {
+                    $scope.editor.execute(command, commandParameters);
+                }
             }
 
             /**

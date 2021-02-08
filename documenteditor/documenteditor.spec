@@ -3,6 +3,7 @@
     "displayName": "documenteditor",
     "version": 1,
     "definition": "ckeditor/documenteditor/documenteditor.js",
+    "serverscript": "ckeditor/documenteditor/documenteditor_server.js",
     "libraries": [
     	{"name": "ckeditor5-servoy-build.js", "version": "24.0.0", "url": "ckeditor/documenteditor/lib/ckeditor.js", "mimetype": "text/javascript"},
     	{"name": "ckeditor5-inspector-servoy-build.js", "version": "24.0.0", "url": "ckeditor/documenteditor/lib/inspector.js", "mimetype": "text/javascript"},
@@ -70,51 +71,71 @@
         {"name": "documenteditor.css", "version": "1.0.0", "url": "ckeditor/documenteditor/documenteditor.css", "mimetype": "text/css"}],
 	"model":
 	{
+        "config" :                          { "type": "object", "pushToServer": "allow", "tags": {"scope": "private"} },
         "dataProviderID" : 					{ "type" : "dataprovider", "pushToServer" : "allow", "tags": { "scope": "design" }, "ondatachange": { "onchange":"onDataChangeMethodID"}},
-        "toolbar" : 						{ "type" : "toolbar", "tags" : { "scope" :"design", "doc": "Configure toolbar items."} },
+        "toolbarItems" : 					{ "type" : "toolbarItem[]", "droppable": true, "tags" : { "scope" :"design", "doc": "Configure toolbar items"}, "initialValue": [
+				{ "type": "heading" }, 
+        		{ "type": "|" }, 
+        		{ "type": "fontfamily" }, 
+        		{ "type": "fontsize" }, 
+        		{ "type": "fontColor" }, 
+        		{ "type": "|" }, 
+        		{ "type": "bold" }, 
+        		{ "type": "italic" }, 
+        		{ "type": "underline" }, 
+        		{ "type": "strikethrough" }, 
+        		{ "type": "|" }, 
+        		{ "type": "alignment" }, 
+        		{ "type": "|" }, 
+        		{ "type": "numberedList" }, 
+        		{ "type": "bulletedList" }, 
+        		{ "type": "|" }, 
+        		{ "type": "indent" }, 
+        		{ "type": "outdent" }, 
+        		{ "type": "|" }, 
+        		{ "type": "link" }, 
+        		{ "type": "imageUpload" }, 
+        		{ "type": "insertTable" }, 
+			] 
+        },
+        "showToolbar" :                     { "type" : "boolean", "default" : true },
         "overWriteTabForEditor" : 			{ "type" : "boolean", "default" : true, "tags": { "scope" :"design" }},
         "styleClass" : 						{ "type" : "styleclass"},
         "readOnly" : 						{ "type" : "protected", "blockingOn" : true, "default": false,"for": ["dataProviderID", "onDataChangeMethodID"], "tags": {"scope":"runtime"} },
         "viewType" : 						{ "type" : "string", "values" :["NONE", "DOCUMENT"], "default":"NONE", "tags": { "scope" :"design" }},
         "language" :						{ "type" : "string", "values" : [{"Afrikaans": "af"}, {"Albanian": "sq"}, {"Arabic": "ar"}, {"Asturian; Bable; Leonese; Asturleonese": ""}, {"Azerbaijani": "az"}, {"Basque": "eu"}, {"Bokmål, Norwegian; Norwegian Bokmål": "nb"}, {"Bulgarian": "bg"}, {"Catalan; Valencian": "ca"}, {"Central Khmer": "km"}, {"Chinese": "zh"}, {"Croatian": "hr"}, {"Czech": "cs"}, {"Danish": "da"}, {"Dutch; Flemish": "nl"}, {"English": "en"}, {"Esperanto": "eo"}, {"Estonian": "et"}, {"Finnish": "fi"}, {"French": "fr"}, {"Galician": "gl"}, {"German": "de"}, {"Greek": "el"}, {"Gujarati": "gu"}, {"Hebrew": "he"}, {"Hungarian": "hu"}, {"Indonesian": "id"}, {"Italian": "it"}, {"Japanese": "ja"}, {"Kannada": "kn"}, {"Korean": "ko"}, {"Kurdish": "ku"}, {"Latvian": "lv"}, {"Lithuanian": "lt"}, {"Malay": "ms"}, {"Nepali": "ne"}, {"Norwegian": "no"}, {"Occitan (post 1500)": "oc"}, {"Persian": "fa"}, {"Polish": "pl"}, {"Portuguese": "pt"}, {"Romanian; Moldavian; Moldovan": "ro"}, {"Russian": "ru"}, {"Serbian": "sr"}, {"Sinhala; Sinhalese": "si"}, {"Slovak": "sk"}, {"Slovenian": "sl"}, {"Spanish; Castilian": "es"}, {"Swedish": "sv"}, {"Tatar": "tt"}, {"Thai": "th"}, {"Turkish": "tr"}, {"Turkmen": "tk"}, {"Uighur; Uyghur": "ug"}, {"Ukrainian": "uk"}, {"Vietnamese": "vi"}], "default": null },
         "showInspector" : 					{ "type" : "boolean", "default" : false, "tags": { "scope" :"design" } },
-        "mentionFeeds" :					{ "type" : "mentionFeed[]", "tags": { "scope" :"design" } }
+        "mentionFeeds" :					{ "type" : "mentionFeed[]", "tags": { "scope" : "design" } },
+        "editorStyleSheet" :                { "type" : "media", "tags" : { "doc": "Attach a style sheet to add or overwrite content styles used by the editor. Make sure to prefix all classes with the <code>.ck-content</code> class."} },
+        "placeholderFoundSet" :             { "type" : "foundset", "tags": { "scope" : "private" } },
+        "placeholders" :                    { "type" : "placeholderItem[]" },
+        "placeholderMarker" :               { "type" : "string", "tags": { "scope": "design", "doc": "Character to trigger a type ahead for placeholders" } }
     },
     "types": {
         "toolbar" : {
-			"items" : 						{ "type": "toolbarItem[]", "default": [
+			"items" : 						{ "type": "toolbarItem[]", "initialValue": [
 				{ "type": "heading" }, 
         		{ "type": "|" }, 
         		{ "type": "fontfamily" }, 
         		{ "type": "fontsize" }, 
         		{ "type": "fontColor" }, 
-        		{ "type": "fontBackgroundColor" }, 
         		{ "type": "|" }, 
         		{ "type": "bold" }, 
         		{ "type": "italic" }, 
         		{ "type": "underline" }, 
         		{ "type": "strikethrough" }, 
-        		{ "type": "highlight" }, 
         		{ "type": "|" }, 
         		{ "type": "alignment" }, 
         		{ "type": "|" }, 
         		{ "type": "numberedList" }, 
         		{ "type": "bulletedList" }, 
-        		{ "type": "TodoList" }, 
         		{ "type": "|" }, 
         		{ "type": "indent" }, 
         		{ "type": "outdent" }, 
         		{ "type": "|" }, 
         		{ "type": "link" }, 
-        		{ "type": "pageBreak" }, 
-        		{ "type": "blockquote" }, 
         		{ "type": "imageUpload" }, 
         		{ "type": "insertTable" }, 
-        		{ "type": "mediaEmbed" }, 
-        		{ "type": "specialCharacters" }, 
-        		{ "type": "|" }, 
-        		{ "type": "undo" }, 
-        		{ "type": "redo" }
 			] },
 			"shouldNotGroupWhenFull" :		{ "type": "boolean", "default": false }
         },
@@ -155,7 +176,7 @@
             "withText" :        		{ "type" : "boolean" },
             "keystroke" :       		{ "type" : "string" },
             "styleClass" :      		{ "type" : "styleclass" },
-            "isEnabled" :       		{ "type" : "boolean" },
+            "isEnabled" :       		{ "type" : "boolean", "default": true },
             "withTooltip" :         	{ "type" : "boolean" },
             "tooltip" :         		{ "type" : "string" },
             "iconSvg" :					{ "type" : "tagstring" },
@@ -167,12 +188,16 @@
         	"valueList" : 				{ "type" : "valuelist" },
         	"feedItems" :				{ "type" : "mentionFeedItem[]" },
         	"minimumCharacters" :		{ "type" : "int" },
-        	"isDataProviderList" :		{ "type" : "boolean", "default": false },
         	"itemEditable" : 			{ "type" : "boolean", "default": true }
         },
         "mentionFeedItem" : {
         	"displayValue" :			{ "type" : "string" },
         	"realValue" :				{ "type" : "string" }
+        },
+        "placeholderItem" : {
+            "displayName" :             { "type" : "string" },
+            "dataProvider" :            { "type" : "string" },
+            "format" :                  { "type" : "string" }
         }
     },
     "handlers":
@@ -180,9 +205,9 @@
         "onDataChangeMethodID" : {
             "returns": "boolean",
             "parameters": [
-                            { "name":"oldValue", "type":"${dataproviderType}" },
-                            { "name":"newValue", "type":"${dataproviderType}" },
-                            { "name":"event", "type":"JSEvent" }
+                { "name":"oldValue", "type":"${dataproviderType}" },
+                { "name":"newValue", "type":"${dataproviderType}" },
+                { "name":"event", "type":"JSEvent" }
 			],
             "code": "return true"
         },
@@ -190,9 +215,45 @@
             "parameters": [
                 {"name": "file", "type": "object"}
             ]
+        },
+        "onReady" : {
+
+        },
+        "onError" : {
+            "parameters": [
+                { "name":"errorMessage", "type":"string" },
+                { "name":"errorStack", "type":"string" }
+			]
         }
     },
     "api": {
+        "create" : {
+            "delayUntilFormLoads": true,
+            "parameters": [
+                {"name": "config", "type": "object"}
+            ]
+        },
+        "createToolbarItem" : {
+            "returns": "toolbarItem",
+            "parameters": [
+                {"name": "name", "type": "string"},
+                {"name": "onClick", "type": "function"}
+            ]
+        },
+        "createPlaceholderItem" : {
+            "returns": "placeholderItem",
+            "parameters": [
+                {"name": "dataProvider", "type": "string"},
+                {"name": "displayName", "type": "string", "optional": true},
+                {"name": "format", "type": "string", "optional": true}
+            ]
+        },
+        "executeCommand" : {
+            "parameters": [
+                {"name": "command", "type": "string"},
+                {"name": "commanParameters", "type": "object", "optional": true}
+            ]
+        },
         "saveData": {
             "delayUntilFormLoads": true,
             "discardPreviouslyQueuedSimilarCalls": true,
