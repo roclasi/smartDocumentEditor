@@ -1,8 +1,4 @@
 /* TODO:
-* Tags: Optie om voorbeeld data te zien live vanuit het geselecteerde record.
-* Tags: Ook zichtbaar maken via een dropdown
-* Repeating tables aan de hand van een tag.
-	#repeatStart-factuurRegel #repeatStop-factuurRegel
 * Table in Table Support?? (Optie)
 * Document formaat: checken met juiste afmetingen + support voor andere formaten
 * Document met zoomfunctie ??
@@ -14,11 +10,6 @@
 * proper sizing in css layout (make the editor fill full height)
 */
 
-/**
- * DONE:
- * * Afbeelding upload via callback method
- * * Tabkey moet een indent doen
- */
 angular
 .module('ckeditorDocumenteditor', ['servoy', 'sabloApp'])
 .directive('ckeditorDocumenteditor', ['$sabloConstants', '$sabloApplication', '$window', 
@@ -138,7 +129,7 @@ function($sabloConstants, $sabloApplication, $window) {
                     formPost.append('upload', file, file.name);
 
                     return formPost;
-                };
+                }
 
                 //Get servoy fileUpload url
                 _getFileUploadURL() {
@@ -203,10 +194,20 @@ function($sabloConstants, $sabloApplication, $window) {
               * @param {String} data 
               */
             function forceSaveData( data ) {
-                console.log( 'CKEditor save Trigger, saving data');
-                $scope.model.dataProviderID = data;
-                $scope.svyServoyapi.apply('dataProviderID');
+                console.log($scope.model.readOnly)
+                if($scope.model.readOnly !== true) {
+                    console.log( 'CKEditor save Trigger, saving data');
+                    $scope.model.dataProviderID = data;
+                    // console.log(juice.inlineContent(data, getAllStyles()));
+                    $scope.svyServoyapi.apply('dataProviderID');
+                }
             }
+            /**
+              * Function returning all parsed styles.. including print version
+              */
+            // function getAllStyles() {
+            //     var style =
+            // }
 
             /**
              * Generate UUIDv4
@@ -271,7 +272,7 @@ function($sabloConstants, $sabloApplication, $window) {
                                 class: 'mention svy-mention',
                                 'data-mention': modelAttributeValue.id,
                                 'data-real-value': modelAttributeValue.realValue,
-                                'contenteditable': modelAttributeValue.editable
+                                'contenteditable': (modelAttributeValue.editable == undefined ? true : modelAttributeValue.editable)
                             }
                         }
             
@@ -562,19 +563,7 @@ function($sabloConstants, $sabloApplication, $window) {
              *********************************************/
 
             if (!$scope.model.config) {
-                var config = {
-                    autosave: {
-                        save( editor ) {
-                            return new Promise( resolve => {
-                                setTimeout( () => {
-                                    forceSaveData( editor.getData() )
-                                    resolve();
-                                }, 200 );
-                            } );
-                        }
-                    },
-                    language: getCurrentLanguage()
-                }
+                var config = {}
 
                 if ($scope.model.showToolbar) {
                     config.toolbar = {
@@ -634,6 +623,23 @@ function($sabloConstants, $sabloApplication, $window) {
                             config.extraPlugins = [SvyMentionConverter];
                         }
                     }
+                }
+
+                if(!config.autosave) {
+                    config.autosave = {
+                        save( editor ) {
+                            return new Promise( resolve => {
+                                setTimeout( () => {
+                                    forceSaveData( editor.getData() )
+                                    resolve();
+                                }, 200 );
+                            } );
+                        }
+                    }
+                }
+
+                if(!config.language) {
+                    config.language =  getCurrentLanguage();
                 }
 
                 DecoupledEditor.create($element.querySelectorAll('.ckeditor')[0], config).then(editor => {

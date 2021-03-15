@@ -95,7 +95,7 @@
         		{ "type": "|" }, 
         		{ "type": "link" }, 
         		{ "type": "imageUpload" }, 
-        		{ "type": "insertTable" }, 
+        		{ "type": "insertTable" }
 			] 
         },
         "showToolbar" :                     { "type" : "boolean", "default" : true },
@@ -135,7 +135,7 @@
         		{ "type": "|" }, 
         		{ "type": "link" }, 
         		{ "type": "imageUpload" }, 
-        		{ "type": "insertTable" }, 
+        		{ "type": "insertTable" }
 			] },
 			"shouldNotGroupWhenFull" :		{ "type": "boolean", "default": false }
         },
