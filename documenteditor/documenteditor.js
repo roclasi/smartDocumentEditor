@@ -271,7 +271,7 @@ function($sabloConstants, $sabloApplication, $window) {
                             attributes = {
                                 class: 'mention svy-mention',
                                 'data-mention': modelAttributeValue.id,
-                                'data-real-value': modelAttributeValue.realValue,
+                                'data-real-value': (modelAttributeValue.realValue == undefined ? '' : modelAttributeValue.realValue),
                                 'contenteditable': (modelAttributeValue.editable == undefined ? true : modelAttributeValue.editable)
                             }
                         }
