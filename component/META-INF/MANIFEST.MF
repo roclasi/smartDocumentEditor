@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-Name: CKEditor
+Bundle-SymbolicName: ckeditor
+Package-Type: Web-Component
+Bundle-Version: 1.0.0
+
+Name: documenteditor/documenteditor.spec
+Web-Component: True
+

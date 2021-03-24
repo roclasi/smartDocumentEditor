@@ -1,0 +1,23 @@
+{
+  "name": "@pruhsert/ckeditor5-svy-toolbar-item",
+  "version": "0.4.9",
+  "main": "src/svy-toolbar-item.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pruhsert/svy-toolbar-item.git"
+  },
+  "keywords": [],
+  "author": "pruhsert (https://www.servoy.com/)",
+  "license": "MIT",
+  "files": [
+    "src"
+  ],
+  "bugs": {
+    "url": "https://github.com/pruhsert/svy-toolbar-item/issues"
+  },
+  "homepage": "https://github.com/pruhsert/svy-toolbar-item#readme",
+  "dependencies": {
+    "@ckeditor/ckeditor5-core": "^24.0.0",
+    "@ckeditor/ckeditor5-ui": "^24.0.0"
+  }
+}

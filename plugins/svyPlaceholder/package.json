@@ -1,0 +1,27 @@
+{
+  "name": "@pruhsert/ckeditor5-svy-placeholder",
+  "version": "0.2.21",
+  "main": "src/svy-placeholder.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pruhsert/svy-placeholder.git"
+  },
+  "keywords": [],
+  "author": "pruhsert (https://www.servoy.com/)",
+  "license": "MIT",
+  "files": [
+    "src"
+  ],
+  "bugs": {
+    "url": "https://github.com/pruhsert/svy-placeholder/issues"
+  },
+  "homepage": "https://github.com/pruhsert/svy-placeholder#readme",
+  "dependencies": {
+    "@ckeditor/ckeditor5-core": "^24.0.0",
+    "@ckeditor/ckeditor5-ui": "^24.0.0",
+    "@ckeditor/ckeditor5-widget": "^24.0.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-utils": "^24.0.0"
+  }
+}
