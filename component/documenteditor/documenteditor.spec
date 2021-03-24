@@ -162,6 +162,7 @@
         		"pageBreak",
         		"blockquote",
         		"imageUpload",
+                "imageInsert",
         		"insertTable",
         		"mediaEmbed",
         		"specialCharacters",
