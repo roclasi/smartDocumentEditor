@@ -476,8 +476,9 @@ function($sabloConstants, $sabloApplication, $window) {
                             tooltip: item.tooltip || null,
                             icon: item.iconSvg || null,
                             ignoreReadOnly: item.ignoreReadOnly || false,
-                            onClick: item.onClick ? (buttonView) => { 
-                                $window.executeInlineScript(item.onClick.formname, item.onClick.script, [item.name])
+                            valueList: item.valueList,
+                            onClick: item.onClick ? (buttonView, dropDownValue) => { 
+                                $window.executeInlineScript(item.onClick.formname, item.onClick.script, [item.name, dropDownValue || null])
                             } : null
                         }
                     })
@@ -645,7 +646,8 @@ function($sabloConstants, $sabloApplication, $window) {
 
                 DecoupledEditor.create($element.querySelectorAll('.ckeditor')[0], config).then(editor => {
                     $scope.editor = editor;
-
+                    console.log(Array.from(editor.ui.componentFactory.names()));
+                    
                     const view = editor.editing.view;
                     const viewDocument = view.document;
 
