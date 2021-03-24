@@ -181,7 +181,8 @@
             "tooltip" :         		{ "type" : "string" },
             "iconSvg" :					{ "type" : "tagstring" },
             "onClick" : 				{ "type" : "function" },
-            "valueList" :				{ "type" : "valuelist" }
+            "valueList" :				{ "type" : "valuelist" },
+            "ignoreReadOnly":           { "type" : "boolean" }
         },
         "mentionFeed" : {
         	"marker" :					{ "type" : "string" },

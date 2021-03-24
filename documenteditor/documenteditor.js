@@ -475,6 +475,7 @@ function($sabloConstants, $sabloApplication, $window) {
                             isEnabled: item.isEnabled || false,
                             tooltip: item.tooltip || null,
                             icon: item.iconSvg || null,
+                            ignoreReadOnly: item.ignoreReadOnly || false,
                             onClick: item.onClick ? (buttonView) => { 
                                 $window.executeInlineScript(item.onClick.formname, item.onClick.script, [item.name])
                             } : null

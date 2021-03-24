@@ -62,7 +62,8 @@ $scope.api.createToolbarItem = function(name, onClick) {
         name: name,
         onClick: onClick,
         type: 'servoyToolbarItem',
-        isEnabled: true
+        isEnabled: true,
+        ignoreReadOnly: false
     };
 }
 
