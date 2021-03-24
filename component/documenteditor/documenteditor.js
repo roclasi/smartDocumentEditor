@@ -72,6 +72,43 @@ function($sabloConstants, $sabloApplication, $window) {
             /*********************************************
              * General Functions / Classes for CKEditor
              *********************************************/
+
+             /**
+              * Function called by AutoSave plugin in CKEditor
+              * @param {String} data 
+              */
+            function forceSaveData( data ) {
+                console.log($scope.model.readOnly)
+                if($scope.model.readOnly !== true) {
+                    console.log( 'CKEditor save Trigger, saving data');
+                    $scope.model.dataProviderID = data;
+                    // console.log(juice.inlineContent(data, getAllStyles()));
+                    $scope.svyServoyapi.apply('dataProviderID');
+                }
+            }
+            /**
+              * Function returning all parsed styles.. including print version
+              */
+            // function getAllStyles() {
+            //     var style =
+            // }
+
+            /**
+             * Generate UUIDv4
+             * @returns {String}
+             */
+            function uuidv4() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                  var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                  return v.toString(16);
+                });
+            }
+
+
+            /*********************************************
+             * Upload
+             *********************************************/
+
             class ServoyUploadAdapter {
                 constructor(loader) {
                     // The file loader instance to use during the upload.
@@ -98,8 +135,8 @@ function($sabloConstants, $sabloApplication, $window) {
                     xhr.addEventListener('error', () => reject(genericErrorText));
                     xhr.addEventListener('abort', () => reject());
                     xhr.addEventListener('load', () => {
-                        //TODO: Maybe not a rest call back??
-                        resolve({ default: '/servoy-service/rest_ws/ckEditorUtils/imageUtils/' + uniekFileId + '.' + new RegExp(/(?:\.([^.]+))?$/).exec(file.name)[1] })
+                        //reject so nothing happens in the editor; the image has to be inserted by the onFileUploadedMethodID
+                        reject();
                     });
 
                     if (xhr.upload) {
@@ -113,8 +150,8 @@ function($sabloConstants, $sabloApplication, $window) {
                 }
 
                 // Prepares the data and sends the request.
-                _sendRequest(file, uniekFileId) {
-                    var data = this._createFormDataUpload(file, { 'imageID': uniekFileId })
+                _sendRequest(file, uniqueFileID) {
+                    var data = this._createFormDataUpload(file, { 'imageID': uniqueFileID })
                     // Send the request.
                     this.xhr.send(data);
                 }
@@ -173,51 +210,46 @@ function($sabloConstants, $sabloApplication, $window) {
 
                 // Starts the upload process.
                 upload() {
-                    return this.loader.file.then(file => new Promise((resolve, reject) => {
-                        var uniekFileId = uuidv4();
-                        this._initRequest();
-                        this._initListeners(resolve, reject, file, uniekFileId);
-                        this._sendRequest(file, uniekFileId);
-                    }));
+                    if (!$scope.handlers.onFileUploadedMethodID) {
+                        //base64 upload
+                        return new Promise( ( resolve, reject ) => {
+                            const reader = this.reader = new window.FileReader();
+                
+                            reader.addEventListener( 'load', () => {
+                                resolve( { default: reader.result } );
+                            } );
+                
+                            reader.addEventListener( 'error', err => {
+                                reject( err );
+                            } );
+                
+                            reader.addEventListener( 'abort', () => {
+                                reject();
+                            } );
+                
+                            this.loader.file.then( file => {
+                                reader.readAsDataURL( file );
+                            } );
+                        } );
+                    } else {
+                        //upload to resources/upload
+                        return this.loader.file.then(file => new Promise((resolve, reject) => {
+                            var uniqueFileID = uuidv4();
+                            this._initRequest();
+                            this._initListeners(resolve, reject, file, uniqueFileID);
+                            this._sendRequest(file, uniqueFileID);
+                        }));
+                    }
                 }
 
                 // Aborts the upload process.
                 abort() {
-                    if (this.xhr) {
+                    if (!$scope.handlers.onFileUploadedMethodID) {
+                        this.reader.abort();
+                    } else if (this.xhr) {
                         this.xhr.abort();
                     }
                 }
-            }
-
-             /**
-              * Function called by AutoSave plugin in CKEditor
-              * @param {String} data 
-              */
-            function forceSaveData( data ) {
-                console.log($scope.model.readOnly)
-                if($scope.model.readOnly !== true) {
-                    console.log( 'CKEditor save Trigger, saving data');
-                    $scope.model.dataProviderID = data;
-                    // console.log(juice.inlineContent(data, getAllStyles()));
-                    $scope.svyServoyapi.apply('dataProviderID');
-                }
-            }
-            /**
-              * Function returning all parsed styles.. including print version
-              */
-            // function getAllStyles() {
-            //     var style =
-            // }
-
-            /**
-             * Generate UUIDv4
-             * @returns {String}
-             */
-            function uuidv4() {
-                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                  var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                  return v.toString(16);
-                });
             }
 
             /*********************************************
@@ -627,21 +659,21 @@ function($sabloConstants, $sabloApplication, $window) {
                     }
                 }
 
-                if(!config.autosave) {
+                if (!config.autosave) {
                     config.autosave = {
-                        save( editor ) {
-                            return new Promise( resolve => {
-                                setTimeout( () => {
-                                    forceSaveData( editor.getData() )
+                        save(editor) {
+                            return new Promise(resolve => {
+                                setTimeout(() => {
+                                    forceSaveData(editor.getData())
                                     resolve();
-                                }, 200 );
-                            } );
+                                }, 200);
+                            });
                         }
                     }
                 }
 
-                if(!config.language) {
-                    config.language =  getCurrentLanguage();
+                if (!config.language) {
+                    config.language = getCurrentLanguage();
                 }
 
                 DecoupledEditor.create($element.querySelectorAll('.ckeditor')[0], config).then(editor => {
@@ -688,10 +720,6 @@ function($sabloConstants, $sabloApplication, $window) {
                                 view.scrollToTheSelection();
                             }
                         });
-                    }
-
-                    if (editor.config.plugins) {
-                        console.log(editor.config.plugins.map(plugin => plugin.pluginName));
                     }
 
                 }).then(() => {
