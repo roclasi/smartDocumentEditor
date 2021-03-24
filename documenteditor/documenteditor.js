@@ -778,6 +778,18 @@ function($sabloConstants, $sabloApplication, $window) {
             }
 
             /**
+             * Executes the specified command with given parameters.
+             * @example elements.%%elementName%%.executeCommand(command, commandParameters);
+             * @param {String} command the name of the command to execute
+             * @param {*} [commandParameters] optional command parameters
+             */
+            $scope.api.insertImage = function(source) {
+                if ($scope.editor) {
+                    $scope.editor.execute('imageInsert', { source: source });
+                }
+            }
+
+            /**
              * Test method to replace data in a svy-placeholder element
              * @param {JSRecord} record 
              */

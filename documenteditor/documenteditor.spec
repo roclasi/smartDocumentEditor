@@ -251,7 +251,12 @@
         "executeCommand" : {
             "parameters": [
                 {"name": "command", "type": "string"},
-                {"name": "commanParameters", "type": "object", "optional": true}
+                {"name": "commandParameters", "type": "object", "optional": true}
+            ]
+        },
+        "insertImage" : {
+            "parameters": [
+                {"name": "source", "type": "string"}
             ]
         },
         "saveData": {
