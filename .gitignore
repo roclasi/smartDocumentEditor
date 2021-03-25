@@ -1,4 +1,4 @@
-#metadata files#
+#metadata files
 */.metadata/
 .metadata/
 .metadata\
@@ -20,7 +20,6 @@ Thumbs.db
 
 #SonarLinter files
 .sonarlint
-
 
 # Other IDE files
 .vscode/
