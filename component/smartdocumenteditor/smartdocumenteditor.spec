@@ -637,7 +637,7 @@
             },
             "withTooltip": {"type": "boolean"},
             "tooltip": {"type": "string"},
-            "iconSvg": {"type": "tagstring"},
+            "iconStyleClass": {"type": "styleclass"},
             "onClick": {"type": "function"},
             "valueList": {"type": "valuelist"},
             "ignoreReadOnly": {"type": "boolean"}
