@@ -465,7 +465,7 @@ function($sabloConstants, $sabloApplication, $window) {
                                 withText: placeHolderItem[0].withText,
                                 isEnabled: placeHolderItem[0].isEnabled,
                                 withTooltip: placeHolderItem[0].tooltip || null,
-                                icon: placeHolderItem[0].iconSvg || null
+                                iconStyleClass: placeHolderItem[0].iconStyleClass || null
                             };
                     }
                 }
@@ -506,7 +506,7 @@ function($sabloConstants, $sabloApplication, $window) {
                             withText: item.withText || false,
                             isEnabled: item.isEnabled || false,
                             tooltip: item.tooltip || null,
-                            icon: item.iconSvg || null,
+                            iconStyleClass: item.iconStyleClass || null,
                             ignoreReadOnly: item.ignoreReadOnly || false,
                             valueList: item.valueList,
                             onClick: item.onClick ? (buttonView, dropDownValue) => { 

@@ -3,7 +3,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
+import View from '@ckeditor/ckeditor5-ui/src/view';
 import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -38,7 +38,6 @@ export default class SvyPlaceholderUi extends Plugin {
                     label: this.placeholderConfig.name,
                     tooltip: this.placeholderConfig.withTooltip,
                     withText: this.placeholderConfig.withText,
-                    icon: this.placeholderConfig.icon,
                     isEnabled: this.placeholderConfig.isEnabled
                 } );
 
@@ -52,6 +51,10 @@ export default class SvyPlaceholderUi extends Plugin {
                     editor.editing.view.focus();
                 } );
 
+                if(itemConfig.iconStyleClass) {
+                    dropdownView.children.add( this._createIconView(itemConfig.iconStyleClass) );
+                }
+
                 this.dropdownView = dropdownView;
 
                 return dropdownView;
@@ -62,6 +65,18 @@ export default class SvyPlaceholderUi extends Plugin {
                 this.dropdownView.isEnabled = !editor.isReadOnly;
             });
         }
+	}
+
+    _createIconView( iconClass ) {
+		const iconView = new View();
+		iconView.setTemplate( {
+			tag: 'span',
+			attributes: {
+				class: 'ckeditor-iconbutton ' + iconClass
+			}
+		} );
+
+		return iconView;
 	}
 	
 	getDropdownItemsDefinitions( placeholderItems ) {

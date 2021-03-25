@@ -81,3 +81,9 @@ div.ckeditor-documentview .sidebar {
 	border: 0;
 	box-shadow: none;
 }
+
+/* --------- SERVOY CUSTOM ---------------------------------------------*/
+.ckeditor-iconbutton {
+    --ck-font-size-base: 20px;
+    --ck-line-height-base: 20px;
+}

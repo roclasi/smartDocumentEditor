@@ -4,6 +4,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
@@ -49,8 +50,7 @@ export default class SvyToolbarItemUi extends Plugin {
                 dropdownView.buttonView.set( {
 					label: itemConfig.label,
 					withText: itemConfig.withText,
-					tooltip: itemConfig.withTooltip,
-					icon: itemConfig.icon
+					tooltip: itemConfig.withTooltip
                 } );
 
 				dropdownView.set({
@@ -67,6 +67,10 @@ export default class SvyToolbarItemUi extends Plugin {
 					});
 				}
 				
+                if(itemConfig.iconStyleClass) {
+                    dropdownView.buttonView.children.add( this._createIconView(itemConfig.iconStyleClass) );
+                }
+
 				//remember buttonView created to allow to sync disabled state of editor
 				this.svyToolbarItems.push(dropdownView);
 
@@ -87,10 +91,9 @@ export default class SvyToolbarItemUi extends Plugin {
 					label: itemConfig.label,
 					withText: itemConfig.withText,
 					tooltip: itemConfig.withTooltip,
-					icon: itemConfig.icon,
 					ignoreReadOnly: itemConfig.ignoreReadOnly
 				} );
-				
+
 				buttonView.isEnabled = itemConfig.isEnabled;
 	
 				// Change enabled state and execute the specific callback on click.
@@ -100,7 +103,11 @@ export default class SvyToolbarItemUi extends Plugin {
 						Promise.resolve(itemConfig.onClick(buttonView)).then(() => this.enableButton(buttonView, true)).catch(() => this.enableButton(buttonView, true));
 					});
 				}
-				
+                
+                if(itemConfig.iconStyleClass) {
+                    buttonView.children.add( this._createIconView(itemConfig.iconStyleClass) );
+                }
+
 				//remember buttonView created to allow to sync disabled state of editor
 				this.svyToolbarItems.push(buttonView);
 	
@@ -132,6 +139,17 @@ export default class SvyToolbarItemUi extends Plugin {
         return itemDefinitions;
 	}
 
+    _createIconView( iconClass ) {
+		const iconView = new View();
+		iconView.setTemplate( {
+			tag: 'span',
+			attributes: {
+				class: 'ckeditor-iconbutton ' + iconClass
+			}
+		} );
+
+		return iconView;
+	}
 	/**
      * Enables or disables the button according to the button config
 	 * and the current readOnly-state of the editor.
