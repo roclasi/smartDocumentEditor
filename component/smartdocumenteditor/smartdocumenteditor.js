@@ -12,8 +12,8 @@
 
 angular
 .module('smartdocumenteditorSmartdocumenteditor', ['servoy', 'sabloApp'])
-.directive('smartdocumenteditorSmartdocumenteditor', ['$sabloConstants', '$sabloApplication', '$window', 
-function($sabloConstants, $sabloApplication, $window) {  
+.directive('smartdocumenteditorSmartdocumenteditor', ['$sabloConstants', '$sabloApplication', '$window', '$utils', 
+function($sabloConstants, $sabloApplication, $window, $utils) {  
     return {
         restrict: 'E',
         scope: {
@@ -510,7 +510,8 @@ function($sabloConstants, $sabloApplication, $window) {
                             ignoreReadOnly: item.ignoreReadOnly || false,
                             valueList: item.valueList,
                             onClick: item.onClick ? (buttonView, dropDownValue) => { 
-                                $window.executeInlineScript(item.onClick.formname, item.onClick.script, [item.name, dropDownValue || null])
+                                var jsevent = $utils.createJSEvent(event, 'action');
+                                $window.executeInlineScript(item.onClick.formname, item.onClick.script, [jsevent, item.name, dropDownValue || null])
                             } : null
                         }
                     })

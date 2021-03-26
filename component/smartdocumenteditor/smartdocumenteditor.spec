@@ -770,6 +770,10 @@
             "delayUntilFormLoads": true,
             "returns": "boolean",
             "parameters": [{
+                "name": "tagStart",
+                "type": "string"
+            },
+            {
                 "name": "tag",
                 "type": "string"
             }]
