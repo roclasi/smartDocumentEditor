@@ -86,4 +86,5 @@ div.ckeditor-documentview .sidebar {
 .ckeditor-iconbutton {
     --ck-font-size-base: 20px;
     --ck-line-height-base: 20px;
+    margin-top: 3px !important;
 }
