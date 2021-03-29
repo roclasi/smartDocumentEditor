@@ -770,7 +770,7 @@
             "delayUntilFormLoads": true,
             "returns": "boolean",
             "parameters": [{
-                "name": "tagStart",
+                "name": "marker",
                 "type": "string"
             },
             {

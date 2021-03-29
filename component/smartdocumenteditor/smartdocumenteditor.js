@@ -783,18 +783,37 @@ function($sabloConstants, $sabloApplication, $window, $utils) {
             /**
              * Add tag to current cursor position, will return false when in readOnly mode
              * @example elements.%%elementName%%.addTagAtCursor(tag);
+             * @param {String} marker
              * @param {String} tag
              * @returns {Boolean}
              */
-            $scope.api.addTagAtCursor = function(tag) {
+            $scope.api.addTagAtCursor = function(marker, tag) {
                 if(tag) {
                     if($scope.model.readOnly == true) {
                         return false;
                     }
 
-                    $scope.editor.execute('mention', { marker: $scope.model.tagsStartChar.toString(), mention:  $scope.model.tagsStartChar.toString() + tag.toString() } );
+                    for (let i = 0; i < $scope.model.mentionFeeds.length; i++) {
+                        if($scope.model.mentionFeeds[i].marker === marker.toString()) {
+                            const feed = $scope.model.mentionFeeds[i];
+                            const list = feed.valueList.filter((item) => {
+                                                return (item.realValue||item.displayValue).toString() == tag.toString();
+                                            })
+                            if(list.length > 0) {
+                                $scope.editor.execute('mention', { marker: marker.toString(), mention:  {
+                                        name: list[0].displayValue.toString(),
+                                        id: feed.marker.toString() + list[0].displayValue.toString(),
+                                        realValue: list[0].realValue,
+                                        editable: feed.itemEditable
+                                    }
+                                });
+                                return true;
+                            }
+
+                        }
+                    }
                 }
-                return true;
+                return false;
             }
 
             /**
