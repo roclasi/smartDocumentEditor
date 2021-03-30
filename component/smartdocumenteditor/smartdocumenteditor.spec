@@ -603,6 +603,7 @@
                     "underline",
                     "strikethrough",
                     "highlight",
+                    "horizontalline",
                     "alignment",
                     "numberedList",
                     "bulletedList",
