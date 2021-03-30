@@ -51,8 +51,8 @@ export default class SvyPlaceholderUi extends Plugin {
                     editor.editing.view.focus();
                 } );
 
-                if(itemConfig.iconStyleClass) {
-                    dropdownView.children.add( this._createIconView(itemConfig.iconStyleClass) );
+                if (this.placeholderConfig.iconStyleClass) {
+                    dropdownView.buttonView.children.add( this._createIconView(this.placeholderConfig.iconStyleClass) );
                 }
 
                 this.dropdownView = dropdownView;
