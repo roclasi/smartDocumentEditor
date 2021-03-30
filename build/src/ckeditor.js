@@ -48,6 +48,7 @@ import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specia
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import Autosave from '@ckeditor/ckeditor5-autosave/src/autosave';
 import Mention from '@ckeditor/ckeditor5-mention/src/mention';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 import SvyToolbarItem from '../../plugins/svyToolbarItem/src/svy-toolbar-item';
 import svyPlaceholder from '../../plugins/svyPlaceholder/src/svy-placeholder';
@@ -70,6 +71,7 @@ DecoupledEditor.builtinPlugins = [
 	Underline,
 	BlockQuote,
 	CKFinder,
+    CloudServices,
 	EasyImage,
 	Heading,
 	Image,

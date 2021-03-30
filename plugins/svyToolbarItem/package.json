@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/pruhsert/svy-toolbar-item#readme",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^24.0.0",
-    "@ckeditor/ckeditor5-ui": "^24.0.0"
+    "@ckeditor/ckeditor5-core": "^27.0.0",
+    "@ckeditor/ckeditor5-ui": "^27.0.0"
   }
 }

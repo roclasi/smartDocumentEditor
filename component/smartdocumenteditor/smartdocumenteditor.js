@@ -78,20 +78,12 @@ function($sabloConstants, $sabloApplication, $window, $utils) {
               * @param {String} data 
               */
             function forceSaveData( data ) {
-                console.log($scope.model.readOnly)
                 if($scope.model.readOnly !== true) {
-                    console.log( 'CKEditor save Trigger, saving data');
+                    console.debug( 'CKEditor save Trigger, saving data');
                     $scope.model.dataProviderID = data;
-                    // console.log(juice.inlineContent(data, getAllStyles()));
                     $scope.svyServoyapi.apply('dataProviderID');
                 }
             }
-            /**
-              * Function returning all parsed styles.. including print version
-              */
-            // function getAllStyles() {
-            //     var style =
-            // }
 
             /**
              * Generate UUIDv4
@@ -622,8 +614,6 @@ function($sabloConstants, $sabloApplication, $window, $utils) {
              * @param {*} config 
              */
             function createEditor(config) {
-                console.log(config);
-
                  //make sure toolbar items are taken from the model.toolbarItems array
                  if (config.toolbar && config.toolbar.items) {
                      //toolbar property is an object with items array
@@ -686,7 +676,6 @@ function($sabloConstants, $sabloApplication, $window, $utils) {
 
                 DecoupledEditor.create($element.querySelectorAll('.ckeditor')[0], config).then(editor => {
                     $scope.editor = editor;
-                    console.log(Array.from(editor.ui.componentFactory.names()));
                     
                     const view = editor.editing.view;
                     const viewDocument = view.document;
