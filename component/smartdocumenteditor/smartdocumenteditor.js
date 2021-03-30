@@ -344,14 +344,21 @@ function($sabloConstants, $sabloApplication, $window, $utils) {
                             var plcHolderItems = getPlaceholderItems();
                             if (plcHolderItems.length) {
                                 return new Promise(resolve => {
-                                    const list = plcHolderItems
+                                    let list = plcHolderItems
                                         // Filter out the full list of all items to only those matching the query text.
-                                        .filter((item) => {
-                                            const searchString = queryText.toLowerCase();
-                                            return item.displayName.toLowerCase().includes(searchString);
-                                        })
+                                        // Order startWith before contains
+                                        .reduce(function(res, item) {
+                                            var idx = item.displayName.toLowerCase().indexOf(queryText.toLowerCase());
+                                            if(idx === 0) {
+                                                res[0].push(item)
+                                            } else if(idx > 0) {
+                                                res[1].push(item)
+                                            }
+                                            return res;   
+                                          },[[],[]])[0];
+                                          
                                         // Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
-                                        .slice(0, 10)
+                                        list = list[0].concat(list[1]).slice(0, 10)
                                         //Map /Convert default valuelist names to matching object keys for tags
                                         .map((item) => {
                                             return {
