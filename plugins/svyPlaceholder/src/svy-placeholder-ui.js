@@ -35,7 +35,7 @@ export default class SvyPlaceholderUi extends Plugin {
                 addListToDropdown( dropdownView, this.getDropdownItemsDefinitions( this.placeholderItems ) );
 
                 dropdownView.buttonView.set( {
-                    label: this.placeholderConfig.name,
+                    label: this.placeholderConfig.label,
                     tooltip: this.placeholderConfig.withTooltip,
                     withText: this.placeholderConfig.withText,
                     isEnabled: this.placeholderConfig.isEnabled
