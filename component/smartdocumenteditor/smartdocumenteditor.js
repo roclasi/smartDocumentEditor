@@ -336,21 +336,18 @@ function($sabloConstants, $sabloApplication, $window, $utils) {
                             var plcHolderItems = getPlaceholderItems();
                             if (plcHolderItems.length) {
                                 return new Promise(resolve => {
+                                    const searchString = queryText.toLowerCase();
                                     let list = plcHolderItems
                                         // Filter out the full list of all items to only those matching the query text.
                                         // Order startWith before contains
-                                        .reduce(function(res, item) {
-                                            var idx = item.displayName.toLowerCase().indexOf(queryText.toLowerCase());
-                                            if(idx === 0) {
-                                                res[0].push(item)
-                                            } else if(idx > 0) {
-                                                res[1].push(item)
-                                            }
-                                            return res;   
-                                          },[[],[]])[0];
-                                          
-                                        // Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
-                                        list = list[0].concat(list[1]).slice(0, 10)
+                                        .filter((item) => {
+                                            return item.displayName.toLowerCase().startsWith(searchString);
+                                        })
+                                    list = list.concat(plcHolderItems.filter((item) => {
+                                        return !item.displayName.toLowerCase().startsWith(searchString) && item.displayName.toLowerCase().includes(searchString);
+                                    }))
+
+                                    list = list.slice(0, 10)
                                         //Map /Convert default valuelist names to matching object keys for tags
                                         .map((item) => {
                                             return {
