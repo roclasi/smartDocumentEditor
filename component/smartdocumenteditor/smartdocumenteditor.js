@@ -1,15 +1,3 @@
-/* TODO:
-* Table in Table Support?? (Optie)
-* Document formaat: checken met juiste afmetingen + support voor andere formaten
-* Document met zoomfunctie ??
-* Headers & Footers & Pagebreak ??
-* Afbeeldingen tonen vanuit een soort van Media
-* PDF callback voor printen??
-* N/A: Auto pagebreak when enter
-* 
-* proper sizing in css layout (make the editor fill full height)
-*/
-
 angular
 .module('smartdocumenteditorSmartdocumenteditor', ['servoy', 'sabloApp'])
 .directive('smartdocumenteditorSmartdocumenteditor', ['$sabloConstants', '$sabloApplication', '$window', '$utils', 
