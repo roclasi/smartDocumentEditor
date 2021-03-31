@@ -778,10 +778,6 @@
                 "name": "tag",
                 "type": "string"
             }]
-        },
-        "showPlaceholderRealData": {"parameters": [{
-            "name": "record",
-            "type": "record"
-        }]}
+        }
     }
 }
