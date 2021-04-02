@@ -454,6 +454,7 @@
             ],
             "tags": {"scope": "runtime"}
         },
+        "visible": "visible",
         "viewType": {
             "type": "string",
             "values": [

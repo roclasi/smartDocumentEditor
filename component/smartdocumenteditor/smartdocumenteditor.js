@@ -1,7 +1,7 @@
 angular
 .module('smartdocumenteditorSmartdocumenteditor', ['servoy', 'sabloApp'])
-.directive('smartdocumenteditorSmartdocumenteditor', ['$sabloConstants', '$sabloApplication', '$window', '$utils', 
-function($sabloConstants, $sabloApplication, $window, $utils) {  
+.directive('smartdocumenteditorSmartdocumenteditor', ['$sabloConstants', '$sabloApplication', '$window', '$utils', '$timeout', 
+function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {  
     return {
         restrict: 'E',
         scope: {
@@ -47,6 +47,20 @@ function($sabloConstants, $sabloApplication, $window, $utils) {
                         break;
                     case "readOnly":
                         $scope.editor.isReadOnly = value;
+                        break;
+                    case "visible":
+                        if(value == false) {
+                            if($scope.editor) {
+                                $scope.editor.destroy();
+                                $scope.editor = null;
+                            }
+                        } else {
+                            if(!$scope.editor) {
+                                $timeout(function() {
+                                    createEditor($scope.model.config);
+                                }, 0)
+                            }
+                        }
                         break;
                     }
                 }
@@ -599,133 +613,139 @@ function($sabloConstants, $sabloApplication, $window, $utils) {
              * @param {*} config 
              */
             function createEditor(config) {
-                 //make sure toolbar items are taken from the model.toolbarItems array
-                 if (config.toolbar && config.toolbar.items) {
-                     //toolbar property is an object with items array
-                     //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
-                    config.toolbar.items = getToolbarItems();
-                } else if (config.toolbar) {
-                    //toolbar property is a plain array
-                    //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
-                    config.toolbar = {
-                        items: getToolbarItems()
-                    }
-                }
-
-                if (!config.svyToolbarItems) {
-                    //make sure custom toolbar items are created
-                    config.svyToolbarItems = getSvyToolbarItems();
-                }
-
-                if (!config.svyPlaceholderConfig) {
-                    //get config for a possible servoyPlaceholder toolbar entry
-                    config.svyPlaceholderConfig = getPlaceholderUIConfig();
-                }
-
-                if (!config.svyPlaceholderItems) {
-                    //get config for a servoyPlaceholder items
-                    config.svyPlaceholderItems = getPlaceholderItems();
-                }
-                
-                if ($scope.model.placeholderMarker || ($scope.model.mentionFeeds && $scope.model.mentionFeeds.length)) {
-                    //add placeholder mention feed
-                    config.mention = {
-                        feeds: getFeeds()
-                    }
-
-                    if (!config.hasOwnProperty('extraPlugins') || config.extraPlugins.indexOf(SvyMentionConverter) === -1) {
-                        if (config.hasOwnProperty('extraPlugins')) {
-                            config.extraPlugins.push(SvyMentionConverter);
-                        } else {
-                            config.extraPlugins = [SvyMentionConverter];
+                if($scope.model.visible == true) {
+                    //make sure toolbar items are taken from the model.toolbarItems array
+                    if (config.toolbar && config.toolbar.items) {
+                        //toolbar property is an object with items array
+                        //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
+                        config.toolbar.items = getToolbarItems();
+                    } else if (config.toolbar) {
+                        //toolbar property is a plain array
+                        //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
+                        config.toolbar = {
+                            items: getToolbarItems()
                         }
                     }
-                }
 
-                if (!config.autosave) {
-                    config.autosave = {
-                        save(editor) {
-                            return new Promise(resolve => {
-                                setTimeout(() => {
-                                    forceSaveData(editor.getData())
-                                    resolve();
-                                }, 200);
-                            });
-                        }
+                    if (!config.svyToolbarItems) {
+                        //make sure custom toolbar items are created
+                        config.svyToolbarItems = getSvyToolbarItems();
                     }
-                }
 
-                if (!config.language) {
-                    config.language = getCurrentLanguage();
-                }
+                    if (!config.svyPlaceholderConfig) {
+                        //get config for a possible servoyPlaceholder toolbar entry
+                        config.svyPlaceholderConfig = getPlaceholderUIConfig();
+                    }
 
-                DecoupledEditor.create($element.querySelectorAll('.ckeditor')[0], config).then(editor => {
-                    $scope.editor = editor;
+                    if (!config.svyPlaceholderItems) {
+                        //get config for a servoyPlaceholder items
+                        config.svyPlaceholderItems = getPlaceholderItems();
+                    }
                     
-                    const view = editor.editing.view;
-                    const viewDocument = view.document;
+                    if ($scope.model.placeholderMarker || ($scope.model.mentionFeeds && $scope.model.mentionFeeds.length)) {
+                        //add placeholder mention feed
+                        config.mention = {
+                            feeds: getFeeds()
+                        }
 
-                    if ($scope.model.showInspector == true) {
-                        CKEditorInspector.attach(editor)
-                    }
-
-                    // Set a custom container for the toolbar
-                    if ($scope.model.showToolbar) {
-                        $element.querySelectorAll('.document-editor__toolbar')[0].replaceChildren( editor.ui.view.toolbar.element );
-                        $element.querySelectorAll('.ck-toolbar')[0].classList.add( 'ck-reset_all' );
-                    } 
-
-                    const setData = () => {
-                        const data = editor.getData();
-                        const value = $scope.model.dataProviderID || ''
-                        if (data !== value) {
-                            editor.setData(value);
+                        if (!config.hasOwnProperty('extraPlugins') || config.extraPlugins.indexOf(SvyMentionConverter) === -1) {
+                            if (config.hasOwnProperty('extraPlugins')) {
+                                config.extraPlugins.push(SvyMentionConverter);
+                            } else {
+                                config.extraPlugins = [SvyMentionConverter];
+                            }
                         }
                     }
-                    $scope.$watch('model.dataProviderID', (newVal, oldVal) => {
-                        console.log('Update CKEditor Context: The data has changed from external!');
-                        setData();
-                    })
 
-                    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-                        return new ServoyUploadAdapter(loader);
-                    };
+                    if (!config.autosave) {
+                        config.autosave = {
+                            save(editor) {
+                                return new Promise(resolve => {
+                                    setTimeout(() => {
+                                        forceSaveData(editor.getData())
+                                        resolve();
+                                    }, 200);
+                                });
+                            }
+                        }
+                    }
 
-                    if ($scope.model.overWriteTabForEditor == true) {
-                        viewDocument.on('keydown', (evt, data) => {
-                            if ((data.keyCode == 9) && viewDocument.isFocused) {
-                                // $scope.editor.execute( 'input', { text: "\t" } );
-                                editor.execute('input', { text: "     " });
+                    if (!config.language) {
+                        config.language = getCurrentLanguage();
+                    }
 
-                                evt.stop(); // Prevent executing the default handler.
-                                data.preventDefault();
-                                view.scrollToTheSelection();
+                    if($element.querySelectorAll('.ckeditor').length > 0) {
+                        DecoupledEditor.create($element.querySelectorAll('.ckeditor')[0], config).then(editor => {
+                            $scope.editor = editor;
+                            
+                            const view = editor.editing.view;
+                            const viewDocument = view.document;
+
+                            if ($scope.model.showInspector == true) {
+                                CKEditorInspector.attach(editor)
+                            }
+
+                            // Set a custom container for the toolbar
+                            if ($scope.model.showToolbar) {
+                                $element.querySelectorAll('.document-editor__toolbar')[0].replaceChildren( editor.ui.view.toolbar.element );
+                                $element.querySelectorAll('.ck-toolbar')[0].classList.add( 'ck-reset_all' );
+                            } 
+
+                            const setData = () => {
+                                const data = editor.getData();
+                                const value = $scope.model.dataProviderID || ''
+                                if (data !== value) {
+                                    editor.setData(value);
+                                }
+                            }
+                            $scope.$watch('model.dataProviderID', (newVal, oldVal) => {
+                                console.log('Update CKEditor Context: The data has changed from external!');
+                                setData();
+                            })
+
+                            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                                return new ServoyUploadAdapter(loader);
+                            };
+
+                            if ($scope.model.overWriteTabForEditor == true) {
+                                viewDocument.on('keydown', (evt, data) => {
+                                    if ((data.keyCode == 9) && viewDocument.isFocused) {
+                                        // $scope.editor.execute( 'input', { text: "\t" } );
+                                        editor.execute('input', { text: "     " });
+
+                                        evt.stop(); // Prevent executing the default handler.
+                                        data.preventDefault();
+                                        view.scrollToTheSelection();
+                                    }
+                                });
+                            }
+
+                        }).then(() => {
+                            // data can already be here, if so call the modelChange function so
+                            // that it is initialized correctly. (After init of CKEditor)
+                            var modelChangFunction = $scope.model[$sabloConstants.modelChangeNotifier];
+                            for (var key in $scope.model) {
+                                modelChangFunction(key, $scope.model[key]);
+                            }
+
+                            if ($scope.handlers.onReady) {
+                                $scope.handlers.onReady();
+                            }
+
+                        }).catch(function (error) {
+                            console.error(error);
+                            if ($scope.handlers.onError) {
+                                $scope.handlers.onError(error.message, error.stack);
                             }
                         });
                     }
-
-                }).then(() => {
-                    // data can already be here, if so call the modelChange function so
-                    // that it is initialized correctly. (After init of CKEditor)
-                    var modelChangFunction = $scope.model[$sabloConstants.modelChangeNotifier];
-                    for (var key in $scope.model) {
-                        modelChangFunction(key, $scope.model[key]);
-                    }
-
-                    if ($scope.handlers.onReady) {
-                        $scope.handlers.onReady();
-                    }
-
-                }).catch(function (error) {
-                    console.error(error);
-                    if ($scope.handlers.onError) {
-                        $scope.handlers.onError(error.message, error.stack);
-                    }
-                });
+                }
             }
 
             if (!$scope.svyServoyapi.isInDesigner()) {
-                createEditor($scope.model.config);
+                $timeout(function() {
+                    createEditor($scope.model.config);
+                }, 0);
             }
 
             /*********************************************
@@ -753,7 +773,7 @@ function($sabloConstants, $sabloApplication, $window, $utils) {
              */
             $scope.api.addInputAtCursor = function(input) {
                 if(input) {
-                    if($scope.model.readOnly == true) {
+                    if($scope.model.readOnly == true || !$scope.editor) {
                         return false;
                     }
                     $scope.editor.execute('input', { text: input })
@@ -770,7 +790,7 @@ function($sabloConstants, $sabloApplication, $window, $utils) {
              */
             $scope.api.addTagAtCursor = function(marker, tag) {
                 if(tag) {
-                    if($scope.model.readOnly == true) {
+                    if($scope.model.readOnly == true || !$scope.editor) {
                         return false;
                     }
 
