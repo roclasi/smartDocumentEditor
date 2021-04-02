@@ -683,6 +683,22 @@
             ],
             "code": "return true"
         },
+        "onFocusGainedMethodID" : {
+            "parameters":[
+                            {
+                              "name":"event",
+                              "type":"JSEvent"
+                            }
+                         ]
+        },
+        "onFocusLostMethodID" : {
+            "parameters":[
+                            {
+                              "name":"event",
+                              "type":"JSEvent"
+                            }
+                         ]
+        },
         "onFileUploadedMethodID": {"parameters": [{
             "name": "file",
             "type": "object"

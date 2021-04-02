@@ -473,21 +473,22 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
              /*********************************************
              * Toolbar
              *********************************************/
-
+            var JSEvent = null;
              /**
              * Create a JSEvent
              *
              * @return {JSEvent}
-             * */
-            function createJSEvent() {
-                var element = $element;
-                var offset = element.offset();
-                var x = offset.left;
-                var y = offset.top;
-
-                var event = document.createEvent("MouseEvents");
-                event.initMouseEvent("click", false, true, window, 1, x, y, x, y, false, false, false, false, 0, null);
-                return event;
+             */
+            function createJSEvent(event, eventType) {
+                if(event) {
+                    JSEvent = $utils.createJSEvent(event, eventType);
+                } else {
+                    if(JSEvent) {
+                        JSEvent.eventType = eventType;
+                        JSEvent.timestamp = new Date().getTime();
+                    }
+                }
+                return JSEvent;
             }
 
              /**
@@ -508,7 +509,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             ignoreReadOnly: item.ignoreReadOnly || false,
                             valueList: item.valueList,
                             onClick: item.onClick ? (buttonView, dropDownValue) => { 
-                                var jsevent = $utils.createJSEvent(event, 'action');
+                                var jsevent = createJSEvent(event, 'action');
                                 $window.executeInlineScript(item.onClick.formname, item.onClick.script, [jsevent, item.name, dropDownValue || null])
                             } : null
                         }
@@ -719,6 +720,18 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                                     }
                                 });
                             }
+
+                            editor.ui.focusTracker.on( 'change:isFocused', ( evt, data, isFocused ) => {
+                                if(isFocused) {
+                                    if ($scope.handlers.onFocusGainedMethodID) {
+                                        $scope.handlers.onFocusGainedMethodID(createJSEvent(event, 'focusGained'));
+                                    }
+                                } else {
+                                    if ($scope.handlers.onFocusLostMethodID) {
+                                        $scope.handlers.onFocusLostMethodID(createJSEvent(event, 'focusLost'));
+                                    }
+                                }
+                            } );
 
                         }).then(() => {
                             // data can already be here, if so call the modelChange function so
