@@ -51,8 +51,9 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     case "visible":
                         if(value == false) {
                             if($scope.editor) {
-                                $scope.editor.destroy();
-                                $scope.editor = null;
+                                $scope.editor.destroy().then(() => {
+                                    $scope.editor = null;
+                                });
                             }
                         } else {
                             if(!$scope.editor) {
@@ -61,6 +62,14 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                                 }, 0)
                             }
                         }
+                        break;
+                    case "showToolbar":
+                            if(value == true && $scope.editor) {
+                                $timeout(function() {
+                                    $element.querySelectorAll('.document-editor__toolbar')[0].replaceChildren( $scope.editor.ui.view.toolbar.element );
+                                    $element.querySelectorAll('.ck-toolbar')[0].classList.add( 'ck-reset_all' );
+                                },0)
+                            }
                         break;
                     }
                 }
@@ -584,10 +593,15 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     //(re)create editor
                     if ($scope.editor) {
                         $scope.editor.destroy().then(() => {
-                            createEditor(newVal);
+                            $scope.editor = null;
+                            $timeout(function() {
+                                createEditor(newVal);
+                            } , 0)
                         });
                     } else {
-                        createEditor(newVal);
+                        $timeout(function() {
+                            createEditor(newVal);
+                        }, 0)
                     }
                 }
             })
@@ -597,45 +611,58 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
              *********************************************/
 
             if (!$scope.model.config) {
-                var config = {}
+                var emptyConfig = {}
 
                 if ($scope.model.showToolbar) {
-                    config.toolbar = {
+                    emptyConfig.toolbar = {
                         items: getToolbarItems()
                     }
-                    config.svyToolbarItems = getSvyToolbarItems();
+                    emptyConfig.svyToolbarItems = getSvyToolbarItems();
                 }
 
-                $scope.model.config = config;
+                $scope.model.config = emptyConfig;
             }
 
             /**
              * Creates an editor instance
-             * @param {*} config 
+             * @param {*} orgConfig 
              */
-            function createEditor(config) {
+            function createEditor(orgConfig) {
+                var config = orgConfig;
                 if($scope.model.visible == true) {
-                    //make sure toolbar items are taken from the model.toolbarItems array
-                    if (config.toolbar && config.toolbar.items) {
-                        //toolbar property is an object with items array
-                        //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
-                        config.toolbar.items = getToolbarItems();
-                    } else if (config.toolbar) {
-                        //toolbar property is a plain array
-                        //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
-                        config.toolbar = {
-                            items: getToolbarItems()
+                    if($scope.model.showToolbar) {
+                        //make sure toolbar items are taken from the model.toolbarItems array
+                        if (config.toolbar && config.toolbar.items) {
+                            //toolbar property is an object with items array
+                            //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
+                            config.toolbar.items = getToolbarItems();
+                        } else if (config.toolbar) {
+                            //toolbar property is a plain array
+                            //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
+                            config.toolbar = {
+                                items: getToolbarItems()
+                            }
                         }
-                    }
 
-                    if (!config.svyToolbarItems) {
-                        //make sure custom toolbar items are created
-                        config.svyToolbarItems = getSvyToolbarItems();
-                    }
+                        if (!config.svyToolbarItems) {
+                            //make sure custom toolbar items are created
+                            config.svyToolbarItems = getSvyToolbarItems();
+                        }
 
-                    if (!config.svyPlaceholderConfig) {
-                        //get config for a possible servoyPlaceholder toolbar entry
-                        config.svyPlaceholderConfig = getPlaceholderUIConfig();
+                        if (!config.svyPlaceholderConfig) {
+                            //get config for a possible servoyPlaceholder toolbar entry
+                            config.svyPlaceholderConfig = getPlaceholderUIConfig();
+                        }
+                    } else {
+                        if(config.toolbar) {
+                            delete config.toolbar;
+                        }
+                        if(config.svyToolbarItems) {
+                            delete config.svyToolbarItems;
+                        }
+                        if(config.svyPlaceholderConfig) {
+                            delete config.svyPlaceholderConfig;
+                        }
                     }
 
                     if (!config.svyPlaceholderItems) {
