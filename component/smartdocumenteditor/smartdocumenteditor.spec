@@ -665,6 +665,15 @@
         }
     },
     "handlers": {
+        "onActionMethodID" : {
+
+            "parameters":[
+                            {
+                              "name":"event",
+                              "type":"JSEvent"
+                            }
+                         ]
+        }, 
         "onDataChangeMethodID": {
             "returns": "boolean",
             "parameters": [

@@ -531,7 +531,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
              * @returns {Array<String>}
              */
             function getToolbarItems() {
-                if ($scope.model.showToolbar && $scope.model.toolbarItems && $scope.model.toolbarItems.length > 0) {
+                if ($scope.model.toolbarItems && $scope.model.toolbarItems.length > 0) {
                     return $scope.model.toolbarItems.map((item) => {
                         if (item.type === 'separator') {
                             return '|'
@@ -543,7 +543,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             return item.type;
                         }
                     })
-                } else if ($scope.model.showToolbar) {
+                } else  {
                     return [
                         'heading',
                         '|',
@@ -568,8 +568,6 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                         'imageUpload',
                         'insertTable'
                     ]
-                } else {
-                    return null;
                 }
             }
 
@@ -613,12 +611,10 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             if (!$scope.model.config) {
                 var emptyConfig = {}
 
-                if ($scope.model.showToolbar) {
-                    emptyConfig.toolbar = {
-                        items: getToolbarItems()
-                    }
-                    emptyConfig.svyToolbarItems = getSvyToolbarItems();
+                emptyConfig.toolbar = {
+                    items: getToolbarItems()
                 }
+                emptyConfig.svyToolbarItems = getSvyToolbarItems();
 
                 $scope.model.config = emptyConfig;
             }
@@ -630,39 +626,27 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             function createEditor(orgConfig) {
                 var config = orgConfig;
                 if($scope.model.visible == true) {
-                    if($scope.model.showToolbar) {
-                        //make sure toolbar items are taken from the model.toolbarItems array
-                        if (config.toolbar && config.toolbar.items) {
-                            //toolbar property is an object with items array
-                            //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
-                            config.toolbar.items = getToolbarItems();
-                        } else if (config.toolbar) {
-                            //toolbar property is a plain array
-                            //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
-                            config.toolbar = {
-                                items: getToolbarItems()
-                            }
+                    //make sure toolbar items are taken from the model.toolbarItems array
+                    if (config.toolbar && config.toolbar.items) {
+                        //toolbar property is an object with items array
+                        //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
+                        config.toolbar.items = getToolbarItems();
+                    } else if (config.toolbar) {
+                        //toolbar property is a plain array
+                        //that array needs to be recreated from model.toolbarItems to ensure svyToolbarItems are properly created
+                        config.toolbar = {
+                            items: getToolbarItems()
                         }
+                    }
 
-                        if (!config.svyToolbarItems) {
-                            //make sure custom toolbar items are created
-                            config.svyToolbarItems = getSvyToolbarItems();
-                        }
+                    if (!config.svyToolbarItems) {
+                        //make sure custom toolbar items are created
+                        config.svyToolbarItems = getSvyToolbarItems();
+                    }
 
-                        if (!config.svyPlaceholderConfig) {
-                            //get config for a possible servoyPlaceholder toolbar entry
-                            config.svyPlaceholderConfig = getPlaceholderUIConfig();
-                        }
-                    } else {
-                        if(config.toolbar) {
-                            delete config.toolbar;
-                        }
-                        if(config.svyToolbarItems) {
-                            delete config.svyToolbarItems;
-                        }
-                        if(config.svyPlaceholderConfig) {
-                            delete config.svyPlaceholderConfig;
-                        }
+                    if (!config.svyPlaceholderConfig) {
+                        //get config for a possible servoyPlaceholder toolbar entry
+                        config.svyPlaceholderConfig = getPlaceholderUIConfig();
                     }
 
                     if (!config.svyPlaceholderItems) {
@@ -748,17 +732,27 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                                 });
                             }
 
-                            editor.ui.focusTracker.on( 'change:isFocused', ( evt, data, isFocused ) => {
-                                if(isFocused) {
-                                    if ($scope.handlers.onFocusGainedMethodID) {
-                                        $scope.handlers.onFocusGainedMethodID(createJSEvent(event, 'focusGained'));
+                            if($scope.handlers.onFocusGainedMethodID || $scope.handlers.onFocusLostMethodID) {
+                                editor.ui.focusTracker.on( 'change:isFocused', ( evt, data, isFocused ) => {
+                                    if(isFocused) {
+                                        if ($scope.handlers.onFocusGainedMethodID) {
+                                            $scope.handlers.onFocusGainedMethodID(createJSEvent(event, 'focusGained'));
+                                        }
+                                    } else {
+                                        if ($scope.handlers.onFocusLostMethodID) {
+                                            $scope.handlers.onFocusLostMethodID(createJSEvent(event, 'focusLost'));
+                                        }
                                     }
-                                } else {
-                                    if ($scope.handlers.onFocusLostMethodID) {
-                                        $scope.handlers.onFocusLostMethodID(createJSEvent(event, 'focusLost'));
+                                } );
+                            }
+
+                            if($scope.handlers.onActionMethodID) {
+                                editor.listenTo(editor.editing.view.document, 'click', (evt) => {
+                                    if($scope.model.readOnly) {
+                                        $scope.handlers.onActionMethodID(createJSEvent(event, 'onAction'));
                                     }
-                                }
-                            } );
+                                })
+                            }
 
                         }).then(() => {
                             // data can already be here, if so call the modelChange function so
