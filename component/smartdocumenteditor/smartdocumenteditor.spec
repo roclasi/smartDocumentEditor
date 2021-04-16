@@ -782,7 +782,7 @@
         "getHTMLData": {
             "returns": "string",
             "parameters": [{
-                    "name": "withInlinceCSS",
+                    "name": "withInlineCSS",
                     "type": "boolean",
                     "optional": true
                 },
