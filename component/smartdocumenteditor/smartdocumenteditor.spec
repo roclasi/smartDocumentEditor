@@ -779,6 +779,32 @@
             "name": "source",
             "type": "string"
         }]},
+        "getHTMLData": {
+            "returns": "string",
+            "parameters": [{
+                    "name": "withInlinceCSS",
+                    "type": "boolean",
+                    "optional": true
+                },
+                {
+                    "name": "filterStylesheetName",
+                    "type": "string",
+                    "optional": true
+                }
+            ]
+        },
+        "getCSSData": {
+            "returns": "string",
+            "parameters": [{
+                "name": "filterStylesheetName",
+                "type": "string",
+                "optional": true
+            }]
+        },
+        "getPrintCSSData": {
+            "returns": "string",
+            "parameters": []
+        },
         "saveData": {
             "delayUntilFormLoads": true,
             "discardPreviouslyQueuedSimilarCalls": true,

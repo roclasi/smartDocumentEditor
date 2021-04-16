@@ -875,6 +875,25 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 }
             }
 
+            $scope.api.getHTMLData = function(withInlinceCSS, filterStylesheetName) {
+                if ($scope.editor) {
+                    var data = '<html><body><div class="ck-content" dir="ltr">' + $scope.editor.getData() + '</div><body><html>';
+                    if(withInlinceCSS == true) {
+                        data = DecoupledEditor.getInlineStyle(data, DecoupledEditor.getCssStyles(filterStylesheetName));
+                    } 
+                    return data;
+                }
+                return null;
+            }
+
+            $scope.api.getCSSData = function(stylesheetName) {
+                return DecoupledEditor.getCssStyles(stylesheetName);
+            }
+
+            $scope.api.getPrintCSSData = function() {
+                return DecoupledEditor.getPrintCSS();
+            }
+
             /**
              * Test method to replace data in a svy-placeholder element
              * @param {JSRecord} record 
