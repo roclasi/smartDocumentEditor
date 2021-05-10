@@ -11,7 +11,6 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             svyServoyapi: "="
         },
         link: function($scope, $element, $attrs) {
-
             $scope.editor = null;
 
             if ($scope.model.editorStyleSheet) {
@@ -66,7 +65,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     case "showToolbar":
                             if(value == true && $scope.editor) {
                                 $timeout(function() {
-                                    $element.querySelectorAll('.document-editor__toolbar')[0].replaceChildren( $scope.editor.ui.view.toolbar.element );
+                                    $element.querySelectorAll('#toolbar-container')[0].replaceChildren( $scope.editor.ui.view.toolbar.element );
                                     $element.querySelectorAll('.ck-toolbar')[0].classList.add( 'ck-reset_all' );
                                 },0)
                             }
@@ -545,6 +544,10 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     })
                 } else  {
                     return [
+                        "previousPage",
+                        "nextPage",
+                        "pageNavigation",
+                        "|",
                         'heading',
                         '|',
                         'fontfamily',
@@ -686,8 +689,27 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                         config.language = getCurrentLanguage();
                     }
 
-                    if($element.querySelectorAll('.ckeditor').length > 0) {
-                        DecoupledEditor.create($element.querySelectorAll('.ckeditor')[0], config).then(editor => {
+                    if (!config.pagination) {
+                        config.pagination = {
+                            // A4
+                            pageWidth: '21cm',
+                            pageHeight: '29.7cm',
+                            pageMargins: {
+                                top: '20mm',
+                                bottom: '20mm',
+                                right: '12mm',
+                                left: '12mm'
+                            }
+                        }
+                    }
+
+                    if(!config.licenseKey) {
+                        // this key is not part of the open source license, can only be used in combination of the Servoy Smart Document component
+                        config.licenseKey = 'zuSeFZIFwNTHSUFsG+EabUH+hae6/aR+Jxm1SIja0GzpksxT0Tm20SUA';
+                    }
+
+                    if($element.querySelectorAll('#editor').length > 0) {
+                        DecoupledEditor.create($element.querySelectorAll('#editor')[0], config).then(editor => {
                             $scope.editor = editor;
                             
                             const view = editor.editing.view;
@@ -699,7 +721,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 
                             // Set a custom container for the toolbar
                             if ($scope.model.showToolbar) {
-                                $element.querySelectorAll('.document-editor__toolbar')[0].replaceChildren( editor.ui.view.toolbar.element );
+                                $element.querySelectorAll('#toolbar-container')[0].replaceChildren( editor.ui.view.toolbar.element );
                                 $element.querySelectorAll('.ck-toolbar')[0].classList.add( 'ck-reset_all' );
                             } 
 

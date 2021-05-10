@@ -1,85 +1,172 @@
-/**
- * @license Copyright (c) 2014-2020, CKSource - Frederico Knabben. All rights reserved.
- * This file is licensed under the terms of the MIT License (see LICENSE.md).
- */
-
- :root {
-    --ck-z-default: 100;
-    --ck-z-modal: calc( var(--ck-z-default) + 999 );
-	--ck-sample-base-spacing: 2em;
-	--ck-sample-color-white: #fff;
-	--ck-sample-color-green: #279863;
-	--ck-sample-color-blue: #1a9aef;
-	--ck-sample-container-width: 1285px;
-	--ck-sample-sidebar-width: 350px;
-	--ck-sample-editor-min-height: 400px;
+.ck-content * {
+	box-sizing: border-box;
 }
 
-/* --------- EDITOR STYLES  ---------------------------------------------------------------------------------------- */
+.ck-content > :first-child {
+	margin-top: 0 !important;
+}
 
-.editor__editable,
-/* Classic build. */
-main .ck-editor[role='application'] .ck.ck-content,
-/* Decoupled document build. */
-.ck.editor__editable[role='textbox'],
-.ck.ck-editor__editable[role='textbox'],
-/* Inline & Balloon build. */
-.ck.editor[role='textbox'] {
-	width: 100%;
-	background: #fff;
+.ck-content > :last-child {
+	margin-bottom: 0 !important;
+}
+
+.ck-content h2 {
+	font-size: 1.68em;
+	line-height: 1.68em;
+	padding: 0.8em 0 .2em 0;
+	margin: 0 0 0.4em 0;
+	border-bottom: 1px solid hsl( 0, 0%, 90% );
+	font-weight: 400;
+}
+
+.ck-content h3 {
+	font-size: 1.36em;
+	line-height: 1.5em;
+	padding: 0.6em 0 0 0;
+	margin: 0 0 1.5em 0;
+	font-weight: 400
+}
+
+.ck-content h4 {
+	font-size: 1.2em;
+	line-height: 1.4em;
+	padding: 0.6em 0 0 0;
+	margin: 0 0 0.2em 0;
+	font-weight: 400
+}
+
+.ck-content h5 {
 	font-size: 1em;
 	line-height: 1.6em;
-	min-height: var(--ck-sample-editor-min-height);
-	padding: 1.5em 2em;
+	padding: 0.2em 0 0 0;
+	margin: 0 0 0.8em 0;
+	font-weight: 400
 }
 
-.ck.ck-editor__editable {
-	background: #fff;
-	border: 1px solid hsl(0, 0%, 70%);
-	width: 100%;
+.ck-content strong, .ck-content b {
+	font-weight: 600;
 }
 
-.ck.ck-editor {
-	/* To enable toolbar wrapping. */
-	width: 100%;
-	overflow-x: hidden;
+.ck-content a {
+	color: hsl( 231, 89%, 53% );
+	text-decoration: none;
 }
 
-/* Because of sidebar `position: relative`, Edge is overriding the outline of a focused editor. */
-.ck.ck-editor__editable {
-	position: relative;
-	z-index: 10;
+.ck-content p {
+	margin: 0 0 0.8em 0;
+	padding: 0.2em 0 0 0;
+	line-height: 1.6em;
+}
+.ck-content ul,
+.ck-content ol {
+	margin-top: 0;
+	margin-left: 2.666em;
+	margin-bottom: 0.8em;
+	padding: 0.2em 0 0 0;
+	line-height: 1.6em;
 }
 
-/* --------- DECOUPLED (DOCUMENT) BUILD. ---------------------------------------------*/
-div.ckeditor-documentview .document-editor__toolbar {
-	width: 100%;
+.ck-content ul ul,
+.ck-content ul ol,
+.ck-content ol ul,
+.ck-content ol ol {
+	padding-top: 0;
+	margin-bottom: 0;
 }
 
-div.ckeditor-documentview .ckeditor-row .ckeditor {
-	width: 18.5cm;
-	height: 100%;
-	min-height: 26.25cm;
-	padding: 1.75cm 1.5cm;
-	margin: 2.5rem;
-	border: 1px hsl( 0, 0%, 82.7% ) solid;
-	background-color: var(--ck-sample-color-white);
-	box-shadow: 0 0 5px hsla( 0, 0%, 0%, .1 );
+.ck-content ul ul:last-of-type,
+.ck-content ul ol:last-of-type,
+.ck-content ol ul:last-of-type,
+.ck-content ol ol:last-of-type {
+	margin-bottom: .33333em;
 }
 
-div.ckeditor-documentview .ckeditor-row {
+.ck-content blockquote {
+	margin-top: 0;
+	margin-bottom: 0.8em;
+	padding-top: 0;
+	padding-bottom: 0;
+	line-height: 1.6em;
+}
+
+.ck-content blockquote p:first-of-type {
+	margin-bottom: 1.5rem;
+}
+
+.ck-content .table thead {
+	display: table-row-group;
+}
+.ck-content .table tr {
+	break-inside: avoid;
+	break-after: auto;
+}
+
+.ck-content .table p:first-child {
+	padding-top: 0;
+}
+
+.ck-content .table table {
+	margin: 0;
+	display: table;
+}
+
+.ck-content .table td,
+.ck-content .table th {
+	vertical-align: middle;
+}
+
+.ck-content .table p:last-child,
+.ck-content .table ul:last-child,
+.ck-content .table ol:last-child {
+	margin-bottom: 0;
+}
+
+.ck-content sub {
+	vertical-align: sub;
+	font-size: smaller;
+}
+
+.ck-content sup {
+	vertical-align: super;
+	font-size: smaller;
+}
+
+/* Editor styles */
+
+.document-container {
 	display: flex;
-	position: relative;
-	justify-content: center;
-	overflow-y: auto;
-	background-color: #f2f2f2;
-	border: 1px solid hsl(0, 0%, 77%);
+	flex-direction: column;
+	align-items: center;
+	max-height: calc( 100vh - 1px );
+	background: hsl( 0, 0%, 95% );
+    height: 100%;
 }
 
-div.ckeditor-documentview .sidebar {
-	background: transparent;
-	border: 0;
-	box-shadow: none;
+.toolbar-container {
+	width: 100%;
+}
+
+.editor-container {
+	width: 100%;
+    height: 100%;
+	border: 1px solid hsl( 0, 0%, 80% );
+	box-sizing: border-box;
+    padding: calc( 2 * var(--ck-spacing-large) );
+    background: var(--ck-color-base-foreground);
+	overflow: auto;
+}
+
+.ck.ck-editor__editable_inline {
+    /** A4 */
+    width: 18.5cm;
+    height: 100%;
+    min-height: 26.25cm;
+    padding: 1.75cm 1.5cm !important;
+    border: 1px hsl( 0,0%,82.7% ) solid !important;
+    border-radius: var(--ck-border-radius) !important;
+    background-color: #fff;
+    box-shadow: 0 0 5px hsl(0deg 0% 0% / 10%);
+    margin: 0 auto;
 }
 
 /* --------- SERVOY CUSTOM ---------------------------------------------*/
