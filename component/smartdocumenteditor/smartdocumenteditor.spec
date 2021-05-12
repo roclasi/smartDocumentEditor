@@ -557,6 +557,10 @@
             "items": {
                 "type": "toolbarItem[]",
                 "initialValue": [
+                    {"type": "previousPage"},
+                    {"type": "nextPage"},
+                    {"type": "pageNavigation"},
+                    {"type": "|"},
                     {"type": "heading"},
                     {"type": "|"},
                     {"type": "fontfamily"},
@@ -594,6 +598,9 @@
             "type": {
                 "type": "string",
                 "values": [
+                    "previousPage",
+                    "nextPage",
+                    "pageNavigation",
                     "heading",
                     "fontfamily",
                     "fontsize",

@@ -217,7 +217,7 @@
 .ck-content .page-break::after {
     content: '';
     position: absolute;
-    border-bottom: 2px dashed hsl(0, 0%, 77%);
+    /* border-bottom: 2px dashed hsl(0, 0%, 77%); */
     width: 100%;
 }
 /* ckeditor5-page-break/theme/pagebreak.css */
@@ -333,5 +333,22 @@
     /* ckeditor5-page-break/theme/pagebreak.css */
     .ck-content .page-break::after {
         display: none;
+    }
+}
+
+@media print {
+    html, body {
+        width: 210mm;
+        height: 297mm;        
+    }
+    .ck-content {
+        margin: 0;
+        border: initial;
+        border-radius: initial;
+        width: initial;
+        min-height: initial;
+        box-shadow: initial;
+        background: initial;
+        page-break-after: always;
     }
 }
