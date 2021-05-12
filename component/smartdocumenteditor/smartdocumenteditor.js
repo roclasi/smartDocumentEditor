@@ -705,7 +705,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 
                     if(!config.licenseKey) {
                         // this key is not part of the open source license, can only be used in combination of the Servoy Smart Document component
-                        config.licenseKey = 'zuSeFZIFwNTHSUFsG+EabUH+hae6/aR+Jxm1SIja0GzpksxT0Tm20SUA';
+                        config.licenseKey = 'jIeCooHjrvzWP3N27U66AHcpmT4bYoBPXCFjmk9gaLHxyCGmQyvkzh6kv+UJvg==';
                     }
 
                     if($element.querySelectorAll('#editor').length > 0) {
