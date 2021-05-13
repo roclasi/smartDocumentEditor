@@ -70,6 +70,9 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                                 },0)
                             }
                         break;
+					case "responsiveHeight":
+						setHeight();
+						break;
                     }
                 }
             });
@@ -78,6 +81,28 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 destroyListenerUnreg();
                 delete $scope.model[$sabloConstants.modelChangeNotifier];
             });
+            
+            /*********************************************
+             * Set the editor height
+             *********************************************/
+            
+			function isResponsive() {
+				return !$scope.$parent.absoluteLayout;
+			}
+
+			function setHeight() {
+				if (isResponsive()) {
+		            /** The html Div container of the smartdocument editor */
+		            var editorDiv = $element.children()[0];
+		            
+					if ($scope.model.responsiveHeight) {
+						editorDiv.style.height = $scope.model.responsiveHeight + 'px';
+					} else {
+						// when responsive height is 0 or undefined, use 100% of the parent container.
+						editorDiv.style.height = '100%';
+					}
+				} 
+			}
 
             /*********************************************
              * General Functions / Classes for CKEditor
