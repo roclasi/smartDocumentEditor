@@ -384,7 +384,7 @@
             "mimetype": "text/javascript"
         },
         {
-            "name": "documenteditor.css",
+            "name": "smartdocumenteditor.css",
             "version": "1.0.0",
             "url": "smartdocumenteditor/smartdocumenteditor/smartdocumenteditor.css",
             "mimetype": "text/css"
