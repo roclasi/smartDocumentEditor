@@ -533,8 +533,7 @@
             "tags": {"scope": "design"}
         },
         "mentionFeeds": {
-            "type": "mentionFeed[]",
-            "tags": {"scope": "design"}
+            "type": "mentionFeed[]"
         },
         "editorStyleSheet": {
             "type": "media",
