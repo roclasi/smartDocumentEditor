@@ -24,6 +24,11 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 head.appendChild(cssHref);
             }
             
+            var VIEW_TYPE = {
+            	NONE: 'NONE',
+				DOCUMENT: 'DOCUMENT'
+            }
+            
             /*********************************************
              * Sablo Contant listner for properties
              *********************************************/
@@ -718,18 +723,26 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                         config.language = getCurrentLanguage();
                     }
 
+                    // note The pagination feature is by default enabled only in browsers that are using the Blink engine (Chrome, Chromium, newer Edge, newer Opera). 
+                    // This behavior can be modified by setting this configuration option to true.
+                    // config.pagination.enableOnUnsupportedBrowsers
                     if (!config.pagination) {
-                        config.pagination = {
-                            // A4
-                            pageWidth: '21cm',
-                            pageHeight: '29.7cm',
-                            pageMargins: {
-                                top: '20mm',
-                                bottom: '20mm',
-                                right: '12mm',
-                                left: '12mm'
-                            }
-                        }
+                    	if ($scope.model.viewType == VIEW_TYPE.DOCUMENT) {
+                    		// TODO does require the pagination plugin ?
+                    	
+	                    	// NOTE: when height is auto, in responsive form cannot use pagination.
+	                        config.pagination = {
+	                            // A4
+	                            pageWidth: '21cm',
+	                            pageHeight: '29.7cm',
+	                            pageMargins: {
+	                                top: '20mm',
+	                                bottom: '20mm',
+	                                right: '12mm',
+	                                left: '12mm'
+	                            }
+	                        }
+                    	}
                     }
 
                     if(!config.licenseKey) {
@@ -769,6 +782,11 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
                                 return new ServoyUploadAdapter(loader);
                             };
+                            
+                            // Disable the plugin so that no pagination is use are visible.
+                            if ($scope.model.viewType != VIEW_TYPE.DOCUMENT) {
+                            	editor.plugins.get( 'Pagination' ).isEnabled = false;
+                            }
 
                             if ($scope.model.overWriteTabForEditor == true) {
                                 viewDocument.on('keydown', (evt, data) => {

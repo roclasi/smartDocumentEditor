@@ -462,7 +462,7 @@
                 "NONE",
                 "DOCUMENT"
             ],
-            "default": "NONE",
+            "default": "DOCUMENT",
             "tags": {"scope": "design"}
         },
         "language": {
