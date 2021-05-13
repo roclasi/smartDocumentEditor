@@ -454,6 +454,7 @@
             ],
             "tags": {"scope": "runtime"}
         },
+		"responsiveHeight": { "type": "int", "default": 500, "tags": {"doc": "Editor's height to be set in a responsive form. When responsiveHeight is set to 0, the editor will use 100% height of the parent container"} },
         "visible": "visible",
         "viewType": {
             "type": "string",
