@@ -946,7 +946,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 
             $scope.api.getHTMLData = function(withInlineCSS, filterStylesheetName) {
                 if ($scope.editor) {
-                    var data = '<html><body><div class="ck-content" dir="ltr">' + $scope.editor.getData() + '</div><body><html>';
+                    var data = '<html><body><div class="ck-content" dir="ltr">' + $scope.editor.getData() + '</div></body></html>';
                     if(withInlineCSS == true) {
                         data = DecoupledEditor.getInlineStyle(data, DecoupledEditor.getCssStyles(filterStylesheetName));
                     } 
