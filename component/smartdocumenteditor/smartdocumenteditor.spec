@@ -410,6 +410,10 @@
                 "doc": "Configure toolbar items"
             },
             "initialValue": [
+                {"type": "previousPage"},
+                {"type": "nextPage"},
+                {"type": "pageNavigation"},
+                {"type": "separator"},
                 {"type": "heading"},
                 {"type": "separator"},
                 {"type": "fontfamily"},
