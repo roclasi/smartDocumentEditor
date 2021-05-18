@@ -384,7 +384,7 @@
             "mimetype": "text/javascript"
         },
         {
-            "name": "documenteditor.css",
+            "name": "smartdocumenteditor.css",
             "version": "1.0.0",
             "url": "smartdocumenteditor/smartdocumenteditor/smartdocumenteditor.css",
             "mimetype": "text/css"
@@ -410,25 +410,29 @@
                 "doc": "Configure toolbar items"
             },
             "initialValue": [
+                {"type": "previousPage"},
+                {"type": "nextPage"},
+                {"type": "pageNavigation"},
+                {"type": "separator"},
                 {"type": "heading"},
-                {"type": "|"},
+                {"type": "separator"},
                 {"type": "fontfamily"},
                 {"type": "fontsize"},
                 {"type": "fontColor"},
-                {"type": "|"},
+                {"type": "separator"},
                 {"type": "bold"},
                 {"type": "italic"},
                 {"type": "underline"},
                 {"type": "strikethrough"},
-                {"type": "|"},
+                {"type": "separator"},
                 {"type": "alignment"},
-                {"type": "|"},
+                {"type": "separator"},
                 {"type": "numberedList"},
                 {"type": "bulletedList"},
-                {"type": "|"},
+                {"type": "separator"},
                 {"type": "indent"},
                 {"type": "outdent"},
-                {"type": "|"},
+                {"type": "separator"},
                 {"type": "link"},
                 {"type": "imageUpload"},
                 {"type": "insertTable"}
@@ -454,6 +458,7 @@
             ],
             "tags": {"scope": "runtime"}
         },
+		"responsiveHeight": { "type": "int", "default": 500, "tags": {"doc": "Editor's height to be set in a responsive form. When responsiveHeight is set to 0, the editor will use 100% height of the parent container"} },
         "visible": "visible",
         "viewType": {
             "type": "string",
@@ -461,7 +466,7 @@
                 "NONE",
                 "DOCUMENT"
             ],
-            "default": "NONE",
+            "default": "DOCUMENT",
             "tags": {"scope": "design"}
         },
         "language": {
@@ -532,8 +537,7 @@
             "tags": {"scope": "design"}
         },
         "mentionFeeds": {
-            "type": "mentionFeed[]",
-            "tags": {"scope": "design"}
+            "type": "mentionFeed[]"
         },
         "editorStyleSheet": {
             "type": "media",
@@ -560,26 +564,26 @@
                     {"type": "previousPage"},
                     {"type": "nextPage"},
                     {"type": "pageNavigation"},
-                    {"type": "|"},
+                    {"type": "separator"},
                     {"type": "heading"},
-                    {"type": "|"},
+                    {"type": "separator"},
                     {"type": "fontfamily"},
                     {"type": "fontsize"},
                     {"type": "fontColor"},
-                    {"type": "|"},
+                    {"type": "separator"},
                     {"type": "bold"},
                     {"type": "italic"},
                     {"type": "underline"},
                     {"type": "strikethrough"},
-                    {"type": "|"},
+                    {"type": "separator"},
                     {"type": "alignment"},
-                    {"type": "|"},
+                    {"type": "separator"},
                     {"type": "numberedList"},
                     {"type": "bulletedList"},
-                    {"type": "|"},
+                    {"type": "separator"},
                     {"type": "indent"},
                     {"type": "outdent"},
-                    {"type": "|"},
+                    {"type": "separator"},
                     {"type": "link"},
                     {"type": "imageUpload"},
                     {"type": "insertTable"}

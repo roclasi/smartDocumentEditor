@@ -117,7 +117,7 @@ DecoupledEditor.builtinPlugins = [
 ];
 
 DecoupledEditor.getInlineStyle = function(data, style) {
-    return juice.inlineContent(data, style||this.getCssStyles() );
+    return juice.inlineContent(data, style||this.getCssStyles(), {preserveMediaQueries: false, preserveImportant: true, preserveFontFaces: false});
 }
 
 DecoupledEditor.getCssStyles = function(stylesheetName) {
