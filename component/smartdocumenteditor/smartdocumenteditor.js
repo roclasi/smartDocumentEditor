@@ -448,7 +448,14 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                                             resolve(list);
                                         });
                                     } else if (feed.feedItems) {
-                                        return feed.feedItems.map((entry) => {
+                                    	
+                                    	// Filter the feedItems matching the searchString
+                                    	var matchedItems = feed.feedItems.filter((entry) => {
+                                            const searchString = queryText.toLowerCase();
+                                            return entry.displayValue.toString().toLowerCase().includes(searchString);
+                                        });
+                                    	
+                                        return matchedItems.map((entry) => {
                                             return {
                                                 name: entry.displayValue.toString(),
                                                 id: feed.marker.toString() + entry.displayValue.toString(),
