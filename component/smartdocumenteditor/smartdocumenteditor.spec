@@ -537,7 +537,8 @@
             "tags": {"scope": "design"}
         },
         "mentionFeeds": {
-            "type": "mentionFeed[]"
+            "type": "mentionFeed[]",
+            "tags": {"scope": "design"}
         },
         "editorStyleSheet": {
             "type": "media",
@@ -840,6 +841,12 @@
             {
                 "name": "tag",
                 "type": "string"
+            }]
+        },
+        "setMentionFeeds": {
+            "parameters": [{
+                "name": "mentionFeeds",
+                "type": "mentionFeed[]"
             }]
         }
     }

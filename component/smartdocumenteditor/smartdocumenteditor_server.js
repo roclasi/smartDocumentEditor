@@ -82,3 +82,11 @@ $scope.api.createPlaceholderItem = function(dataProvider, displayName, format) {
         format: format || ''
     };
 }
+
+/**
+ * @param {Array<CustomType<smartdocumenteditor-smartdocumenteditor.mentionFeed>>} mentionFeeds
+ * @public 
+ */
+$scope.api.setMentionFeeds = function(mentionFeeds) {
+    $scope.model.mentionFeeds = mentionFeeds
+}

@@ -643,6 +643,30 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     } else {
                         $timeout(function() {
                             createEditor(newVal);
+                            console.log("CONFIG CREATE")
+
+                        }, 0)
+                    }
+                }
+            })
+			
+			// FIXME there can be an issue if visibility is toggled and mentionFeed are set at the same time. Have the possibility to cancel (or wait) for the timeout to be completed
+			$scope.$watch('model.mentionFeeds', (newVal, oldVal) => {
+                if (newVal && newVal != oldVal) {
+                    //(re)create editor
+                    if ($scope.editor) {
+                        $scope.editor.destroy().then(() => {
+                            $scope.editor = null;
+                            $timeout(function() {
+                                createEditor($scope.model.config);
+                                console.log("MENTION CREATE DESTROY")
+
+                            } , 0)
+                        });
+                    } else {
+                        $timeout(function() {
+                            createEditor($scope.model.config);
+                            console.log("MENTION CREATE")
                         }, 0)
                     }
                 }
