@@ -548,11 +548,14 @@
             "type": "foundset",
             "tags": {"scope": "private"}
         },
-        "placeholders": {"type": "placeholderItem[]"},
+        "placeholders": {
+        	"type": "placeholderItem[]",
+        	"tags": {"scope": "private"}
+        },
         "placeholderMarker": {
             "type": "string",
             "tags": {
-                "scope": "design",
+                "scope": "private",
                 "doc": "Character to trigger a type ahead for placeholders"
             }
         }
