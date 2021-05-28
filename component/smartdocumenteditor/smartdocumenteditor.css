@@ -189,11 +189,38 @@
     margin-top: 3px !important;
 }
 
+/* 
+ * FIXME style of icon styleClass is overriden by the ck-reset class; causing issues in showing font icons. This is an known issue of CKEditor
+ * https://stackoverflow.com/questions/65605215/prevent-from-being-added-ck-reset-classes-in-ckeditor-5 
+ */
 .ckeditor-iconbutton.fa,
-.ckeditor-iconbutton.fas {
+.ckeditor-iconbutton.fas,
+.ckeditor-iconbutton.far,
+.ckeditor-iconbutton.fab,
+.ckeditor-iconbutton.fad,
+.ckeditor-iconbutton.fal {
 	font-family: 'Font Awesome 5 Free' !important;
 }
 
 .ckeditor-iconbutton.fas {
 	font-weight: 900 !important;
+}
+
+.ckeditor-iconbutton.far {
+	font-weight: 400 !important;
+}
+
+.ckeditor-iconbutton.fab {
+	font-family: 'Font Awesome 5 Brands' !important;
+	font-weight: 400 !important;
+}
+
+.ckeditor-iconbutton.fad {
+	font-family: 'Font Awesome 5 Duotone' !important;
+	font-weight: 900 !important;
+}
+
+.ckeditor-iconbutton.fal {
+	font-family: 'Font Awesome 5 Pro' !important;
+	font-weight: 300 !important;
 }

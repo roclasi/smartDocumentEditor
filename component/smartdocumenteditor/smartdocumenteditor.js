@@ -544,7 +544,9 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
               * Returns all custom servoy toolbar items
               */
             function getSvyToolbarItems() {
-                if ($scope.model.toolbarItems && $scope.model.toolbarItems.length > 0) {
+                // FIXME style of icon styleClass is overriden by the ck-reset class; causing issues in showing font icons. This is an known issue of CKEditor
+                // https://stackoverflow.com/questions/65605215/prevent-from-being-added-ck-reset-classes-in-ckeditor-5
+            	if ($scope.model.toolbarItems && $scope.model.toolbarItems.length > 0) {
                     return $scope.model.toolbarItems.filter((item) => {
                         return item.type === 'servoyToolbarItem';
                     }).map((item) => {
