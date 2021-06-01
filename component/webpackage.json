@@ -7,7 +7,7 @@
     "wikiUrl": "https://github.com/Servoy/smartDocumentEditor/wiki",
     "sourceUrl" : "https://github.com/Servoy/smartDocumentEditor",
     "releases" : [
-                  {"version":"1.0.0","url":"https://github.com/Servoy/smartDocumentEditor/releases/download/untagged-eb8868f0d8546ed834d9/SmartDocEditor.zip", "servoy-version":"2020.06.0"}
+                  {"version":"1.0.0","url":"https://github.com/Servoy/smartDocumentEditor/releases/download/v1.0.0/SmartDocEditor.zip", "servoy-version":"2020.06.0"}
                  ]
     
 }
