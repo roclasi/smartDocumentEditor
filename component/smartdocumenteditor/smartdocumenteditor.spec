@@ -463,7 +463,7 @@
         "viewType": {
             "type": "string",
             "values": [
-                "NONE",
+                "WEB",
                 "DOCUMENT"
             ],
             "default": "DOCUMENT",

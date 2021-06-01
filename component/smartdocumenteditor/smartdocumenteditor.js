@@ -25,7 +25,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             }
             
             var VIEW_TYPE = {
-            	NONE: 'NONE',
+            	WEB: 'WEB',
 				DOCUMENT: 'DOCUMENT'
             }
             
