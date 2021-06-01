@@ -1,0 +1,13 @@
+{
+    "name":"smartDocumentEditor",
+    "displayName":"Smart Document Editor",
+    "packageType": "Web-Component",
+    "icon": "https://commons.wikimedia.org/wiki/Category:Document_icons#/media/File:.rtf_OneDrive_icon.svg",
+    "description": "Document editing. Templates. Powerful formatting and merge.",
+    "wikiUrl": "https://github.com/Servoy/smartDocumentEditor/wiki",
+    "sourceUrl" : "https://github.com/Servoy/smartDocumentEditor",
+    "releases" : [
+                  {"version":"1.0.0","url":"https://github.com/Servoy/smartDocumentEditor/releases/download/untagged-eb8868f0d8546ed834d9/SmartDocEditor.zip", "servoy-version":"2020.06.0"}
+                 ]
+    
+}
