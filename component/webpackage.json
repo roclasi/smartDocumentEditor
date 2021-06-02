@@ -2,7 +2,7 @@
     "name":"smartDocumentEditor",
     "displayName":"Smart Document Editor",
     "packageType": "Web-Component",
-    "icon": "https://commons.wikimedia.org/wiki/Category:Document_icons#/media/File:.rtf_OneDrive_icon.svg",
+    "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/.rtf_OneDrive_icon.svg/120px-.rtf_OneDrive_icon.svg.png",
     "description": "Document editing. Templates. Powerful formatting and merge.",
     "wikiUrl": "https://github.com/Servoy/smartDocumentEditor/wiki",
     "sourceUrl" : "https://github.com/Servoy/smartDocumentEditor",
