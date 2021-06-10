@@ -980,16 +980,24 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             $scope.api.getHTMLData = function(withInlineCSS, filterStylesheetName) {
                 if ($scope.editor) {
                     var data = '<html><body><div class="ck-content" dir="ltr">' + $scope.editor.getData() + '</div></body></html>';
-                    if(withInlineCSS == true) {
-                        data = DecoupledEditor.getInlineStyle(data, DecoupledEditor.getCssStyles(filterStylesheetName));
+                    if(withInlineCSS) {
+                        if(filterStylesheetName) {
+                            data = DecoupledEditor.getInlineStyle(data, DecoupledEditor.getCssStyles([filterStylesheetName, $scope.model.editorStyleSheet]));
+                        } else {
+                            data = DecoupledEditor.getInlineStyle(data, DecoupledEditor.getCssStyles());
+                        }
                     } 
                     return data;
                 }
                 return null;
             }
 
-            $scope.api.getCSSData = function(stylesheetName) {
-                return DecoupledEditor.getCssStyles(stylesheetName);
+            $scope.api.getCSSData = function(filterStylesheetName) {
+                if(filterStylesheetName) {
+                    return DecoupledEditor.getCssStyles([filterStylesheetName, $scope.model.editorStyleSheet]);
+                } else {
+                    return DecoupledEditor.getCssStyles();
+                }
             }
 
             $scope.api.getPrintCSSData = function() {

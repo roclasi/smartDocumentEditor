@@ -120,19 +120,23 @@ DecoupledEditor.getInlineStyle = function(data, style) {
     return juice.inlineContent(data, style||this.getCssStyles(), {preserveMediaQueries: false, preserveImportant: true, preserveFontFaces: false});
 }
 
-DecoupledEditor.getCssStyles = function(stylesheetName) {
+DecoupledEditor.getCssStyles = function(filterStylesheetNames) {
     var css = [];
-    for (var i=0; i<document.styleSheets.length; i++)
+    var filterByNames = [];
+    if(filterStylesheetNames) {
+        for(const name of filterStylesheetNames) {
+            filterByNames.push(name + '.css');
+        }
+        filterByNames.push('smartdocumenteditor.css');
+    }
+    for (const sheet of document.styleSheets)
     {
-        var sheet = document.styleSheets[i];
-         if(!stylesheetName || (sheet.href && (sheet.href.match('/' + stylesheetName + '.css') || sheet.href.endsWith('smartdocumenteditor.css')))) {
+         if(!filterByNames.length || (sheet.href && filterByNames.includes(sheet.href.split('/').pop())) ) {
             var rules = ('cssRules' in sheet)? sheet.cssRules : sheet.rules;
-            if (rules)
-            {
+            if (rules) {
                 css.push('\n/* Stylesheet : '+(sheet.href||'[inline styles]')+' */');
-                for (var j=0; j<rules.length; j++)
+                for (const rule of rules)
                 {
-                    var rule = rules[j];
                     if ('cssText' in rule)
                         css.push(rule.cssText);
                     else
