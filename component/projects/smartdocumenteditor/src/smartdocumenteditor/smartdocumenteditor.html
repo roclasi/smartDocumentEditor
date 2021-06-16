@@ -1,0 +1,6 @@
+<div [id]="servoyApi.getMarkupId()" class="document-container" #element>
+    <div id="toolbar-container"class="toolbar-container"></div>
+    <div class="editor-container">
+       <ckeditor #editor [config]="config" [editor]="Editor" [data]="dataProviderID" (ready)="onEditorReady($event)"></ckeditor>
+    </div>
+</div>
