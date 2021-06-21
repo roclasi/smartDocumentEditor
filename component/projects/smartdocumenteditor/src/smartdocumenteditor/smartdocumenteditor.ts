@@ -588,15 +588,15 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     addTagAtCursor(marker: string, tag: string): boolean {
         if (tag) {
-            if (this.readOnly == true || !this.editorComponent) {
+            if (this.readOnly || !this.editorComponent) {
                 return false;
             }
 
             for (let i = 0; i < this.mentionFeeds.length; i++) {
                 if (this.mentionFeeds[i].marker === marker.toString()) {
                     const feed = this.mentionFeeds[i];
-                    const list = feed.valueList.filter((item) => {
-                        return (item.realValue || item.displayValue).toString() == tag.toString();
+                    const list = (feed.valueList||feed.feedItems).filter((item) => {
+                        return (item.realValue||item.displayValue).toString() == tag.toString();
                     })
                     if (list.length > 0) {
                         this.editorComponent.editorInstance.execute('mention', {
@@ -604,7 +604,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                                 name: list[0].displayValue.toString(),
                                 id: feed.marker.toString() + list[0].displayValue.toString(),
                                 realValue: list[0].realValue,
-                                editable: feed.itemEditable
+                                editable: !!feed.itemEditable
                             }
                         });
                         return true;

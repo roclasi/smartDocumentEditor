@@ -926,27 +926,27 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
              */
             $scope.api.addTagAtCursor = function(marker, tag) {
                 if(tag) {
-                    if($scope.model.readOnly == true || !$scope.editor) {
+                    if($scope.model.readOnly || !$scope.editor) {
                         return false;
                     }
 
                     for (let i = 0; i < $scope.model.mentionFeeds.length; i++) {
                         if($scope.model.mentionFeeds[i].marker === marker.toString()) {
                             const feed = $scope.model.mentionFeeds[i];
-                            const list = feed.valueList.filter((item) => {
+                            const list = (feed.valueList||feed.feedItems).filter((item) => {
                                                 return (item.realValue||item.displayValue).toString() == tag.toString();
                                             })
+                         
                             if(list.length > 0) {
                                 $scope.editor.execute('mention', { marker: marker.toString(), mention:  {
                                         name: list[0].displayValue.toString(),
                                         id: feed.marker.toString() + list[0].displayValue.toString(),
                                         realValue: list[0].realValue,
-                                        editable: feed.itemEditable
+                                        editable: !!feed.itemEditable
                                     }
                                 });
                                 return true;
                             }
-
                         }
                     }
                 }
