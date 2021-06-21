@@ -194,9 +194,11 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     case 'dataProviderID':
                         if (!change.isFirstChange())
                         {
-                            this.editorComponent.editorInstance.setData( this.dataProviderID || '');
+                            if(this.editorComponent && this.editorComponent.editorInstance.editing.view.document.isFocused) {
+                                this.editorComponent.editorInstance.setData( this.dataProviderID || '');
+                            }
                         }    
-
+                        break;
                 }
             }
         }
@@ -562,7 +564,8 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
 
     forceSaveData(data: string) {
-        if (this.readOnly !== true) {
+        if (!this.readOnly && this.editorComponent) {
+            console.debug( 'Editor save Trigger (ID: ' + this.editorComponent.editorInstance.id + ') , saving data');
             this.dataProviderID = data;
             this.dataProviderIDChange.emit(this.dataProviderID);
         }

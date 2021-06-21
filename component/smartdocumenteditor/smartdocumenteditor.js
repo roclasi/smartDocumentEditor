@@ -50,7 +50,9 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                         }
                         break;
                     case "readOnly":
-                        $scope.editor.isReadOnly = value;
+                        if($scope.editor) {
+                            $scope.editor.isReadOnly = !!value;
+                        }
                         break;
                     case "visible":
                         if(value == false) {
@@ -70,8 +72,10 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     case "showToolbar":
                             if(value == true && $scope.editor) {
                                 $timeout(function() {
-                                    $element.querySelectorAll('#toolbar-container')[0].replaceChildren( $scope.editor.ui.view.toolbar.element );
-                                    $element.querySelectorAll('.ck-toolbar')[0].classList.add( 'ck-reset_all' );
+                                    if($scope.editor) {
+                                        $element.querySelectorAll('#toolbar-container')[0].replaceChildren( $scope.editor.ui.view.toolbar.element );
+                                        $element.querySelectorAll('.ck-toolbar')[0].classList.add( 'ck-reset_all' );
+                                    }
                                 },0)
                             }
                         break;
@@ -122,8 +126,8 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
               * @param {String} data 
               */
             function forceSaveData( data ) {
-                if($scope.model.readOnly !== true) {
-                    console.debug( 'CKEditor save Trigger, saving data');
+                if(!$scope.model.readOnly && $scope.editor) {
+                    console.debug( 'Editor save Trigger (ID: ' + $scope.editor.id + ') , saving data');
                     $scope.model.dataProviderID = data;
                     $scope.svyServoyapi.apply('dataProviderID');
                 }
@@ -801,14 +805,18 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             } 
 
                             const setData = () => {
-                                const data = editor.getData();
-                                const value = $scope.model.dataProviderID || ''
-                                if (data !== value) {
-                                    editor.setData(value);
+                                if($scope.editor) {
+                                    console.debug('Update Editor Context (ID: ' + $scope.editor.id + ', hasFocus: ' + $scope.editor.editing.view.document.isFocused + ') : The data has changed from external!');
+                                    if(!$scope.editor.editing.view.document.isFocused) {
+                                        const data = $scope.editor.getData();
+                                        const value = $scope.model.dataProviderID || ''
+                                        if (data !== value) {
+                                            $scope.editor.setData(value);
+                                        }
+                                    }
                                 }
                             }
                             $scope.$watch('model.dataProviderID', (newVal, oldVal) => {
-                                console.log('Update CKEditor Context: The data has changed from external!');
                                 setData();
                             })
 
