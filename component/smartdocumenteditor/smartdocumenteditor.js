@@ -126,10 +126,12 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
               * @param {String} data 
               */
             function forceSaveData( data ) {
-                if(!$scope.model.readOnly && $scope.editor) {
-                    console.debug( 'Editor save Trigger (ID: ' + $scope.editor.id + ') , saving data');
-                    $scope.model.dataProviderID = data;
-                    $scope.svyServoyapi.apply('dataProviderID');
+                if($scope.editor) {
+                    console.debug( 'Editor push Trigger (ID: ' + $scope.editor.id + ', readOnly: ' + $scope.model.readOnly + ', formname: ' +  $scope.$parent['formname'] + ') , pushing data');
+                    if(!$scope.model.readOnly && $scope.editor) {
+                        $scope.model.dataProviderID = data;
+                        $scope.svyServoyapi.apply('dataProviderID');
+                    }
                 }
             }
 
@@ -790,6 +792,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     if($element.querySelectorAll('#editor').length > 0) {
                         DecoupledEditor.create($element.querySelectorAll('#editor')[0], config).then(editor => {
                             $scope.editor = editor;
+                            console.debug('Creating editor: (id: ' + editor.id + ', formname: ' +  $scope.$parent['formname'] + ', autosave: ' + !!config.autosave + ')')
                             
                             const view = editor.editing.view;
                             const viewDocument = view.document;
@@ -805,14 +808,12 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             } 
 
                             const setData = () => {
-                                if($scope.editor) {
-                                    console.debug('Update Editor Context (ID: ' + $scope.editor.id + ', hasFocus: ' + $scope.editor.editing.view.document.isFocused + ') : The data has changed from external!');
-                                    if(!$scope.editor.editing.view.document.isFocused) {
-                                        const data = $scope.editor.getData();
-                                        const value = $scope.model.dataProviderID || ''
-                                        if (data !== value) {
-                                            $scope.editor.setData(value);
-                                        }
+                                console.debug('Update Editor Context (ID: ' + editor.id + ', hasFocus: ' + editor.editing.view.document.isFocused + ', formname: ' +  $scope.$parent['formname'] + ') : The data has changed from external!');
+                                if(!$scope.editor.editing.view.document.isFocused) {
+                                    const data = editor.getData();
+                                    const value = $scope.model.dataProviderID || ''
+                                    if (data !== value) {
+                                        editor.setData(value);
                                     }
                                 }
                             }
@@ -852,6 +853,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                                         if ($scope.handlers.onFocusLostMethodID) {
                                             $scope.handlers.onFocusLostMethodID(createJSEvent(event, 'focusLost'));
                                         }
+                                        forceSaveData(editor.getData())
                                     }
                                 } );
                             }

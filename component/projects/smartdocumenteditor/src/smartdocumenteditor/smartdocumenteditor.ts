@@ -253,6 +253,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     if (this.onFocusLostMethodID) {
                         this.onFocusLostMethodID(this.servoyService.createJSEvent(event, 'focusLost'));
                     }
+                    this.forceSaveData(this.editorComponent.editorInstance.getData());
                 }
             });
         }
@@ -565,7 +566,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     forceSaveData(data: string) {
         if (!this.readOnly && this.editorComponent) {
-            console.debug( 'Editor save Trigger (ID: ' + this.editorComponent.editorInstance.id + ') , saving data');
+            console.debug( 'Editor push Trigger (ID: ' + this.editorComponent.editorInstance.id + ', readOnly: ' + this.readOnly + ') , pushing data');
             this.dataProviderID = data;
             this.dataProviderIDChange.emit(this.dataProviderID);
         }
