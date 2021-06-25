@@ -561,7 +561,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             label: item.label,
                             withText: item.withText || false,
                             isEnabled: item.isEnabled || false,
-                            tooltip: item.tooltip || null,
+                            withTooltip: item.tooltip || null,
                             iconStyleClass: item.iconStyleClass || null,
                             ignoreReadOnly: item.ignoreReadOnly || false,
                             valueList: item.valueList,
