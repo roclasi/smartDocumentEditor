@@ -53,16 +53,6 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     svyOnInit() {
         super.svyOnInit();
-        if (this.editorStyleSheet) {
-            let url = this.editorStyleSheet;
-            url = url.split('?')[0];
-            let head = this.document.getElementsByTagName('head')[0];
-            let cssHref = this.document.createElement('link');
-            cssHref.setAttribute("rel", "stylesheet");
-            cssHref.setAttribute("type", "text/css");
-            cssHref.setAttribute("href", url);
-            head.appendChild(cssHref);
-        }
         if (!this.config) {
             this.config = {};
         }
@@ -117,8 +107,12 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         if (!this.config.language) {
             this.config.language = this.getCurrentLanguage();
         }
-    
-        import(`../assets/lib/translations/${this.config.language}.js`)
+        if(this.config.language == 'en') {
+            import(`../assets/lib/translations/${this.config.language}-gb.js`)
+        } else {
+            import(`../assets/lib/translations/${this.config.language}.js`)
+        }
+        
          
         // note The pagination feature is by default enabled only in browsers that are using the Blink engine (Chrome, Chromium, newer Edge, newer Opera). 
         // This behavior can be modified by setting this configuration option to true.
@@ -199,6 +193,27 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                             }
                         }    
                         break;
+                    case 'editorStyleSheet':
+                        this.document.head.removeAttribute("[customSmartDocumentEditor]")
+                        
+                        if(this.editorStyleSheet) {
+                            let url = this.editorStyleSheet.split('?')[0];;
+                            var additions = this.editorStyleSheet.split('?')[1].split('&').filter((item) => {
+                                return item.startsWith('clientnr');
+                            });
+                            if(additions.length) {
+                                url += '?' + additions.join('&');
+                            }
+                            
+                            let head = this.document.getElementsByTagName('head')[0];
+                            let cssHref = this.document.createElement('link');
+                            cssHref.setAttribute("rel", "stylesheet");
+                            cssHref.setAttribute("type", "text/css");
+                            cssHref.setAttribute("href", url);
+                            cssHref.setAttribute("customSmartDocumentEditor", "");
+                            head.appendChild(cssHref);
+                        }
+                    break;
                 }
             }
         }
@@ -563,6 +578,16 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         return 'en';
     }
 
+    getEditorCSSStylesheetName() {
+        if(this.editorStyleSheet) {
+            var name = this.editorStyleSheet.split('?')[0];
+            name = name.split('/').pop();
+            return name;
+        } else {
+            return null;
+        }
+    }
+
 
     forceSaveData(data: string) {
         if (!this.readOnly && this.editorComponent) {
@@ -638,7 +663,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
             var data = '<html><body><div class="ck-content" dir="ltr">' + this.editorComponent.editorInstance.getData() + '</div></body></html>';
             if (withInlineCSS) {
                 if (filterStylesheetName) {
-                    data = this.Editor.getInlineStyle(data, this.Editor.getCssStyles([filterStylesheetName, this.editorStyleSheet]));
+                    data = this.Editor.getInlineStyle(data, this.Editor.getCssStyles([filterStylesheetName, this.getEditorCSSStylesheetName()]));
                 } else {
                     data = this.Editor.getInlineStyle(data, this.Editor.getCssStyles());
                 }
@@ -650,7 +675,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     getCSSData(filterStylesheetName: boolean) {
         if (filterStylesheetName) {
-            return this.Editor.getCssStyles([filterStylesheetName, this.editorStyleSheet]);
+            return this.Editor.getCssStyles([filterStylesheetName, this.getEditorCSSStylesheetName()]);
         } else {
             return this.Editor.getCssStyles();
         }

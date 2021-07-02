@@ -12,18 +12,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
         },
         link: function($scope, $element, $attrs) {
             $scope.editor = null;
-
-            if ($scope.model.editorStyleSheet) {
-                var url = $scope.model.editorStyleSheet;
-                url = url.split('?')[0];
-                var head = document.getElementsByTagName('head')[0];
-                var cssHref = document.createElement('link');
-                cssHref.setAttribute("rel", "stylesheet");
-                cssHref.setAttribute("type", "text/css");
-                cssHref.setAttribute("href", url);
-                head.appendChild(cssHref);
-            }
-            
+           
             var VIEW_TYPE = {
             	WEB: 'WEB',
 				DOCUMENT: 'DOCUMENT'
@@ -82,7 +71,34 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 					case "responsiveHeight":
 						setHeight();
 						break;
+
+                    case "editorStyleSheet":
+                        
+                        //Remove old one if its there
+                        angular.element("head > [customSmartDocumentEditor]").remove();
+                        //Add new client stylesheet
+                        if(value) {
+                            var url = value.split('?')[0];
+                            var additions = value.split('?')[1].split('&').filter((item) => {
+                                return item.startsWith('clientnr');
+                            });
+                            if(additions.length) {
+                                url += '?' + additions.join('&');
+                            }
+
+                            console.debug('Setting new customSmartDocumentEditor url: ' + url);
+
+                            var head = angular.element("head");
+                            var cssHref = $window.document.createElement('link');
+                            cssHref.setAttribute("rel", "stylesheet");
+                            cssHref.setAttribute("type", "text/css");
+                            cssHref.setAttribute("href", url);
+                            cssHref.setAttribute("customSmartDocumentEditor", "");
+                            head.append(cssHref);
+                        }
+                        break;
                     }
+
                 }
             });
 
@@ -120,7 +136,19 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             /*********************************************
              * General Functions / Classes for CKEditor
              *********************************************/
-
+            /**
+             * Function to filter custom editorStylesheet from extra additions;
+             * @returns {String}
+             */
+            function getEditorCSSStylesheetName() {
+                if($scope.model.editorStyleSheet) {
+                    var name = $scope.model.editorStyleSheet.split('?')[0];
+                    name = name.split('/').pop();
+                    return name;
+                } else {
+                    return null;
+                }
+            }
              /**
               * Function called by AutoSave plugin in CKEditor
               * @param {String} data 
@@ -992,7 +1020,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     var data = '<html><body><div class="ck-content" dir="ltr">' + $scope.editor.getData() + '</div></body></html>';
                     if(withInlineCSS) {
                         if(filterStylesheetName) {
-                            data = DecoupledEditor.getInlineStyle(data, DecoupledEditor.getCssStyles([filterStylesheetName, $scope.model.editorStyleSheet]));
+                            data = DecoupledEditor.getInlineStyle(data, DecoupledEditor.getCssStyles([filterStylesheetName, getEditorCSSStylesheetName()]));
                         } else {
                             data = DecoupledEditor.getInlineStyle(data, DecoupledEditor.getCssStyles());
                         }
@@ -1004,7 +1032,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 
             $scope.api.getCSSData = function(filterStylesheetName) {
                 if(filterStylesheetName) {
-                    return DecoupledEditor.getCssStyles([filterStylesheetName, $scope.model.editorStyleSheet]);
+                    return DecoupledEditor.getCssStyles([filterStylesheetName, getEditorCSSStylesheetName()]);
                 } else {
                     return DecoupledEditor.getCssStyles();
                 }

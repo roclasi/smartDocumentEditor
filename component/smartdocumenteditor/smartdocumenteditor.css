@@ -132,6 +132,9 @@
 }
 
 /* Editor styles */
+#css-reset-all, #css-reset-all * {
+    all: initial;
+}
 
 .document-container {
 	display: flex;
