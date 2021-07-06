@@ -106,9 +106,11 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 destroyListenerUnreg();
                 delete $scope.model[$sabloConstants.modelChangeNotifier];
                 
-                $scope.editor.destroy().then(() => {
-                    $scope.editor = null;
-                });
+                if($scope.editor) {
+                    $scope.editor.destroy().then(() => {
+                        $scope.editor = null;
+                    });
+                }
             });
             
             /*********************************************
@@ -743,20 +745,15 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                         }
                     }
 
-                    if (!config.svyToolbarItems) {
-                        //make sure custom toolbar items are created
-                        config.svyToolbarItems = getSvyToolbarItems();
-                    }
+                    //make sure custom toolbar items are created
+                    //We should always load them, else the valuelists don't get an update to show the correct values
+                    config.svyToolbarItems = getSvyToolbarItems();
 
-                    if (!config.svyPlaceholderConfig) {
-                        //get config for a possible servoyPlaceholder toolbar entry
-                        config.svyPlaceholderConfig = getPlaceholderUIConfig();
-                    }
+                    //get config for a possible servoyPlaceholder toolbar entry
+                    config.svyPlaceholderConfig = getPlaceholderUIConfig();
 
-                    if (!config.svyPlaceholderItems) {
-                        //get config for a servoyPlaceholder items
-                        config.svyPlaceholderItems = getPlaceholderItems();
-                    }
+                    //get config for a servoyPlaceholder items
+                    config.svyPlaceholderItems = getPlaceholderItems();
                     
                     if ($scope.model.placeholderMarker || ($scope.model.mentionFeeds && $scope.model.mentionFeeds.length)) {
                         //add placeholder mention feed

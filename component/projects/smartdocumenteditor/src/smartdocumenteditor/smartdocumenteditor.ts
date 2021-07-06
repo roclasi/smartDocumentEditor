@@ -60,20 +60,15 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
             items: this.getToolbarItems()
         }
 
-        if (!this.config.svyToolbarItems) {
-            //make sure custom toolbar items are created
-            this.config.svyToolbarItems = this.getSvyToolbarItems();
-        }
+        //make sure custom toolbar items are created
+        //We should always load them, else the valuelists don't get an update to show the correct values
+        this.config.svyToolbarItems = this.getSvyToolbarItems();
 
-        if (!this.config.svyPlaceholderConfig) {
-            //get config for a possible servoyPlaceholder toolbar entry
-            this.config.svyPlaceholderConfig = this.getPlaceholderUIConfig();
-        }
+        //get config for a possible servoyPlaceholder toolbar entry
+        this.config.svyPlaceholderConfig = this.getPlaceholderUIConfig();
 
-        if (!this.config.svyPlaceholderItems) {
-            //get config for a servoyPlaceholder items
-            this.config.svyPlaceholderItems = this.getPlaceholderItems();
-        }
+        //get config for a servoyPlaceholder items
+        this.config.svyPlaceholderItems = this.getPlaceholderItems();
 
         if (this.placeholderMarker || (this.mentionFeeds && this.mentionFeeds.length)) {
             //add placeholder mention feed
