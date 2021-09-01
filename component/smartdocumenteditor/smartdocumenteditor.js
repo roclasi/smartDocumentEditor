@@ -158,7 +158,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             function forceSaveData( data ) {
                 if($scope.editor) {
                     console.debug( 'Editor push Trigger (ID: ' + $scope.editor.id + ', readOnly: ' + $scope.model.readOnly + ', formname: ' +  $scope.$parent['formname'] + ') , pushing data');
-                    if(!$scope.model.readOnly && $scope.editor) {
+                    if(!$scope.model.readOnly && $scope.editor && !$scope.prePreviewData) {
                         $scope.model.dataProviderID = data;
                         $scope.svyServoyapi.apply('dataProviderID');
                     }
@@ -1026,22 +1026,38 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             }
 
             /**
-             * Test method to replace data in a svy-placeholder element
-             * @param {JSRecord} record 
+             * Preview Editor HTML data into the editor
+             * @param {String} html
+             * @param {Boolean} [readOnly] set component into readOnly mode (default: true)
+             * @public 
              */
-            $scope.api.showPlaceholderRealData = function(record) {
-                $scope.editor.model.change ( writer => {
-                    const rangeInRoot = writer.createRangeIn( $scope.editor.model.document.getRoot() );
-
-                    for ( const item of rangeInRoot.getItems() ) {
-                        if (item.name === 'svy-placeholder') {
-                            //placeholder item found
-                            console.log(item);
-                        }
-                    }
-                })
+            $scope.api.previewHTML = function(html, readOnly) {
+                //Force save current HTML Editor;
+                forceSaveData( $scope.editor.getData() );
+                $scope.model.prePreviewData = $scope.editor.getData();
+                $scope.editor.isReadOnly = !!(readOnly != undefined ? readOnly : true);
+                $scope.editor.setData(html)
             }
 
+            /**
+             * Undo Preview Editor HTML data into the editor
+             * @param {Boolean} [readOnly] set component into readOnly mode (default: false)
+             * @public 
+             */
+            $scope.api.undoPreviewHTML = function(readOnly) {
+                $scope.editor.setData($scope.model.prePreviewData);
+                $scope.model.prePreviewData = null;
+                $scope.editor.isReadOnly = !!(readOnly != undefined ? readOnly : false);
+            }
+
+            /**
+             * Return if editor is in preview mode (CKEditor readOnly)
+             * @returns boolean
+             * @public 
+             */
+            $scope.api.isInPreviewMode = function() {
+                return !!$scope.editor.isReadOnly;
+            }
         },
       templateUrl: 'smartdocumenteditor/smartdocumenteditor/smartdocumenteditor.html'
     };
