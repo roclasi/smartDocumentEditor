@@ -760,25 +760,6 @@
                 }
             ]
         },
-        "createPlaceholderItem": {
-            "returns": "placeholderItem",
-            "parameters": [
-                {
-                    "name": "dataProvider",
-                    "type": "string"
-                },
-                {
-                    "name": "displayName",
-                    "type": "string",
-                    "optional": true
-                },
-                {
-                    "name": "format",
-                    "type": "string",
-                    "optional": true
-                }
-            ]
-        },
         "executeCommand": {"parameters": [
             {
                 "name": "command",

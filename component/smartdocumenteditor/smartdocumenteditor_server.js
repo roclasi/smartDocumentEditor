@@ -35,17 +35,17 @@ $scope.api.create = function(config) {
         $scope.model.toolbarItems = toolbarItems;
     }
     //make sure placeholder items provided on the config end up on the model's placeholderItems property
-    if (config.placeholders) {
-        var plcItems = [];
-        config.placeholders.forEach(item => {
-            plcItems.push({
-                displayName: item.displayName || item.dataProvider,
-                dataProvider: item.dataProvider,
-                format: item.format || null
-            })
-        })
-        $scope.model.placeholders = plcItems;
-    }
+    // if (config.placeholders) {
+    //     var plcItems = [];
+    //     config.placeholders.forEach(item => {
+    //         plcItems.push({
+    //             displayName: item.displayName || item.dataProvider,
+    //             dataProvider: item.dataProvider,
+    //             format: item.format || null
+    //         })
+    //     })
+    //     $scope.model.placeholders = plcItems;
+    // }
 
     $scope.model.config = config;
 }
