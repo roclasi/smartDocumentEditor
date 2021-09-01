@@ -33,9 +33,10 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
     @Input() showInspector: boolean;
     @Input() mentionFeeds: Array<MentionFeed>;
     @Input() editorStyleSheet: string;
-    @Input() placeholders: Array<PlaceholderItem>;
+    // @Input() placeholders: Array<PlaceholderItem>;
     @Input() config: any;
-    @Input() placeholderMarker: string;
+    // @Input() placeholderMarker: string;
+    @Input() prePreviewData: string;
 
     @Input() onActionMethodID: (e: JSEvent) => void;
     @Input() onFocusGainedMethodID: (e: JSEvent) => void;
@@ -62,15 +63,15 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
         //make sure custom toolbar items are created
         //We should always load them, else the valuelists don't get an update to show the correct values
-        this.config.svyToolbarItems = this.getSvyToolbarItems();
+        // this.config.svyToolbarItems = this.getSvyToolbarItems();
 
         //get config for a possible servoyPlaceholder toolbar entry
-        this.config.svyPlaceholderConfig = this.getPlaceholderUIConfig();
+        // this.config.svyPlaceholderConfig = this.getPlaceholderUIConfig();
 
         //get config for a servoyPlaceholder items
-        this.config.svyPlaceholderItems = this.getPlaceholderItems();
+        // this.config.svyPlaceholderItems = this.getPlaceholderItems();
 
-        if (this.placeholderMarker || (this.mentionFeeds && this.mentionFeeds.length)) {
+        if (this.mentionFeeds && this.mentionFeeds.length) {
             //add placeholder mention feed
             this.config.mention = {
                 feeds: this.getFeeds()
@@ -292,7 +293,9 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                 key: 'mention',
                 value: viewItem => {
                     const mentionAttribute = editor.plugins.get('Mention').toMentionAttribute(viewItem, {
-                        realValue: viewItem.getAttribute('data-real-value')
+                        realValue: viewItem.getAttribute('data-real-value'),
+                        format: viewItem.getAttribute('data-format'),
+                        contenteditable: viewItem.getAttribute('contenteditable')
                     });
                     return mentionAttribute;
                 }
@@ -308,25 +311,13 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     return;
                 }
 
-                var attributes,
-                    elementType;
-                if (modelAttributeValue.isPlaceholderMention) {
-                    elementType = 'span';
-                    attributes = {
-                        class: 'svy-placeholder ck-widget',
-                        'name': modelAttributeValue.name,
-                        'dataprovider': modelAttributeValue.dataProvider,
-                        'format': modelAttributeValue.format,
-                        'contenteditable': false
-                    }
-                } else {
-                    elementType = 'span';
-                    attributes = {
-                        class: 'mention svy-mention',
-                        'data-mention': modelAttributeValue.id,
-                        'data-real-value': (modelAttributeValue.realValue == undefined ? '' : modelAttributeValue.realValue),
-                        'contenteditable': (modelAttributeValue.editable == undefined ? true : modelAttributeValue.editable)
-                    }
+                var elementType = 'span';
+                var attributes = {
+                    class: 'mention svy-mention',
+                    'data-mention': modelAttributeValue.id,
+                    'data-real-value': (modelAttributeValue.realValue == undefined ? '' : modelAttributeValue.realValue),
+                    'contenteditable': (modelAttributeValue.editable == undefined ? false : modelAttributeValue.editable),
+                    'data-format': (modelAttributeValue.format || ''),
                 }
 
                 return writer.createAttributeElement(elementType, attributes, {
@@ -352,48 +343,48 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
     getFeeds() {
         var result = [];
 
-        //add placeholder mention
-        if (this.placeholderMarker) {
-            const plcHolderMention = {
-                marker: this.placeholderMarker,
-                itemRenderer: this.svyMentionRenderer,
-                minimumCharacters: 0,
-                feed: function(queryText) {
-                    var plcHolderItems = this.getPlaceholderItems();
-                    if (plcHolderItems.length) {
-                        return new Promise(resolve => {
-                            const searchString = queryText.toLowerCase();
-                            let list = plcHolderItems
-                                // Filter out the full list of all items to only those matching the query text.
-                                // Order startWith before contains
-                                .filter((item) => {
-                                    return item.displayName.toLowerCase().startsWith(searchString);
-                                })
-                            list = list.concat(plcHolderItems.filter((item) => {
-                                return !item.displayName.toLowerCase().startsWith(searchString) && item.displayName.toLowerCase().includes(searchString);
-                            }))
+        // //add placeholder mention
+        // if (this.placeholderMarker) {
+        //     const plcHolderMention = {
+        //         marker: this.placeholderMarker,
+        //         itemRenderer: this.svyMentionRenderer,
+        //         minimumCharacters: 0,
+        //         feed: function(queryText) {
+        //             var plcHolderItems = this.getPlaceholderItems();
+        //             if (plcHolderItems.length) {
+        //                 return new Promise(resolve => {
+        //                     const searchString = queryText.toLowerCase();
+        //                     let list = plcHolderItems
+        //                         // Filter out the full list of all items to only those matching the query text.
+        //                         // Order startWith before contains
+        //                         .filter((item) => {
+        //                             return item.displayName.toLowerCase().startsWith(searchString);
+        //                         })
+        //                     list = list.concat(plcHolderItems.filter((item) => {
+        //                         return !item.displayName.toLowerCase().startsWith(searchString) && item.displayName.toLowerCase().includes(searchString);
+        //                     }))
 
-                            list = list.slice(0, 10)
-                                //Map /Convert default valuelist names to matching object keys for tags
-                                .map((item) => {
-                                    return {
-                                        name: item.displayName,
-                                        id: this.placeholderMarker + item.displayName,
-                                        dataProvider: item.dataProvider,
-                                        format: item.format || '',
-                                        editable: false,
-                                        isPlaceholderMention: true
-                                    }
-                                });
-                            resolve(list);
-                        })
-                    } else {
-                        return [];
-                    }
-                }
-            }
-            result.push(plcHolderMention);
-        }
+        //                     list = list.slice(0, 10)
+        //                         //Map /Convert default valuelist names to matching object keys for tags
+        //                         .map((item) => {
+        //                             return {
+        //                                 name: item.displayName,
+        //                                 id: this.placeholderMarker + item.displayName,
+        //                                 dataProvider: item.dataProvider,
+        //                                 format: item.format || '',
+        //                                 editable: false,
+        //                                 isPlaceholderMention: true
+        //                             }
+        //                         });
+        //                     resolve(list);
+        //                 })
+        //             } else {
+        //                 return [];
+        //             }
+        //         }
+        //     }
+        //     result.push(plcHolderMention);
+        // }
 
         //add other mentions
         if (this.mentionFeeds) {
@@ -406,6 +397,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                 result.push(
                     {
                         marker: feed.marker,
+                        minimumCharacters: feed.minimumCharacters||0,
                         feed: function(queryText) {
                             if (feed.valueList) {
                                 return new Promise(resolve => {
@@ -423,7 +415,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                                                 name: item.displayValue.toString(),
                                                 id: feed.marker.toString() + item.displayValue.toString(),
                                                 realValue: item.realValue,
-                                                editable: feed.itemEditable
+                                                editable: feed.itemEditable||false
                                             }
                                         });
 
@@ -442,14 +434,14 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                                         name: entry.displayValue.toString(),
                                         id: feed.marker.toString() + entry.displayValue.toString(),
                                         realValue: entry.realValue,
-                                        editable: feed.itemEditable
+                                        format: entry.format||'',
+                                        editable: feed.itemEditable||false
                                     }
                                 })
                             } else {
                                 return [];
                             }
                         },
-                        minimumCharacters: feed.minimumCharacters || 0,
                         itemRenderer: this.svyMentionRenderer
                     }
                 )
@@ -458,38 +450,38 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         return result;
     }
 
-    getPlaceholderItems() {
-        if (this.placeholders && this.placeholders.length) {
-            return this.placeholders.map((placeholderEntry) => {
-                return {
-                    displayName: placeholderEntry.displayName || placeholderEntry.dataProvider,
-                    dataProvider: placeholderEntry.dataProvider,
-                    format: placeholderEntry.format || ''
-                }
-            })
-        } else {
-            return [];
-        }
-    }
+    // getPlaceholderItems() {
+    //     if (this.placeholders && this.placeholders.length) {
+    //         return this.placeholders.map((placeholderEntry) => {
+    //             return {
+    //                 displayName: placeholderEntry.displayName || placeholderEntry.dataProvider,
+    //                 dataProvider: placeholderEntry.dataProvider,
+    //                 format: placeholderEntry.format || ''
+    //             }
+    //         })
+    //     } else {
+    //         return [];
+    //     }
+    // }
 
-    getPlaceholderUIConfig() {
-        if (this.toolbarItems && this.toolbarItems.length > 0) {
-            var placeHolderItem = this.toolbarItems.filter((item) => {
-                return item.type === 'servoyPlaceholder';
-            });
-            if (placeHolderItem.length) {
-                return {
-                    name: placeHolderItem[0].name,
-                    label: placeHolderItem[0].label || 'Placeholder',
-                    withText: placeHolderItem[0].withText,
-                    isEnabled: placeHolderItem[0].isEnabled,
-                    withTooltip: placeHolderItem[0].tooltip || null,
-                    iconStyleClass: placeHolderItem[0].iconStyleClass || null
-                };
-            }
-        }
-        return null;
-    }
+    // getPlaceholderUIConfig() {
+    //     if (this.toolbarItems && this.toolbarItems.length > 0) {
+    //         var placeHolderItem = this.toolbarItems.filter((item) => {
+    //             return item.type === 'servoyPlaceholder';
+    //         });
+    //         if (placeHolderItem.length) {
+    //             return {
+    //                 name: placeHolderItem[0].name,
+    //                 label: placeHolderItem[0].label || 'Placeholder',
+    //                 withText: placeHolderItem[0].withText,
+    //                 isEnabled: placeHolderItem[0].isEnabled,
+    //                 withTooltip: placeHolderItem[0].tooltip || null,
+    //                 iconStyleClass: placeHolderItem[0].iconStyleClass || null
+    //             };
+    //         }
+    //     }
+    //     return null;
+    // }
 
     getSvyToolbarItems() {
         // FIXME style of icon styleClass is overriden by the ck-reset class; causing issues in showing font icons. This is an known issue of CKEditor
@@ -585,7 +577,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
 
     forceSaveData(data: string) {
-        if (!this.readOnly && this.editorComponent) {
+        if (!this.readOnly && this.editorComponent && !this.prePreviewData) {
             console.debug( 'Editor push Trigger (ID: ' + this.editorComponent.editorInstance.id + ', readOnly: ' + this.readOnly + ') , pushing data');
             this.dataProviderID = data;
             this.dataProviderIDChange.emit(this.dataProviderID);
@@ -628,7 +620,8 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                                 name: list[0].displayValue.toString(),
                                 id: feed.marker.toString() + list[0].displayValue.toString(),
                                 realValue: list[0].realValue,
-                                editable: !!feed.itemEditable
+                                format: list[0]['format']||'',
+                                editable: feed.itemEditable||false
                             }
                         });
                         return true;
@@ -680,17 +673,50 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         return this.Editor.getPrintCSS();
     }
 
-    showPlaceholderRealData = function(record) {
-        this.editorComponent.editorInstance.model.change(writer => {
-            const rangeInRoot = writer.createRangeIn(this.editorComponent.editorInstance.model.document.getRoot());
+    // showPlaceholderRealData = function(record) {
+    //     this.editorComponent.editorInstance.model.change(writer => {
+    //         const rangeInRoot = writer.createRangeIn(this.editorComponent.editorInstance.model.document.getRoot());
 
-            for (const item of rangeInRoot.getItems()) {
-                if (item.name === 'svy-placeholder') {
-                    //placeholder item found
-                    console.log(item);
-                }
-            }
-        })
+    //         for (const item of rangeInRoot.getItems()) {
+    //             if (item.name === 'svy-placeholder') {
+    //                 //placeholder item found
+    //                 console.log(item);
+    //             }
+    //         }
+    //     })
+    // }
+
+    /**
+    * Preview Editor HTML data into the editor
+    * @param {String} html
+    * @param {Boolean} [readOnly] set component into readOnly mode (default: true)
+    * @public 
+    */
+    previewHTML = function(html, readOnly) {
+        //Force save current HTML Editor;
+        this.forceSaveData( this.editorComponent.editorInstance.getData());
+        this.prePreviewData = this.editorComponent.editorInstance.getData();
+        this.editorComponent.editorInstance.isReadOnly = !!(readOnly != undefined ? readOnly : true);
+        this.editorComponent.editorInstance.setData(html);
+    }
+
+    /**
+    * Undo Preview Editor HTML data into the editor
+    * @param {Boolean} [readOnly] set component into readOnly mode (default: false)
+    * @public 
+    */
+    undoPreviewHTML = function(readOnly) {
+        this.editorComponent.editorInstance.setData(this.prePreviewData);
+        this.prePreviewData = null;
+        this.editorComponent.editorInstance.isReadOnly = !!(readOnly != undefined ? readOnly : false);
+    }
+    /**
+    * Return if editor is in preview mode (CKEditor readOnly)
+    * @returns boolean
+    * @public 
+    */
+    isInPreviewMode = function() {
+        return !!this.editorComponent.editorInstance.isReadOnly;
     }
 }
 export class ToolbarItem extends BaseCustomObject {
@@ -719,14 +745,15 @@ export class MentionFeed extends BaseCustomObject {
 
 export class MentionFeedItem extends BaseCustomObject {
     displayValue: string;
+    format: string;
     realValue: string;
 }
 
-export class PlaceholderItem extends BaseCustomObject {
-    displayName: string;
-    dataProvider: string;
-    format: string;
-}
+// export class PlaceholderItem extends BaseCustomObject {
+//     displayName: string;
+//     dataProvider: string;
+//     format: string;
+// }
 
 class ServoyUploadAdapter {
     loader: any;

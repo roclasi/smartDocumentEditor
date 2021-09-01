@@ -962,7 +962,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                                         name: list[0].displayValue.toString(),
                                         id: feed.marker.toString() + list[0].displayValue.toString(),
                                         realValue: list[0].realValue,
-                                        format: list[0].format||'',
+                                        format: list[0]['format']||'',
                                         editable: feed.itemEditable||false
                                     }
                                 });
