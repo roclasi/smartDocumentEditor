@@ -12,7 +12,8 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
         },
         link: function($scope, $element, $attrs) {
             $scope.editor = null;
-           
+            $scope.createEditorQueue = [];
+
             var VIEW_TYPE = {
             	WEB: 'WEB',
 				DOCUMENT: 'DOCUMENT'
@@ -44,22 +45,14 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                         }
                         break;
                     case "visible":
-                        if(value == false) {
-                            if($scope.editor) {
-                                $scope.editor.destroy().then(() => {
-                                    $scope.editor = null;
-                                });
-                            }
+                        if(!$scope.model.visible){
+                            $element.css("display","none");
                         } else {
-                            if(!$scope.editor) {
-                                $timeout(function() {
-                                    createEditor($scope.model.config);
-                                }, 0)
-                            }
+                            $element.css("display","");
                         }
                         break;
                     case "showToolbar":
-                            if(value == true && $scope.editor) {
+                            if(value && $scope.editor) {
                                 $timeout(function() {
                                     if($scope.editor) {
                                         $element.querySelectorAll('#toolbar-container')[0].replaceChildren( $scope.editor.ui.view.toolbar.element );
@@ -342,12 +335,11 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     model: {
                         key: 'mention',
                         value: viewItem => {
-                            const mentionAttribute = editor.plugins.get('Mention').toMentionAttribute( viewItem, {
+                            return editor.plugins.get('Mention').toMentionAttribute( viewItem, {
                                 realValue: viewItem.getAttribute('data-real-value'),
                                 format: viewItem.getAttribute('data-format'),
                                 contenteditable: viewItem.getAttribute('contenteditable')
                             });
-                            return mentionAttribute;
                         }
                     },
                     converterPriority: 'high'
@@ -566,7 +558,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
               * Returns all custom servoy toolbar items
               */
             function getSvyToolbarItems() {
-                // FIXME style of icon styleClass is overriden by the ck-reset class; causing issues in showing font icons. This is an known issue of CKEditor
+                // Style of icon styleClass is overriden by the ck-reset class; causing issues in showing font icons. This is an known issue of CKEditor
                 // https://stackoverflow.com/questions/65605215/prevent-from-being-added-ck-reset-classes-in-ckeditor-5
             	if ($scope.model.toolbarItems && $scope.model.toolbarItems.length > 0) {
                     return $scope.model.toolbarItems.filter((item) => {
@@ -608,34 +600,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                         }
                     })
                 } else  {
-                    return [
-                        "previousPage",
-                        "nextPage",
-                        "pageNavigation",
-                        "|",
-                        'heading',
-                        '|',
-                        'fontfamily',
-                        'fontsize',
-                        'fontColor',
-                        '|',
-                        'bold',
-                        'italic',
-                        'underline',
-                        'strikethrough',
-                        '|',
-                        'alignment',
-                        '|',
-                        'numberedList',
-                        'bulletedList',
-                        '|',
-                        'indent',
-                        'outdent',
-                        '|',
-                        'link',
-                        'imageUpload',
-                        'insertTable'
-                    ]
+                    return [];
                 }
             }
 
@@ -654,45 +619,36 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 return 'en';
             }
 
-            $scope.$watch('model.config', (newVal, oldVal) => {
-                if (newVal != oldVal) {
-                    //(re)create editor
-                    if ($scope.editor) {
-                        $scope.editor.destroy().then(() => {
-                            $scope.editor = null;
-                            $timeout(function() {
-                                createEditor(newVal);
-                            } , 0)
-                        });
-                    } else {
-                        $timeout(function() {
-                            createEditor(newVal);
-                            console.log("CONFIG CREATE")
-
-                        }, 0)
+            var editorTimeout;
+            var configToApply;
+            $scope.$watch('createEditorQueue', (newVal, oldVal) => {
+                if(newVal.length > 0) {
+                    if(editorTimeout) {
+                        $timeout.cancel(editorTimeout);
                     }
+                    configToApply = newVal.pop();
+                    editorTimeout = $timeout(function() {
+                        if($scope.editor) {
+                            $scope.editor.destroy().then(() => {
+                                $scope.editor = null;
+                                createEditor(configToApply);
+                            });
+                        } else {
+                            createEditor(configToApply);
+                        }
+                    }, 50);
+                }
+            },true);
+
+            $scope.$watch('model.config', (newVal, oldVal) => {
+                if (newVal && newVal != oldVal) {
+                    $scope.createEditorQueue.push($scope.model.config);
                 }
             })
 			
-			// FIXME there can be an issue if visibility is toggled and mentionFeed are set at the same time. Have the possibility to cancel (or wait) for the timeout to be completed
 			$scope.$watch('model.mentionFeeds', (newVal, oldVal) => {
                 if (newVal && newVal != oldVal) {
-                    //(re)create editor
-                    if ($scope.editor) {
-                        $scope.editor.destroy().then(() => {
-                            $scope.editor = null;
-                            $timeout(function() {
-                                createEditor($scope.model.config);
-                                console.log("MENTION CREATE DESTROY")
-
-                            } , 0)
-                        });
-                    } else {
-                        $timeout(function() {
-                            createEditor($scope.model.config);
-                            console.log("MENTION CREATE")
-                        }, 0)
-                    }
+                    $scope.createEditorQueue.push($scope.model.config);
                 }
             })
 
@@ -717,7 +673,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
              */
             function createEditor(orgConfig) {
                 var config = orgConfig;
-                if($scope.model.visible == true) {
+                // if($scope.model.visible) {
                     //make sure toolbar items are taken from the model.toolbarItems array
                     if (config.toolbar && config.toolbar.items) {
                         //toolbar property is an object with items array
@@ -776,22 +732,22 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     // This behavior can be modified by setting this configuration option to true.
                     // config.pagination.enableOnUnsupportedBrowsers
                     if (!config.pagination) {
-                    	if ($scope.model.viewType == VIEW_TYPE.DOCUMENT) {
-                    		// TODO does require the pagination plugin ?
-                    	
-	                    	// NOTE: when height is auto, in responsive form cannot use pagination.
-	                        config.pagination = {
-	                            // A4
-	                            pageWidth: '21cm',
-	                            pageHeight: '29.7cm',
-	                            pageMargins: {
-	                                top: '20mm',
-	                                bottom: '20mm',
-	                                right: '12mm',
-	                                left: '12mm'
-	                            }
-	                        }
-                    	}
+                        if ($scope.model.viewType == VIEW_TYPE.DOCUMENT) {
+                            // TODO does require the pagination plugin ?
+                        
+                            // NOTE: when height is auto, in responsive form cannot use pagination.
+                            config.pagination = {
+                                // A4
+                                pageWidth: '21cm',
+                                pageHeight: '29.7cm',
+                                pageMargins: {
+                                    top: '20mm',
+                                    bottom: '20mm',
+                                    right: '12mm',
+                                    left: '12mm'
+                                }
+                            }
+                        }
                     }
 
                     if(!config.licenseKey) {
@@ -807,7 +763,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             const view = editor.editing.view;
                             const viewDocument = view.document;
 
-                            if ($scope.model.showInspector == true) {
+                            if ($scope.model.showInspector) {
                                 CKEditorInspector.attach(editor)
                             }
 
@@ -827,6 +783,8 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                                     }
                                 }
                             }
+                            //Init always set the data
+                            setData();
                             $scope.$watch('model.dataProviderID', (newVal, oldVal) => {
                                 setData();
                             })
@@ -837,10 +795,10 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             
                             // Disable the plugin so that no pagination is use are visible.
                             if ($scope.model.viewType != VIEW_TYPE.DOCUMENT) {
-                            	editor.plugins.get( 'Pagination' ).isEnabled = false;
+                                editor.plugins.get( 'Pagination' ).isEnabled = false;
                             }
 
-                            if ($scope.model.overWriteTabForEditor == true) {
+                            if ($scope.model.overWriteTabForEditor) {
                                 viewDocument.on('keydown', (evt, data) => {
                                     if ((data.keyCode == 9) && viewDocument.isFocused) {
                                         // $scope.editor.execute( 'input', { text: "\t" } );
@@ -895,13 +853,11 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             }
                         });
                     }
-                }
+                // }
             }
 
             if (!$scope.svyServoyapi.isInDesigner()) {
-                $timeout(function() {
-                    createEditor($scope.model.config);
-                }, 0);
+                $scope.createEditorQueue.push($scope.model.config);
             }
 
             /*********************************************
@@ -929,7 +885,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
              */
             $scope.api.addInputAtCursor = function(input) {
                 if(input) {
-                    if($scope.model.readOnly == true || !$scope.editor) {
+                    if($scope.model.readOnly || !$scope.editor) {
                         return false;
                     }
                     $scope.editor.execute('input', { text: input })
