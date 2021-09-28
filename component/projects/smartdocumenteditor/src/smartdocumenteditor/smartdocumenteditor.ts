@@ -12,6 +12,7 @@ import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     public Editor = DecoupledEditor;
+
     @ViewChild('editor') editorComponent: CKEditorComponent;
     @ViewChild('element', { static: true }) elementRef: ElementRef;
      
@@ -193,7 +194,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                         this.document.head.removeAttribute("[customSmartDocumentEditor]")
                         
                         if(this.editorStyleSheet) {
-                            let url = this.editorStyleSheet.split('?')[0];;
+                            let url = this.editorStyleSheet.split('?')[0];
                             var additions = this.editorStyleSheet.split('?')[1].split('&').filter((item) => {
                                 return item.startsWith('clientnr');
                             });
@@ -220,14 +221,15 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         const view = editor.editing.view;
         const viewDocument = view.document;
 
-        if (this.showInspector == true) {
+        if (this.showInspector) {
             Inspector.attach(editor)
         }
 
         // Set a custom container for the toolbar
         if (this.showToolbar) {
             const toolbar = this.getNativeElement().querySelector('#toolbar-container');
-            if (toolbar.firstChild) toolbar.removeChild(toolbar.firstChild);
+            if (toolbar.firstChild)
+                toolbar.removeChild(toolbar.firstChild);
             toolbar.appendChild(editor.ui.view.toolbar.element);
             this.getNativeElement().querySelectorAll('.ck-toolbar')[0].classList.add('ck-reset_all');
         }
@@ -241,7 +243,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
             editor.plugins.get('Pagination').isEnabled = false;
         }
 
-        if (this.overWriteTabForEditor == true) {
+        if (this.overWriteTabForEditor) {
             viewDocument.on('keydown', (evt, data) => {
                 if ((data.keyCode == 9) && viewDocument.isFocused) {
                     // $scope.editor.execute( 'input', { text: "\t" } );
@@ -292,12 +294,11 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
             model: {
                 key: 'mention',
                 value: viewItem => {
-                    const mentionAttribute = editor.plugins.get('Mention').toMentionAttribute(viewItem, {
+                    return editor.plugins.get('Mention').toMentionAttribute(viewItem, {
                         realValue: viewItem.getAttribute('data-real-value'),
                         format: viewItem.getAttribute('data-format'),
                         contenteditable: viewItem.getAttribute('contenteditable')
                     });
-                    return mentionAttribute;
                 }
             },
             converterPriority: 'high'
@@ -484,7 +485,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
     // }
 
     getSvyToolbarItems() {
-        // FIXME style of icon styleClass is overriden by the ck-reset class; causing issues in showing font icons. This is an known issue of CKEditor
+        // Style of icon styleClass is overriden by the ck-reset class; causing issues in showing font icons. This is an known issue of CKEditor
         // https://stackoverflow.com/questions/65605215/prevent-from-being-added-ck-reset-classes-in-ckeditor-5
         if (this.toolbarItems && this.toolbarItems.length > 0) {
             return this.toolbarItems.filter((item) => {
@@ -523,34 +524,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                 }
             })
         } else {
-            return [
-                "previousPage",
-                "nextPage",
-                "pageNavigation",
-                "|",
-                'heading',
-                '|',
-                'fontfamily',
-                'fontsize',
-                'fontColor',
-                '|',
-                'bold',
-                'italic',
-                'underline',
-                'strikethrough',
-                '|',
-                'alignment',
-                '|',
-                'numberedList',
-                'bulletedList',
-                '|',
-                'indent',
-                'outdent',
-                '|',
-                'link',
-                'imageUpload',
-                'insertTable'
-            ]
+            return []
         }
     }
 
