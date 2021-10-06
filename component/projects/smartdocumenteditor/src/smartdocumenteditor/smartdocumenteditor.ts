@@ -391,6 +391,11 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         if (this.mentionFeeds) {
             for (let i = 0; i < this.mentionFeeds.length; i++) {
                 const feed = this.mentionFeeds[i];
+                //Skip feed parsing.. if there is nothing to parse;
+                if(!feed.valueList && !feed.feedItems) {
+                    continue;
+                }
+
                 if (!feed.marker) {
                     console.warn('No marker provided for mention feed');
                     continue;

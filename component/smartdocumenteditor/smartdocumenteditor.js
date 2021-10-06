@@ -431,6 +431,11 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 if ($scope.model.mentionFeeds) {
                     for (let i = 0; i < $scope.model.mentionFeeds.length; i++) {
                         const feed = $scope.model.mentionFeeds[i];
+                        //Skip feed parsing.. if there is nothing to parse;
+                        if(!feed.valueList && !feed.feedItems) {
+                            continue;
+                        }
+                        
                         if (!feed.marker) {
                             console.warn('No marker provided for mention feed');
                             continue;
