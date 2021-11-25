@@ -1,5 +1,6 @@
 
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common'; 
 import {SmartDocumentEditor} from './smartdocumenteditor/smartdocumenteditor';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
  
@@ -9,6 +10,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     ],
     providers: [],
     imports: [
+        CommonModule,
         CKEditorModule
     ],
     exports: [ 

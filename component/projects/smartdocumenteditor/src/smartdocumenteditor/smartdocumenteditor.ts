@@ -1,8 +1,6 @@
 import { Component, SimpleChanges, Input, Renderer2, ChangeDetectorRef, ViewChild, Output, EventEmitter, Inject, ElementRef } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { ServoyBaseComponent, BaseCustomObject, IValuelist, JSEvent, ServoyPublicService } from '@servoy/public';
-import DecoupledEditor from '../assets/lib/ckeditor';
-import * as Inspector from '../assets/lib/inspector';
 import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
@@ -11,7 +9,9 @@ import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 })
 export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
-    public Editor = DecoupledEditor;
+    public Editor;
+    public shouldshow = 0;
+    private Inspector;
 
     @ViewChild('editor') editorComponent: CKEditorComponent;
     @ViewChild('element', { static: true }) elementRef: ElementRef;
@@ -51,6 +51,18 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, @Inject(DOCUMENT) private document: Document, private servoyService: ServoyPublicService) {
         super(renderer, cdRef);
+        let moduleName = 'ckeditor'
+        import(`../assets/lib/${moduleName}`).then((module) => {
+            this.Editor = module.default; 
+            this.shouldshow++;
+            this.cdRef.detectChanges();
+        });
+        moduleName = 'inspector'
+        import(`../assets/lib/${moduleName}`).then((module) => {
+            this.Inspector = module.default;
+            this.shouldshow++;
+            this.cdRef.detectChanges();
+        });
     }
 
     svyOnInit() {
@@ -222,7 +234,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         const viewDocument = view.document;
 
         if (this.showInspector) {
-            Inspector.attach(editor)
+            this.Inspector.attach(editor)
         }
 
         // Set a custom container for the toolbar
@@ -557,7 +569,6 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     forceSaveData(data: string) {
         if (!this.readOnly && this.editorComponent && !this.prePreviewData) {
-            console.debug( 'Editor push Trigger (ID: ' + this.editorComponent.editorInstance.id + ', readOnly: ' + this.readOnly + ') , pushing data');
             this.dataProviderID = data;
             this.dataProviderIDChange.emit(this.dataProviderID);
         }
