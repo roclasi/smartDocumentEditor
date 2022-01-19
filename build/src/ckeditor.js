@@ -56,7 +56,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import Pagination from '@ckeditor/ckeditor5-pagination/src/pagination';
 
 import SvyToolbarItem from '../../plugins/svyToolbarItem/src/svy-toolbar-item';
-import svyPlaceholder from '../../plugins/svyPlaceholder/src/svy-placeholder';
+// import svyPlaceholder from '../../plugins/svyPlaceholder/src/svy-placeholder';
 
 import juice from 'juice';
 
@@ -112,8 +112,7 @@ DecoupledEditor.builtinPlugins = [
     Autosave,
     Mention,
     Pagination,
-	SvyToolbarItem,
-    svyPlaceholder
+	SvyToolbarItem
 ];
 
 DecoupledEditor.getInlineStyle = function(data, style) {
