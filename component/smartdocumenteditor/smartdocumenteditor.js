@@ -963,11 +963,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 if ($scope.editor) {
                     var data = '<html><body><div class="ck-content" dir="ltr">' + $scope.editor.getData() + '</div></body></html>';
                     if(withInlineCSS) {
-                        if(filterStylesheetName) {
-                            data = DecoupledEditor.getInlineStyle(data, DecoupledEditor.getCssStyles([filterStylesheetName, getEditorCSSStylesheetName()]));
-                        } else {
-                            data = DecoupledEditor.getInlineStyle(data, DecoupledEditor.getCssStyles());
-                        }
+                        data = DecoupledEditor.getInlineStyle(data, getCSSData(filterStylesheetName));
                     } 
                     return data;
                 }
@@ -976,7 +972,11 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 
             $scope.api.getCSSData = function(filterStylesheetName) {
                 if(filterStylesheetName) {
-                    return DecoupledEditor.getCssStyles([filterStylesheetName, getEditorCSSStylesheetName()]);
+                    let cssStyleSheetFilter = [filterStylesheetName, getEditorCSSStylesheetName()];
+                    cssStyleSheetFilter = cssStyleSheetFilter.filter(value => {
+                        return !!value;
+                    })
+                    return DecoupledEditor.getCssStyles(cssStyleSheetFilter);
                 } else {
                     return DecoupledEditor.getCssStyles();
                 }
