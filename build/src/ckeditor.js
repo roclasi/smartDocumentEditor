@@ -123,21 +123,21 @@ DecoupledEditor.getInlineStyle = function(data, style) {
 DecoupledEditor.getCssStyles = function(filterStylesheetNames) {
     var css = [];
     var filterByNames = [];
-    if(filterStylesheetNames) {
+    if(filterStylesheetNames && filterStylesheetNames.length > 0) {
         for(const name of filterStylesheetNames) {
-            if(!name.endsWith('.css')) {
-                filterByNames.push(name + '.css');
-            } else {
-                filterByNames.push(name);
+            if(name) {
+                if(!name.endsWith('.css')) {
+                    filterByNames.push(name + '.css');
+                } else {
+                    filterByNames.push(name);
+                }
             }
         }
         filterByNames.push('smartdocumenteditor.css');
     }
-    console.log(filterStylesheetNames);
     for (const sheet of document.styleSheets)
     {
          if(!filterByNames.length || (sheet.href && filterByNames.includes(sheet.href.split('/').pop().split('?').shift())) ) {
-            console.log('found match: ' + sheet.href);
             var rules = ('cssRules' in sheet)? sheet.cssRules : sheet.rules;
             if (rules) {
                 css.push('\n/* Stylesheet : '+(sheet.href||'[inline styles]')+' */');
