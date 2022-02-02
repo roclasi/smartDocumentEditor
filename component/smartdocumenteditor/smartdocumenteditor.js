@@ -961,9 +961,9 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 
             $scope.api.getHTMLData = function(withInlineCSS, filterStylesheetName) {
                 if ($scope.editor) {
-                    var data = '<html><body><div class="ck-content" dir="ltr">' + $scope.editor.getData() + '</div></body></html>';
+                    let data = '<html><body><div class="ck-content" dir="ltr">' + $scope.editor.getData() + '</div></body></html>';
                     if(withInlineCSS) {
-                        data = DecoupledEditor.getInlineStyle(data, getCSSData(filterStylesheetName));
+                        data = DecoupledEditor.getInlineStyle(data, $scope.api.getCSSData(filterStylesheetName));
                     } 
                     return data;
                 }
@@ -972,8 +972,8 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 
             $scope.api.getCSSData = function(filterStylesheetName) {
                 if(filterStylesheetName) {
-                    let cssStyleSheetFilter = [filterStylesheetName, getEditorCSSStylesheetName()];
-                    cssStyleSheetFilter = cssStyleSheetFilter.filter(value => {
+                    let cssStyleSheetFilterArray = [filterStylesheetName, getEditorCSSStylesheetName()];
+                    let cssStyleSheetFilter = cssStyleSheetFilterArray.filter(value => {
                         return !!value;
                     })
                     return DecoupledEditor.getCssStyles(cssStyleSheetFilter);

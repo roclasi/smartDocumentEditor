@@ -638,12 +638,10 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     getHTMLData(withInlineCSS, filterStylesheetName) {
         if (this.editorComponent) {
-            var data = '<html><body><div class="ck-content" dir="ltr">' + this.editorComponent.editorInstance.getData() + '</div></body></html>';
+            let data = '<html><body><div class="ck-content" dir="ltr">' + this.editorComponent.editorInstance.getData() + '</div></body></html>';
             if (withInlineCSS) {
                 if (filterStylesheetName) {
-                    data = this.Editor.getInlineStyle(data, this.Editor.getCssStyles([filterStylesheetName, this.getEditorCSSStylesheetName()]));
-                } else {
-                    data = this.Editor.getInlineStyle(data, this.Editor.getCssStyles());
+                    data = this.Editor.getInlineStyle(data, this.Editor.getCSSData(filterStylesheetName));
                 }
             }
             return data;
@@ -653,7 +651,11 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     getCSSData(filterStylesheetName: boolean) {
         if (filterStylesheetName) {
-            return this.Editor.getCssStyles([filterStylesheetName, this.getEditorCSSStylesheetName()]);
+            let cssStyleSheetFilterArray = [filterStylesheetName, this.getEditorCSSStylesheetName()];
+            let cssStyleSheetFilter = cssStyleSheetFilterArray.filter(value => {
+                return !!value;
+            })
+            return this.Editor.getCssStyles(cssStyleSheetFilter);
         } else {
             return this.Editor.getCssStyles();
         }
