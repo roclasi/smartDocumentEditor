@@ -2,14 +2,14 @@
   "name": "@servoy/smartdocumenteditor",
   "version": "2022.3.0",
   "peerDependencies": {
-    "@angular/animations": ">=12",
-    "@angular/cdk": ">=12",
-    "@angular/common": ">=12",
-    "@angular/core": ">=12",
-    "@angular/forms": ">=12"
+    "@angular/animations": "^13",
+    "@angular/cdk": "^13",
+    "@angular/common": "^13",
+    "@angular/core": "^13",
+    "@angular/forms": "^13"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-angular": "^2.0.1",
+    "@ckeditor/ckeditor5-angular": "<3",
     "tslib": "*"
   },
   "license": "MIT",
