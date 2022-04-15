@@ -16,8 +16,8 @@ function db_customer() {
 	fs.deleteAllRecords();
 	
 	var rec = fs.getRecord(fs.newRecord());
-	rec.first_name = 'Sean';
-	rec.last_name = 'Devlin';
+	rec.first_name = 'Jane';
+	rec.last_name = 'Doe';
 	rec.company = 'Servoy B.V.';
 	rec.address = 'Fred. Roeskestraat 97c';
 	rec.phone = '+31 33 455 9877';

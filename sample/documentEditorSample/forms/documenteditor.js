@@ -1,4 +1,25 @@
 /**
+ * @type {Number}
+ *
+ * @properties={typeid:35,uuid:"4D361EB8-C458-491F-AFD0-1B539C6DC8BA",variableType:4}
+ */
+var showInfoBox = 1;
+
+/**
+ * @type {Number}
+ *
+ * @properties={typeid:35,uuid:"EE321E24-9AD8-4D76-8C40-E03668188648",variableType:4}
+ */
+var hideDOB = 0;
+
+/**
+ * @type {Number}
+ *
+ * @properties={typeid:35,uuid:"1400F609-B7C5-430F-A018-96329D976374",variableType:4}
+ */
+var hideEmployeeRepeat = 0;
+
+/**
  * @type {String}
  *
  * @properties={typeid:35,uuid:"F96F04E2-C58B-4B0B-B8C9-714C901C4FD8"}
@@ -36,7 +57,9 @@ var TAG_FIELDS = {
 /**
  * @properties={typeid:35,uuid:"C01879B9-6A3A-4BCB-9D5B-F027A1D8D554",variableType:-4}
  */
-var IF_TAGS = [{ displayValue: 'can-show-date-of-birth', realValue: 'canShowDateOfBirth' }]
+var IF_TAGS = [
+	{ displayValue: 'show-info-box', realValue: 'example' }
+];
 
 /**
  * @param {JSEvent} event
@@ -46,7 +69,7 @@ var IF_TAGS = [{ displayValue: 'can-show-date-of-birth', realValue: 'canShowDate
  * @AllowToRunInFind
  */
 function onShow(event, firstShow) {
-	CKDATA = solutionModel.getMedia('sample.html').getAsString();
+	CKDATA = solutionModel.getMedia('sample2.html').getAsString();
 	setupEditor(event);
 }
 
@@ -122,6 +145,7 @@ function setupEditor(event) {
 			'|',
 			'link',
 			'pageBreak',
+			'horizontalline',
 			'blockquote',
 			'imageUpload',
 			'insertTable',
@@ -307,10 +331,16 @@ function switchToPreviewMode() {
  */
 function mentionOverwrite(dataprovider, relation, record, value, mentionRealvalue, mentionDisplayValue) {
 	application.output('Document mentionCallback -  value: `' + value + "` dataprovider: `" + dataprovider + "` relationName: `" + relation + "` record: `" + record + "` mentionRealValue: `" + mentionRealvalue + "`");
-	if (mentionRealvalue === 'custom_now') {
-		return new Date();
+	switch (mentionRealvalue) {
+		case 'custom_now':
+			return new Date();
+		case 'customer_to_employee.date_of_birth':
+			var age = scopes.svyDateUtils.getYearDifference(value, new Date());
+			return !hideDOB || age >= 18 ? value : null;
+		default:
+			return value;
 	}
-	return value;
+	
 }
 
 /**
@@ -324,8 +354,8 @@ function mentionOverwrite(dataprovider, relation, record, value, mentionRealvalu
  */
 function repeatOverwrite(relationName, mentionRealValue, record) {
 	application.output('Document repeatCallback - realValue: `' + mentionRealValue + '` relationName: `' + relationName + '` record: `' + record + '`');
-	if (mentionRealValue === 'this_relation_should_not_be_displayed') {
-		return false;
+	if(mentionRealValue == 'customer_to_employee'){
+		return !hideEmployeeRepeat;
 	}
 	return true;
 }
@@ -333,16 +363,18 @@ function repeatOverwrite(relationName, mentionRealValue, record) {
 /**
  * @protected
  * @param realValue
- * @param {JSRecord} record
+ * @param {JSRecord<mem:employee>} record
  * @return {Boolean}
  * @properties={typeid:24,uuid:"51D85D56-9E95-437D-8280-026E618BA200"}
  */
 function ifParser(realValue, record) {
 	application.output('Document Ifparser - realValue: `' + realValue + '` record: `' + record + '`');
-	if (realValue == 'canShowDateOfBirth') {
-		return false;
+	switch (realValue) {
+		case 'example':	
+			return showInfoBox == 1;
+		default:
+			return true;
 	}
-	return true;
 }
 
 /**

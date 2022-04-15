@@ -26,5 +26,12 @@ mimeType:"text/html",
 name:"sample.html",
 typeid:37,
 uuid:"E040AE4A-EBDF-4E4B-A0F5-F9A2AB32076F"
+},
+{
+encapsulation:0,
+mimeType:"text/html",
+name:"sample2.html",
+typeid:37,
+uuid:"B9FE5308-2BC7-4507-95AD-CFAFA1D00C69"
 }
 ]

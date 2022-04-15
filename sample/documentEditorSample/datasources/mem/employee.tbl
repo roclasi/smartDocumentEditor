@@ -18,7 +18,7 @@ length:50,
 name:"country"
 },
 {
-allowNull:false,
+allowNull:true,
 creationOrderIndex:4,
 dataType:12,
 flags:4,
