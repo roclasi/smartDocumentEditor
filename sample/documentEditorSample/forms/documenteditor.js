@@ -329,30 +329,31 @@ function switchToPreviewMode() {
  * @return {*}
  * @properties={typeid:24,uuid:"EBD25532-A67E-4FAA-B835-5CB811966B93"}
  */
-function mentionOverwrite(dataprovider, relation, record, value, mentionRealvalue, mentionDisplayValue) {
-	application.output('Document mentionCallback -  value: `' + value + "` dataprovider: `" + dataprovider + "` relationName: `" + relation + "` record: `" + record + "` mentionRealValue: `" + mentionRealvalue + "`");
+function mentionOverwrite(mentionRealvalue, mentionDisplayValue, dataprovider, relationName, record) {
+	application.output(arguments)
+	application.output("Document mentionCallback - dataprovider: `" + dataprovider + "` relationName: `" + relationName + "` record: `" + record + "` mentionRealValue: `" + mentionRealvalue + "`");
 	switch (mentionRealvalue) {
 		case 'custom_now':
 			return new Date();
 		case 'customer_to_employee.date_of_birth':
-			var age = scopes.svyDateUtils.getYearDifference(value, new Date());
-			return !hideDOB || age >= 18 ? value : null;
+			var age = scopes.svyDateUtils.getYearDifference(record[dataprovider], new Date());
+			return !hideDOB || age >= 18 ? record[dataprovider] : null;
 		default:
-			return value;
+			return record[dataprovider];
 	}
 	
 }
 
 /**
- * @param relationName
  * @param mentionRealValue
+ * @param relationName
  * @param {JSRecord} record
  *
  * @return {Boolean}
  *
  * @properties={typeid:24,uuid:"E43B77A0-517C-4C4A-94A7-934DDA6C9D18"}
  */
-function repeatOverwrite(relationName, mentionRealValue, record) {
+function repeatOverwrite(mentionRealValue, relationName, record) {
 	application.output('Document repeatCallback - realValue: `' + mentionRealValue + '` relationName: `' + relationName + '` record: `' + record + '`');
 	if(mentionRealValue == 'customer_to_employee'){
 		return !hideEmployeeRepeat;
