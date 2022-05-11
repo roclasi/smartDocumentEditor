@@ -98,6 +98,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             var destroyListenerUnreg = $scope.$on("$destroy", function() {
                 destroyListenerUnreg();
                 delete $scope.model[$sabloConstants.modelChangeNotifier];
+                delete $scope.model.config.autosave;
                 
                 if($scope.editor) {
                     $scope.editor.destroy().then(() => {
