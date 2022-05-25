@@ -21,7 +21,7 @@
     "@angular/compiler": "13.2.2",
     "@angular/core": "13.2.2",
     "@angular/forms": "13.2.2",
-    "@ckeditor/ckeditor5-angular": "^2.0.2",
+    "@ckeditor/ckeditor5-angular": "^3.0.0",
     "@servoy/public": "2022.3.0",
     "rxjs": "7.5.4",
     "tslib": "2.3.1",

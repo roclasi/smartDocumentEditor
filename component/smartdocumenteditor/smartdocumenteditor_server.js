@@ -34,18 +34,6 @@ $scope.api.create = function(config) {
         }
         $scope.model.toolbarItems = toolbarItems;
     }
-    //make sure placeholder items provided on the config end up on the model's placeholderItems property
-    // if (config.placeholders) {
-    //     var plcItems = [];
-    //     config.placeholders.forEach(item => {
-    //         plcItems.push({
-    //             displayName: item.displayName || item.dataProvider,
-    //             dataProvider: item.dataProvider,
-    //             format: item.format || null
-    //         })
-    //     })
-    //     $scope.model.placeholders = plcItems;
-    // }
 
     $scope.model.config = config;
 }
@@ -64,22 +52,6 @@ $scope.api.createToolbarItem = function(name, onClick) {
         type: 'servoyToolbarItem',
         isEnabled: true,
         ignoreReadOnly: false
-    };
-}
-
-/**
- * Returns an placeholderItem that can be provided on a placeholders property of an editor's config
- * @param {String} dataProvider the name of the dataprovider
- * @param {String} [displayName] an optional display name for this dataprovider
- * @param {String} [format] an optional format string
- * @example elements.%%elementName%%.createPlaceholderItem(dataProvider, displayName, format);
- * @return {CustomType<smartdocumenteditor-smartdocumenteditor.placeholderItem>}
- */
-$scope.api.createPlaceholderItem = function(dataProvider, displayName, format) {
-    return {
-        dataProvider: dataProvider,
-        displayName: displayName || dataProvider,
-        format: format || ''
     };
 }
 

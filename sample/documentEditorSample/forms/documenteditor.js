@@ -391,6 +391,7 @@ function showEditorInDialog(event) {
 	}
 	
 	var window = application.createWindow('myWindow',JSWindow.MODAL_DIALOG);
+	window.setSize(1200,800)
 	window.show(forms['documentEditor_popup'])
 
 }

@@ -119,8 +119,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 				if (isResponsive()) {
 		            /** The html Div container of the smartdocument editor */
 		            var editorDiv = $element.children()[0];
-		            
-					if ($scope.model.responsiveHeight) {
+                     if ($scope.model.responsiveHeight) {
 						editorDiv.style.height = $scope.model.responsiveHeight + 'px';
 					} else {
 						// when responsive height is 0 or undefined, use 100% of the parent container.
@@ -385,49 +384,6 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             function getFeeds() {
                 var result = [];
 
-                // //add placeholder mention
-                // if ($scope.model.placeholderMarker) {
-                //     const plcHolderMention = {
-                //         marker : $scope.model.placeholderMarker,
-                //         itemRenderer : svyMentionRenderer,
-                //         minimumCharacters: 0,
-                //         feed : function(queryText) {
-                //             var plcHolderItems = getPlaceholderItems();
-                //             if (plcHolderItems.length) {
-                //                 return new Promise(resolve => {
-                //                     const searchString = queryText.toLowerCase();
-                //                     let list = plcHolderItems
-                //                         // Filter out the full list of all items to only those matching the query text.
-                //                         // Order startWith before contains
-                //                         .filter((item) => {
-                //                             return item.displayName.toLowerCase().startsWith(searchString);
-                //                         })
-                //                     list = list.concat(plcHolderItems.filter((item) => {
-                //                         return !item.displayName.toLowerCase().startsWith(searchString) && item.displayName.toLowerCase().includes(searchString);
-                //                     }))
-
-                //                     list = list.slice(0, 10)
-                //                         //Map /Convert default valuelist names to matching object keys for tags
-                //                         .map((item) => {
-                //                             return {
-                //                                 name: item.displayName,
-                //                                 id: $scope.model.placeholderMarker + item.displayName,
-                //                                 dataProvider: item.dataProvider,
-                //                                 format: item.format || '',
-                //                                 editable: false,
-                //                                 isPlaceholderMention: true
-                //                             }
-                //                         });
-                //                     resolve(list);
-                //                 })
-                //             } else {
-                //                 return [];
-                //             }
-                //         }
-                //     }
-                //     result.push(plcHolderMention);
-                // }
-
                 //add other mentions
                 if ($scope.model.mentionFeeds) {
                     for (let i = 0; i < $scope.model.mentionFeeds.length; i++) {
@@ -495,49 +451,6 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 }
                 return result;
             }
-
-            // /*********************************************
-            //  * Placeholder
-            //  *********************************************/
-
-            // /**
-            //  * Returns an array of all placeholder items that could be used in mention or a toolbar dropdown
-            //  */
-            // function getPlaceholderItems() {
-            //     if ($scope.model.placeholders && $scope.model.placeholders.length) {
-            //         return $scope.model.placeholders.map(function(placeholderEntry) {
-            //             return {
-            //                 displayName: placeholderEntry.displayName || placeholderEntry.dataProvider,
-            //                 dataProvider: placeholderEntry.dataProvider,
-            //                 format: placeholderEntry.format || ''
-            //             }
-            //         })
-            //     } else {
-            //         return [];
-            //     }
-            // }
-
-            // /**
-            //  * Returns the config used for the placeholder toolbar drop down
-            //  */
-            // function getPlaceholderUIConfig() {
-            //     if ($scope.model.toolbarItems && $scope.model.toolbarItems.length > 0) {
-            //         var placeHolderItem = $scope.model.toolbarItems.filter((item) => {
-            //             return item.type === 'servoyPlaceholder';
-            //         });
-            //         if (placeHolderItem.length) {
-            //             return {
-            //                     name: placeHolderItem[0].name,
-            //                     label: placeHolderItem[0].label || 'Placeholder',
-            //                     withText: placeHolderItem[0].withText,
-            //                     isEnabled: placeHolderItem[0].isEnabled,
-            //                     withTooltip: placeHolderItem[0].tooltip || null,
-            //                     iconStyleClass: placeHolderItem[0].iconStyleClass || null
-            //                 };
-            //         }
-            //     }
-            //     return null;
-            // }
 
              /*********************************************
              * Toolbar
@@ -696,12 +609,6 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     //make sure custom toolbar items are created
                     //We should always load them, else the valuelists don't get an update to show the correct values
                     config.svyToolbarItems = getSvyToolbarItems();
-
-                    //get config for a possible servoyPlaceholder toolbar entry
-                    // config.svyPlaceholderConfig = getPlaceholderUIConfig();
-
-                    //get config for a servoyPlaceholder items
-                    // config.svyPlaceholderItems = getPlaceholderItems();
                     
                     if ($scope.model.mentionFeeds && $scope.model.mentionFeeds.length) {
                         config.mention = {

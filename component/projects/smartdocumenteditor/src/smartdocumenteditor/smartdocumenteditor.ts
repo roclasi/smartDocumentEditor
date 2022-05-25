@@ -1,6 +1,6 @@
 import { Component, SimpleChanges, Input, Renderer2, ChangeDetectorRef, ViewChild, Output, EventEmitter, Inject, ElementRef } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { ServoyBaseComponent, BaseCustomObject, IValuelist, JSEvent, ServoyPublicService } from '@servoy/public';
+import { ServoyBaseComponent, BaseCustomObject, IValuelist, JSEvent, ServoyPublicService, EventLike } from '@servoy/public';
 import { CKEditorComponent } from '@ckeditor/ckeditor5-angular';
 
 @Component({
@@ -34,9 +34,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
     @Input() showInspector: boolean;
     @Input() mentionFeeds: Array<MentionFeed>;
     @Input() editorStyleSheet: string;
-    // @Input() placeholders: Array<PlaceholderItem>;
     @Input() config: any;
-    // @Input() placeholderMarker: string;
     @Input() prePreviewData: string;
 
     @Input() onActionMethodID: (e: JSEvent) => void;
@@ -77,12 +75,6 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         //make sure custom toolbar items are created
         //We should always load them, else the valuelists don't get an update to show the correct values
         // this.config.svyToolbarItems = this.getSvyToolbarItems();
-
-        //get config for a possible servoyPlaceholder toolbar entry
-        // this.config.svyPlaceholderConfig = this.getPlaceholderUIConfig();
-
-        //get config for a servoyPlaceholder items
-        // this.config.svyPlaceholderItems = this.getPlaceholderItems();
 
         if (this.mentionFeeds && this.mentionFeeds.length) {
             //add placeholder mention feed
@@ -185,7 +177,6 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                         break;
                     case "responsiveHeight":
                         if (!this.servoyApi.isInAbsoluteLayout()) {
-
                             if (this.responsiveHeight) {
                                 this.renderer.setStyle(this.getNativeElement(), 'height', this.responsiveHeight + 'px');
                             } else {
@@ -258,7 +249,6 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         if (this.overWriteTabForEditor) {
             viewDocument.on('keydown', (evt, data) => {
                 if ((data.keyCode == 9) && viewDocument.isFocused) {
-                    // $scope.editor.execute( 'input', { text: "\t" } );
                     editor.execute('input', { text: "     " });
 
                     evt.stop(); // Prevent executing the default handler.
@@ -272,11 +262,11 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
             editor.ui.focusTracker.on('change:isFocused', (evt, data, isFocused) => {
                 if (isFocused) {
                     if (this.onFocusGainedMethodID) {
-                        this.onFocusGainedMethodID(this.servoyService.createJSEvent(event, 'focusGained'));
+                        this.onFocusGainedMethodID(this.servoyService.createJSEvent( {target : this.getNativeElement()} as EventLike, 'focusGained'));
                     }
                 } else {
                     if (this.onFocusLostMethodID) {
-                        this.onFocusLostMethodID(this.servoyService.createJSEvent(event, 'focusLost'));
+                        this.onFocusLostMethodID(this.servoyService.createJSEvent( {target : this.getNativeElement()} as EventLike, 'focusLost'));
                     }
                     this.forceSaveData(this.editorComponent.editorInstance.getData());
                 }
@@ -286,7 +276,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         if (this.onActionMethodID) {
             editor.listenTo(editor.editing.view.document, 'click', (evt) => {
                 if (this.readOnly) {
-                    this.onActionMethodID(this.servoyService.createJSEvent(event, 'onAction'));
+                    this.onActionMethodID(this.servoyService.createJSEvent( {target : this.getNativeElement()} as EventLike, 'onAction'));
                 }
             })
         }
@@ -355,50 +345,6 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     getFeeds() {
         var result = [];
-
-        // //add placeholder mention
-        // if (this.placeholderMarker) {
-        //     const plcHolderMention = {
-        //         marker: this.placeholderMarker,
-        //         itemRenderer: this.svyMentionRenderer,
-        //         minimumCharacters: 0,
-        //         feed: function(queryText) {
-        //             var plcHolderItems = this.getPlaceholderItems();
-        //             if (plcHolderItems.length) {
-        //                 return new Promise(resolve => {
-        //                     const searchString = queryText.toLowerCase();
-        //                     let list = plcHolderItems
-        //                         // Filter out the full list of all items to only those matching the query text.
-        //                         // Order startWith before contains
-        //                         .filter((item) => {
-        //                             return item.displayName.toLowerCase().startsWith(searchString);
-        //                         })
-        //                     list = list.concat(plcHolderItems.filter((item) => {
-        //                         return !item.displayName.toLowerCase().startsWith(searchString) && item.displayName.toLowerCase().includes(searchString);
-        //                     }))
-
-        //                     list = list.slice(0, 10)
-        //                         //Map /Convert default valuelist names to matching object keys for tags
-        //                         .map((item) => {
-        //                             return {
-        //                                 name: item.displayName,
-        //                                 id: this.placeholderMarker + item.displayName,
-        //                                 dataProvider: item.dataProvider,
-        //                                 format: item.format || '',
-        //                                 editable: false,
-        //                                 isPlaceholderMention: true
-        //                             }
-        //                         });
-        //                     resolve(list);
-        //                 })
-        //             } else {
-        //                 return [];
-        //             }
-        //         }
-        //     }
-        //     result.push(plcHolderMention);
-        // }
-
         //add other mentions
         if (this.mentionFeeds) {
             for (let i = 0; i < this.mentionFeeds.length; i++) {
@@ -468,39 +414,6 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         return result;
     }
 
-    // getPlaceholderItems() {
-    //     if (this.placeholders && this.placeholders.length) {
-    //         return this.placeholders.map((placeholderEntry) => {
-    //             return {
-    //                 displayName: placeholderEntry.displayName || placeholderEntry.dataProvider,
-    //                 dataProvider: placeholderEntry.dataProvider,
-    //                 format: placeholderEntry.format || ''
-    //             }
-    //         })
-    //     } else {
-    //         return [];
-    //     }
-    // }
-
-    // getPlaceholderUIConfig() {
-    //     if (this.toolbarItems && this.toolbarItems.length > 0) {
-    //         var placeHolderItem = this.toolbarItems.filter((item) => {
-    //             return item.type === 'servoyPlaceholder';
-    //         });
-    //         if (placeHolderItem.length) {
-    //             return {
-    //                 name: placeHolderItem[0].name,
-    //                 label: placeHolderItem[0].label || 'Placeholder',
-    //                 withText: placeHolderItem[0].withText,
-    //                 isEnabled: placeHolderItem[0].isEnabled,
-    //                 withTooltip: placeHolderItem[0].tooltip || null,
-    //                 iconStyleClass: placeHolderItem[0].iconStyleClass || null
-    //             };
-    //         }
-    //     }
-    //     return null;
-    // }
-
     getSvyToolbarItems() {
         // Style of icon styleClass is overriden by the ck-reset class; causing issues in showing font icons. This is an known issue of CKEditor
         // https://stackoverflow.com/questions/65605215/prevent-from-being-added-ck-reset-classes-in-ckeditor-5
@@ -518,7 +431,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     ignoreReadOnly: item.ignoreReadOnly || false,
                     valueList: item.valueList,
                     onClick: item.onClick ? (buttonView, dropDownValue) => {
-                        var jsevent = this.servoyService.createJSEvent(event, 'action');
+                        var jsevent = this.servoyService.createJSEvent( {target : this.getNativeElement()} as EventLike, 'action');
                         this.servoyService.executeInlineScript(item.onClick.formname, item.onClick.script, [jsevent, item.name, dropDownValue || null])
                     } : null
                 }
@@ -526,8 +439,8 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         }
         return null;
     }
-
-    getToolbarItems(): Array<String> {
+    
+    getToolbarItems(): Array<string> {
         if (this.toolbarItems && this.toolbarItems.length > 0) {
             return this.toolbarItems.map((item) => {
                 if (item.type === 'separator') {
@@ -556,7 +469,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         return 'en';
     }
 
-    getEditorCSSStylesheetName() {
+    getEditorCSSStylesheetName(): string {
         if(this.editorStyleSheet) {
             var name = this.editorStyleSheet.split('?')[0];
             name = name.split('/').pop();
@@ -584,7 +497,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     addInputAtCursor(input: string) {
         if (input) {
-            if (this.readOnly == true || !this.editorComponent) {
+            if (this.readOnly || !this.editorComponent) {
                 return false;
             }
             this.editorComponent.editorInstance.execute('input', { text: input })
@@ -623,20 +536,20 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         return false;
     }
 
-    executeCommand(command, commandParameters) {
+    executeCommand(command: string, commandParameters: object) {
         if (this.editorComponent) {
             this.editorComponent.editorInstance.execute(command, commandParameters);
         }
     }
 
 
-    insertImage(source) {
+    insertImage(source: string) {
         if (this.editorComponent) {
             this.editorComponent.editorInstance.execute('imageInsert', { source: source });
         }
     }
 
-    getHTMLData(withInlineCSS, filterStylesheetName) {
+    getHTMLData(withInlineCSS: boolean, filterStylesheetName: string): string {
         if (this.editorComponent) {
             let data = '<html><body><div class="ck-content" dir="ltr">' + this.editorComponent.editorInstance.getData() + '</div></body></html>';
             if (withInlineCSS) {
@@ -649,7 +562,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         return null;
     }
 
-    getCSSData(filterStylesheetName: boolean) {
+    getCSSData(filterStylesheetName: boolean): string {
         if (filterStylesheetName) {
             let cssStyleSheetFilterArray = [filterStylesheetName, this.getEditorCSSStylesheetName()];
             let cssStyleSheetFilter = cssStyleSheetFilterArray.filter(value => {
@@ -661,30 +574,11 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         }
     }
 
-    getPrintCSSData() {
+    getPrintCSSData(): string {
         return this.Editor.getPrintCSS();
     }
 
-    // showPlaceholderRealData = function(record) {
-    //     this.editorComponent.editorInstance.model.change(writer => {
-    //         const rangeInRoot = writer.createRangeIn(this.editorComponent.editorInstance.model.document.getRoot());
-
-    //         for (const item of rangeInRoot.getItems()) {
-    //             if (item.name === 'svy-placeholder') {
-    //                 //placeholder item found
-    //                 console.log(item);
-    //             }
-    //         }
-    //     })
-    // }
-
-    /**
-    * Preview Editor HTML data into the editor
-    * @param {String} html
-    * @param {Boolean} [readOnly] set component into readOnly mode (default: true)
-    * @public 
-    */
-    previewHTML = function(html, readOnly) {
+    previewHTML(html: string, readOnly?:boolean) {
         //Force save current HTML Editor;
         this.forceSaveData( this.editorComponent.editorInstance.getData());
         this.prePreviewData = this.editorComponent.editorInstance.getData();
@@ -692,22 +586,13 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         this.editorComponent.editorInstance.setData(html);
     }
 
-    /**
-    * Undo Preview Editor HTML data into the editor
-    * @param {Boolean} [readOnly] set component into readOnly mode (default: false)
-    * @public 
-    */
-    undoPreviewHTML = function(readOnly) {
+    undoPreviewHTML(readOnly?: boolean) {
         this.editorComponent.editorInstance.setData(this.prePreviewData);
         this.prePreviewData = null;
         this.editorComponent.editorInstance.isReadOnly = !!(readOnly != undefined ? readOnly : false);
     }
-    /**
-    * Return if editor is in preview mode (CKEditor readOnly)
-    * @returns boolean
-    * @public 
-    */
-    isInPreviewMode = function() {
+
+    isInPreviewMode(): boolean {
         return !!this.editorComponent.editorInstance.isReadOnly;
     }
 }
@@ -740,12 +625,6 @@ export class MentionFeedItem extends BaseCustomObject {
     format: string;
     realValue: string;
 }
-
-// export class PlaceholderItem extends BaseCustomObject {
-//     displayName: string;
-//     dataProvider: string;
-//     format: string;
-// }
 
 class ServoyUploadAdapter {
     loader: any;
