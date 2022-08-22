@@ -2,6 +2,7 @@
     "name": "smartdocumenteditor-smartdocumenteditor",
     "displayName": "Smart Document Editor",
     "version": 1,
+    "icon": "smartdocumenteditor/smartdocumenteditor/smartDocumentEditor.png",
     "definition": "smartdocumenteditor/smartdocumenteditor/smartdocumenteditor.js",
     "serverscript": "smartdocumenteditor/smartdocumenteditor/smartdocumenteditor_server.js",
     "libraries": [
