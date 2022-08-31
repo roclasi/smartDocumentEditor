@@ -17,11 +17,11 @@
   },
   "homepage": "https://github.com/pruhsert/svy-placeholder#readme",
   "dependencies": {
-    "@ckeditor/ckeditor5-ui": "^28.0.0",
-    "@ckeditor/ckeditor5-widget": "^28.0.0"
+    "@ckeditor/ckeditor5-ui": "^35.0.1",
+    "@ckeditor/ckeditor5-widget": "^35.0.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "^28.0.0",
-    "@ckeditor/ckeditor5-utils": "^28.0.0"
+    "@ckeditor/ckeditor5-core": "^35.0.1",
+    "@ckeditor/ckeditor5-utils": "^35.0.1"
   }
 }
