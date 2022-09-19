@@ -36,6 +36,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
     @Input() editorStyleSheet: string;
     @Input() config: any;
     @Input() prePreviewData: string;
+    @Input() minHeight: number;
 
     @Input() onActionMethodID: (e: JSEvent) => void;
     @Input() onFocusGainedMethodID: (e: JSEvent) => void;
@@ -218,10 +219,25 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                             head.appendChild(cssHref);
                         }
                     break;
+                    case 'showToolbar':
+                        this.toggleToolbar();
+                        break;
                 }
             }
         }
         super.svyOnChanges(changes);
+    }
+
+    public toggleToolbar() {
+        const toolbar = this.getNativeElement().querySelector('#toolbar-container');
+        if (toolbar.firstChild) {
+            toolbar.removeChild(toolbar.firstChild);
+        }
+
+        if (this.showToolbar) {
+            toolbar.appendChild(this.editorComponent.editorInstance.ui.view.toolbar.element);
+            this.getNativeElement().querySelectorAll('.ck-toolbar')[0].classList.add('ck-reset_all');
+        }
     }
 
     public onEditorReady(editor : any): void {
@@ -607,6 +623,15 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     isInPreviewMode(): boolean {
         return !!this.editorComponent.editorInstance.isReadOnly;
+    }
+
+    requestFocus() {
+        if (this.editorComponent) {
+            this.editorComponent.editorInstance.focus();
+            return true;
+        }
+
+        return false;
     }
 }
 export class ToolbarItem extends BaseCustomObject {
