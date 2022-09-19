@@ -41,7 +41,11 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                         break;
                     case "readOnly":
                         if($scope.editor) {
-                            $scope.editor.isReadOnly = !!value;
+                            if(!!value) {
+                                $scope.editor.enableReadOnlyMode('readonly');
+                            } else {
+                                $scope.editor.disableReadOnlyMode('readonly');
+                            }
                         }
                         break;
                     case "visible":
@@ -904,7 +908,12 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 //Force save current HTML Editor;
                 forceSaveData( $scope.editor.getData() );
                 $scope.model.prePreviewData = $scope.editor.getData();
-                $scope.editor.isReadOnly = !!(readOnly != undefined ? readOnly : true);
+
+                if(!!(readOnly != undefined ? readOnly : true)) {
+                    $scope.editor.enableReadOnlyMode('readonly');
+                } else {
+                    $scope.editor.disableReadOnlyMode('readonly');
+                }
                 $scope.editor.setData(html)
             }
 
@@ -916,7 +925,11 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             $scope.api.undoPreviewHTML = function(readOnly) {
                 $scope.editor.setData($scope.model.prePreviewData);
                 $scope.model.prePreviewData = null;
-                $scope.editor.isReadOnly = !!(readOnly != undefined ? readOnly : false);
+                if(!!(readOnly != undefined ? readOnly : false)) {
+                    $scope.editor.enableReadOnlyMode('readonly');
+                } else {
+                    $scope.editor.disableReadOnlyMode('readonly');
+                }
             }
 
             /**

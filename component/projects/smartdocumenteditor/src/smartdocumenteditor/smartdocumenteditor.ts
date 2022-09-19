@@ -172,7 +172,11 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     case 'readOnly':
                         if (this.editorComponent && this.editorComponent.editorInstance)
                         {
-                            this.editorComponent.editorInstance.isReadOnly = change.currentValue;
+                            if(change.currentValue) {
+                                this.editorComponent.editorInstance.enableReadOnlyMode('readonly');
+                            } else {
+                                this.editorComponent.editorInstance.disableReadOnlyMode('readonly');
+                            }
                         }
                         break;
                     case "responsiveHeight":
@@ -582,14 +586,23 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         //Force save current HTML Editor;
         this.forceSaveData( this.editorComponent.editorInstance.getData());
         this.prePreviewData = this.editorComponent.editorInstance.getData();
-        this.editorComponent.editorInstance.isReadOnly = !!(readOnly != undefined ? readOnly : true);
+        if(!!(readOnly != undefined ? readOnly : true)) {
+            this.editorComponent.editorInstance.enableReadOnlyMode('readonly');
+        } else {
+            this.editorComponent.editorInstance.disableReadOnlyMode('readonly');
+        }
+
         this.editorComponent.editorInstance.setData(html);
     }
 
     undoPreviewHTML(readOnly?: boolean) {
         this.editorComponent.editorInstance.setData(this.prePreviewData);
         this.prePreviewData = null;
-        this.editorComponent.editorInstance.isReadOnly = !!(readOnly != undefined ? readOnly : false);
+        if(!!(readOnly != undefined ? readOnly : false)) {
+            this.editorComponent.editorInstance.enableReadOnlyMode('readonly');
+        } else {
+            this.editorComponent.editorInstance.disableReadOnlyMode('readonly');
+        }
     }
 
     isInPreviewMode(): boolean {
