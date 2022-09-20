@@ -216,7 +216,9 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                         }
                     break;
                     case 'showToolbar':
-                        this.toggleToolbar();
+                        if (this.editorComponent && this.editorComponent.editorInstance) {
+                            this.toggleToolbar();
+                        }
                         break;
                 }
             }
