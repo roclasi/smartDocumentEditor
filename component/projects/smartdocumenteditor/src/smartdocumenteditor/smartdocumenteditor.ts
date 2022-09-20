@@ -193,7 +193,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     case 'dataProviderID':
                         if (!change.isFirstChange())
                         {
-                            if(this.editorComponent && this.editorComponent.editorInstance.editing.view.document.isFocused) {
+                            if(this.editorComponent && !this.editorComponent.editorInstance.editing.view.document.isFocused) {
                                 this.editorComponent.editorInstance.setData( this.dataProviderID || '');
                             }
                         }    
