@@ -14,7 +14,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             $scope.editor = null;
             $scope.createEditorQueue = [];
 
-            var VIEW_TYPE = {
+            const VIEW_TYPE = {
             	WEB: 'WEB',
 				DOCUMENT: 'DOCUMENT'
             }
@@ -28,7 +28,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     switch (property) {
                     //When type is set to document view, add the correct styleclasses to init the documentview layout
                     case "viewType":
-                        var div = $($element.children()[0]);
+                        let div = $($element.children()[0]);
                         if(value == 'DOCUMENT') {
                             if(!div.hasClass('ckeditor-documentview')) {
                                 div.addClass('ckeditor-documentview');
@@ -75,8 +75,8 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                         angular.element("head > [customSmartDocumentEditor]").remove();
                         //Add new client stylesheet
                         if(value) {
-                            var url = value.split('?')[0];
-                            var additions = value.split('?')[1].split('&').filter((item) => {
+                            let url = value.split('?')[0];
+                            let additions = value.split('?')[1].split('&').filter((item) => {
                                 return item.startsWith('clientnr');
                             });
                             if(additions.length) {
@@ -85,8 +85,8 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 
                             console.debug('Setting new customSmartDocumentEditor url: ' + url);
 
-                            var head = angular.element("head");
-                            var cssHref = $window.document.createElement('link');
+                            let head = angular.element("head");
+                            let cssHref = $window.document.createElement('link');
                             cssHref.setAttribute("rel", "stylesheet");
                             cssHref.setAttribute("type", "text/css");
                             cssHref.setAttribute("href", url);
@@ -99,7 +99,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 }
             });
 
-            var destroyListenerUnreg = $scope.$on("$destroy", function() {
+            const destroyListenerUnreg = $scope.$on("$destroy", function() {
                 destroyListenerUnreg();
                 delete $scope.model[$sabloConstants.modelChangeNotifier];
                 delete $scope.model.config.autosave;
@@ -122,7 +122,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 			function setHeight() {
 				if (isResponsive()) {
 		            /** The html Div container of the smartdocument editor */
-		            var editorDiv = $element.children()[0];
+		            let editorDiv = $element.children()[0];
                      if ($scope.model.responsiveHeight) {
 						editorDiv.style.height = $scope.model.responsiveHeight + 'px';
 					} else {
@@ -141,7 +141,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
              */
             function getEditorCSSStylesheetName() {
                 if($scope.model.editorStyleSheet) {
-                    var name = $scope.model.editorStyleSheet.split('?')[0];
+                    let name = $scope.model.editorStyleSheet.split('?')[0];
                     name = name.split('/').pop();
                     return name;
                 } else {
@@ -168,7 +168,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
              */
             function uuidv4() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                  var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                  let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                   return v.toString(16);
                 });
             }
@@ -186,7 +186,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 
                 _initRequest() {
                     const xhr = this.xhr = new XMLHttpRequest();
-                    var uploadUrl = this._getFileUploadURL();
+                    let uploadUrl = this._getFileUploadURL();
                     if (uploadUrl) {
                         xhr.open('POST', uploadUrl, true);
                         xhr.responseType = 'json';
@@ -220,15 +220,15 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 
                 // Prepares the data and sends the request.
                 _sendRequest(file, uniqueFileID) {
-                    var data = this._createFormDataUpload(file, { 'imageID': uniqueFileID })
+                    let data = this._createFormDataUpload(file, { 'imageID': uniqueFileID })
                     // Send the request.
                     this.xhr.send(data);
                 }
 
                 //Create formDataUpload
                 _createFormDataUpload(file, metadata) {
-                    var formPost = new FormData();
-                    var metaFields = Object.keys(metadata);
+                    let formPost = new FormData();
+                    let metaFields = Object.keys(metadata);
                     metaFields.forEach(function (item) {
                         formPost.append(item, metadata[item]);
                     });
@@ -239,23 +239,22 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
 
                 //Get servoy fileUpload url
                 _getFileUploadURL() {
-                    var parent = $scope.$parent;
-
-                    var beanname = $element.attr("name");
+                    let parent = $scope.$parent;
+                    let beanname = $element.attr("name");
                     if (!beanname) {
-                        var nameParentEl = $element.parents("[name]").first();
+                        let nameParentEl = $element.parents("[name]").first();
                         if (nameParentEl) beanname = nameParentEl.attr("name");
                     }
                     if (!beanname) {
-                        for (var key in parent['model']) {
+                        for (let key in parent['model']) {
                             if (parent['model'][key] === beanModel) {
                                 beanname = key;
                                 break;
                             }
                         }
                     }
-                    var rowID = parent['rowID'];
-                    var formname = parent['formname'];
+                    let rowID = parent['rowID'];
+                    let formname = parent['formname'];
                     while (!formname) {
                         if (parent.$parent) {
                             parent = parent.$parent;
@@ -264,7 +263,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             break;
                         }
                     }
-                    var uploadURL;
+                    let uploadURL;
                     if (beanname && formname) {
                         if ($scope.handlers.onFileUploadedMethodID) {
                             uploadURL = "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/onFileUploadedMethodID";
@@ -303,7 +302,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     } else {
                         //upload to resources/upload
                         return this.loader.file.then(file => new Promise((resolve, reject) => {
-                            var uniqueFileID = uuidv4();
+                            let uniqueFileID = uuidv4();
                             this._initRequest();
                             this._initListeners(resolve, reject, file, uniqueFileID);
                             this._sendRequest(file, uniqueFileID);
@@ -357,8 +356,8 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             return;
                         }
 
-                        var elementType = 'span';
-                        var attributes = {
+                        let elementType = 'span';
+                        let attributes = {
                             class: 'mention svy-mention',
                             'data-mention': modelAttributeValue.id,
                             'data-real-value': (modelAttributeValue.realValue == undefined ? '' : modelAttributeValue.realValue),
@@ -430,7 +429,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                                         });
                                     } else if (feed.feedItems) {
                                     	// Filter the feedItems matching the searchString
-                                    	var matchedItems = feed.feedItems.filter((entry) => {
+                                    	let matchedItems = feed.feedItems.filter((entry) => {
                                             const searchString = queryText.toLowerCase();
                                             return entry.displayValue.toString().toLowerCase().includes(searchString);
                                         });
@@ -497,7 +496,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             ignoreReadOnly: item.ignoreReadOnly || false,
                             valueList: item.valueList,
                             onClick: item.onClick ? (buttonView, dropDownValue) => { 
-                                var jsevent = createJSEvent(event, 'action');
+                                let jsevent = createJSEvent(event, 'action');
                                 $window.executeInlineScript(item.onClick.formname, item.onClick.script, [jsevent, item.name, dropDownValue || null])
                             } : null
                         }

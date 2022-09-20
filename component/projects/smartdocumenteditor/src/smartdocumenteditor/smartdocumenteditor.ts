@@ -199,7 +199,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                         
                         if(this.editorStyleSheet) {
                             let url = this.editorStyleSheet.split('?')[0];
-                            var additions = this.editorStyleSheet.split('?')[1].split('&').filter((item) => {
+                            let additions = this.editorStyleSheet.split('?')[1].split('&').filter((item) => {
                                 return item.startsWith('clientnr');
                             });
                             if(additions.length) {
@@ -332,8 +332,8 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     return;
                 }
 
-                var elementType = 'span';
-                var attributes = {
+                let elementType = 'span';
+                let attributes = {
                     class: 'mention svy-mention',
                     'data-mention': modelAttributeValue.id,
                     'data-real-value': (modelAttributeValue.realValue == undefined ? '' : modelAttributeValue.realValue),
@@ -406,7 +406,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                             } else if (feed.feedItems) {
 
                                 // Filter the feedItems matching the searchString
-                                var matchedItems = feed.feedItems.filter((entry) => {
+                                let matchedItems = feed.feedItems.filter((entry) => {
                                     const searchString = queryText.toLowerCase();
                                     return entry.displayValue.toString().toLowerCase().includes(searchString);
                                 });
@@ -449,7 +449,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     ignoreReadOnly: item.ignoreReadOnly || false,
                     valueList: item.valueList,
                     onClick: item.onClick ? (buttonView, dropDownValue) => {
-                        var jsevent = this.servoyService.createJSEvent( {target : this.getNativeElement()} as EventLike, 'action');
+                        let jsevent = this.servoyService.createJSEvent( {target : this.getNativeElement()} as EventLike, 'action');
                         this.servoyService.executeInlineScript(item.onClick.formname, item.onClick.script, [jsevent, item.name, dropDownValue || null])
                     } : null
                 }
@@ -480,7 +480,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         if (this.language) {
             return this.language;
         }
-        var locale = this.servoyService.getLocale();
+        let locale = this.servoyService.getLocale();
         if (locale) {
             return locale;
         }
@@ -489,7 +489,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     getEditorCSSStylesheetName(): string {
         if(this.editorStyleSheet) {
-            var name = this.editorStyleSheet.split('?')[0];
+            let name = this.editorStyleSheet.split('?')[0];
             name = name.split('/').pop();
             return name;
         } else {
@@ -678,7 +678,7 @@ class ServoyUploadAdapter {
 
     _initRequest() {
         const xhr = this.xhr = new XMLHttpRequest();
-        var uploadUrl = this._getFileUploadURL();
+        let uploadUrl = this._getFileUploadURL();
         if (uploadUrl) {
             xhr.open('POST', uploadUrl, true);
             xhr.responseType = 'json';
@@ -712,15 +712,15 @@ class ServoyUploadAdapter {
 
     // Prepares the data and sends the request.
     _sendRequest(file, uniqueFileID) {
-        var data = this._createFormDataUpload(file, { 'imageID': uniqueFileID })
+        let data = this._createFormDataUpload(file, { 'imageID': uniqueFileID })
         // Send the request.
         this.xhr.send(data);
     }
 
     //Create formDataUpload
     _createFormDataUpload(file, metadata) {
-        var formPost = new FormData();
-        var metaFields = Object.keys(metadata);
+        let formPost = new FormData();
+        let metaFields = Object.keys(metadata);
         metaFields.forEach(function(item) {
             formPost.append(item, metadata[item]);
         });
@@ -762,7 +762,7 @@ class ServoyUploadAdapter {
         } else {
             //upload to resources/upload
             return this.loader.file.then(file => new Promise((resolve, reject) => {
-                var uniqueFileID = this.uuidv4();
+                let uniqueFileID = this.uuidv4();
                 this._initRequest();
                 this._initListeners(resolve, reject, file, uniqueFileID);
                 this._sendRequest(file, uniqueFileID);
@@ -781,7 +781,7 @@ class ServoyUploadAdapter {
 
     uuidv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
     }
