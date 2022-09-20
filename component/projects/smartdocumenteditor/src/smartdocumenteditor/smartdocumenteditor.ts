@@ -220,6 +220,9 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                             this.toggleToolbar();
                         }
                         break;
+                    case 'config':
+                        console.debug("Configuration change detected, new config: " + JSON.stringify(this.config));
+                        break;
                 }
             }
         }
