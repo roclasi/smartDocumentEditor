@@ -55,6 +55,8 @@ var TAG_FIELDS = {
 }
 
 /**
+ * @type {Array}
+ *
  * @properties={typeid:35,uuid:"C01879B9-6A3A-4BCB-9D5B-F027A1D8D554",variableType:-4}
  */
 var IF_TAGS = [
@@ -410,4 +412,39 @@ function showEditorInDialog(event) {
 function onDataChange(oldValue, newValue, event) {
 	application.output('onDataChange oldValue Size: ' + (oldValue||'').length + ' newValue Size: ' + (newValue||'').length);
 	return true
+}
+
+/**
+ * @param {JSEvent} event
+ *
+ * @private
+ *
+ * @properties={typeid:24,uuid:"42B759FD-AD70-465D-B0A8-BCD7D21C8D80"}
+ */
+function printImageSync(event) {
+	var documentExporter = scopes.svyDocEditor.getExporter();
+
+	documentExporter.setContent(CKDATA);
+	documentExporter.addHeadTag('<meta charset="UTF-8">');
+	documentExporter.setPageWidth(400)
+	
+	documentExporter.setImageType('jpeg')
+	documentExporter.setImageQuality(100)
+	documentExporter.setImageScaleFactor(2)
+//	plugins.file.writeFile('generatedImage.jpeg',documentExporter.exportToImage())
+	
+//	documentExporter.setImageType('png')
+	documentExporter.setImageType('webp')
+	plugins.file.writeFile('generatedImage 400 (2x) no-screensize.webp',documentExporter.exportToImage())
+}
+
+/**
+ * @param {JSEvent} event
+ *
+ * @protected
+ *
+ * @properties={typeid:24,uuid:"F782734A-F97A-4CC5-9421-8BE5A539D43F"}
+ */
+function setReadOnly(event) {
+	elements.documenteditor.readOnly = !elements.documenteditor.readOnly
 }
