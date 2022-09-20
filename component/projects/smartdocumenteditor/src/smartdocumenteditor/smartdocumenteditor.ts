@@ -109,11 +109,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         if (!this.config.language) {
             this.config.language = this.getCurrentLanguage();
         }
-        if(this.config.language == 'en') {
-            import(`../assets/lib/translations/${this.config.language}-gb.js`)
-        } else {
-            import(`../assets/lib/translations/${this.config.language}.js`)
-        }
+        import(`../assets/lib/translations/${this.config.language.toLowerCase()}.js`);
         
          
         // note The pagination feature is by default enabled only in browsers that are using the Blink engine (Chrome, Chromium, newer Edge, newer Opera). 
@@ -173,7 +169,11 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     case 'readOnly':
                         if (this.editorComponent && this.editorComponent.editorInstance)
                         {
-                            this.editorComponent.editorInstance.isReadOnly = change.currentValue;
+                            if(change.currentValue) {
+                                this.editorComponent.editorInstance.enableReadOnlyMode('readonly');
+                            } else {
+                                this.editorComponent.editorInstance.disableReadOnlyMode('readonly');
+                            }
                         }
                         break;
                     case "responsiveHeight":
@@ -189,7 +189,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     case 'dataProviderID':
                         if (!change.isFirstChange())
                         {
-                            if(this.editorComponent && this.editorComponent.editorInstance.editing.view.document.isFocused) {
+                            if(this.editorComponent && !this.editorComponent.editorInstance.editing.view.document.isFocused) {
                                 this.editorComponent.editorInstance.setData( this.dataProviderID || '');
                             }
                         }    
@@ -199,7 +199,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                         
                         if(this.editorStyleSheet) {
                             let url = this.editorStyleSheet.split('?')[0];
-                            var additions = this.editorStyleSheet.split('?')[1].split('&').filter((item) => {
+                            let additions = this.editorStyleSheet.split('?')[1].split('&').filter((item) => {
                                 return item.startsWith('clientnr');
                             });
                             if(additions.length) {
@@ -216,7 +216,12 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                         }
                     break;
                     case 'showToolbar':
-                        this.toggleToolbar();
+                        if (this.editorComponent && this.editorComponent.editorInstance) {
+                            this.toggleToolbar();
+                        }
+                        break;
+                    case 'config':
+                        console.debug("Configuration change detected, new config: " + JSON.stringify(this.config));
                         break;
                 }
             }
@@ -330,8 +335,8 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     return;
                 }
 
-                var elementType = 'span';
-                var attributes = {
+                let elementType = 'span';
+                let attributes = {
                     class: 'mention svy-mention',
                     'data-mention': modelAttributeValue.id,
                     'data-real-value': (modelAttributeValue.realValue == undefined ? '' : modelAttributeValue.realValue),
@@ -404,7 +409,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                             } else if (feed.feedItems) {
 
                                 // Filter the feedItems matching the searchString
-                                var matchedItems = feed.feedItems.filter((entry) => {
+                                let matchedItems = feed.feedItems.filter((entry) => {
                                     const searchString = queryText.toLowerCase();
                                     return entry.displayValue.toString().toLowerCase().includes(searchString);
                                 });
@@ -447,7 +452,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                     ignoreReadOnly: item.ignoreReadOnly || false,
                     valueList: item.valueList,
                     onClick: item.onClick ? (buttonView, dropDownValue) => {
-                        var jsevent = this.servoyService.createJSEvent( {target : this.getNativeElement()} as EventLike, 'action');
+                        let jsevent = this.servoyService.createJSEvent( {target : this.getNativeElement()} as EventLike, 'action');
                         this.servoyService.executeInlineScript(item.onClick.formname, item.onClick.script, [jsevent, item.name, dropDownValue || null])
                     } : null
                 }
@@ -478,7 +483,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         if (this.language) {
             return this.language;
         }
-        var locale = this.servoyService.getLocale();
+        let locale = this.servoyService.getLocale();
         if (locale) {
             return locale;
         }
@@ -487,7 +492,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
 
     getEditorCSSStylesheetName(): string {
         if(this.editorStyleSheet) {
-            var name = this.editorStyleSheet.split('?')[0];
+            let name = this.editorStyleSheet.split('?')[0];
             name = name.split('/').pop();
             return name;
         } else {
@@ -598,14 +603,23 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         //Force save current HTML Editor;
         this.forceSaveData( this.editorComponent.editorInstance.getData());
         this.prePreviewData = this.editorComponent.editorInstance.getData();
-        this.editorComponent.editorInstance.isReadOnly = !!(readOnly != undefined ? readOnly : true);
+        if(!!(readOnly != undefined ? readOnly : true)) {
+            this.editorComponent.editorInstance.enableReadOnlyMode('readonly');
+        } else {
+            this.editorComponent.editorInstance.disableReadOnlyMode('readonly');
+        }
+
         this.editorComponent.editorInstance.setData(html);
     }
 
     undoPreviewHTML(readOnly?: boolean) {
         this.editorComponent.editorInstance.setData(this.prePreviewData);
         this.prePreviewData = null;
-        this.editorComponent.editorInstance.isReadOnly = !!(readOnly != undefined ? readOnly : false);
+        if(!!(readOnly != undefined ? readOnly : false)) {
+            this.editorComponent.editorInstance.enableReadOnlyMode('readonly');
+        } else {
+            this.editorComponent.editorInstance.disableReadOnlyMode('readonly');
+        }
     }
 
     isInPreviewMode(): boolean {
@@ -667,7 +681,7 @@ class ServoyUploadAdapter {
 
     _initRequest() {
         const xhr = this.xhr = new XMLHttpRequest();
-        var uploadUrl = this._getFileUploadURL();
+        let uploadUrl = this._getFileUploadURL();
         if (uploadUrl) {
             xhr.open('POST', uploadUrl, true);
             xhr.responseType = 'json';
@@ -701,15 +715,15 @@ class ServoyUploadAdapter {
 
     // Prepares the data and sends the request.
     _sendRequest(file, uniqueFileID) {
-        var data = this._createFormDataUpload(file, { 'imageID': uniqueFileID })
+        let data = this._createFormDataUpload(file, { 'imageID': uniqueFileID })
         // Send the request.
         this.xhr.send(data);
     }
 
     //Create formDataUpload
     _createFormDataUpload(file, metadata) {
-        var formPost = new FormData();
-        var metaFields = Object.keys(metadata);
+        let formPost = new FormData();
+        let metaFields = Object.keys(metadata);
         metaFields.forEach(function(item) {
             formPost.append(item, metadata[item]);
         });
@@ -751,7 +765,7 @@ class ServoyUploadAdapter {
         } else {
             //upload to resources/upload
             return this.loader.file.then(file => new Promise((resolve, reject) => {
-                var uniqueFileID = this.uuidv4();
+                let uniqueFileID = this.uuidv4();
                 this._initRequest();
                 this._initListeners(resolve, reject, file, uniqueFileID);
                 this._sendRequest(file, uniqueFileID);
@@ -770,7 +784,7 @@ class ServoyUploadAdapter {
 
     uuidv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
     }

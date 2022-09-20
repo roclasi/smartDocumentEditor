@@ -120,8 +120,8 @@ DecoupledEditor.getInlineStyle = function(data, style) {
 }
 
 DecoupledEditor.getCssStyles = function(filterStylesheetNames) {
-    var css = [];
-    var filterByNames = [];
+    let css = [];
+    let filterByNames = [];
     if(filterStylesheetNames && filterStylesheetNames.length > 0) {
         for(const name of filterStylesheetNames) {
             if(name) {
@@ -137,7 +137,7 @@ DecoupledEditor.getCssStyles = function(filterStylesheetNames) {
     for (const sheet of document.styleSheets)
     {
          if(!filterByNames.length || (sheet.href && filterByNames.includes(sheet.href.split('/').pop().split('?').shift())) ) {
-            var rules = ('cssRules' in sheet)? sheet.cssRules : sheet.rules;
+            let rules = ('cssRules' in sheet)? sheet.cssRules : sheet.rules;
             if (rules) {
                 css.push('\n/* Stylesheet : '+(sheet.href||'[inline styles]')+' */');
                 for (const rule of rules)
@@ -215,11 +215,12 @@ DecoupledEditor.defaultConfig = {
 			'alignRight'
 		],
 		toolbar: [
-			'imageStyle:alignLeft',
-			'imageStyle:full',
-			'imageStyle:alignRight',
-			'|',
-			'imageTextAlternative'
+			'imageStyle:inline',
+            'imageStyle:block',
+            'imageStyle:side',
+            '|',
+            'toggleImageCaption',
+            'imageTextAlternative'
 		]
 	},
     table: {
