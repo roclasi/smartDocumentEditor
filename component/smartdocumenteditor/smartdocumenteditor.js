@@ -642,7 +642,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     }
 
                     if (!config.language) {
-                        config.language = getCurrentLanguage();
+                        config.language = getCurrentLanguage().toLocaleLowerCase();
                     }
 
                     // note The pagination feature is by default enabled only in browsers that are using the Blink engine (Chrome, Chromium, newer Edge, newer Opera). 

@@ -109,11 +109,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         if (!this.config.language) {
             this.config.language = this.getCurrentLanguage();
         }
-        if(this.config.language == 'en') {
-            import(`../assets/lib/translations/${this.config.language}-gb.js`)
-        } else {
-            import(`../assets/lib/translations/${this.config.language}.js`)
-        }
+        import(`../assets/lib/translations/${this.config.language.toLowerCase()}.js`);
         
          
         // note The pagination feature is by default enabled only in browsers that are using the Blink engine (Chrome, Chromium, newer Edge, newer Opera). 
