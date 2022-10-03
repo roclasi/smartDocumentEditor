@@ -16,8 +16,8 @@
     "importHelpers": true,
     "allowSyntheticDefaultImports" : true,
     "allowJs": true,
-    "target": "es2015",
-    "module": "es2015",
+    "target": "es2017",
+    "module": "es2020",
     "lib": [
       "es2018",
       "dom"
