@@ -154,8 +154,8 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
               */
             function forceSaveData( data ) {
                 if($scope.editor) {
-                    console.debug( 'Editor push Trigger (ID: ' + $scope.editor.id + ', readOnly: ' + $scope.model.readOnly + ', formname: ' +  $scope.$parent['formname'] + ') , pushing data');
                     if(!$scope.model.readOnly && $scope.editor && !$scope.prePreviewData) {
+                        console.debug( 'Editor push Trigger (ID: ' + $scope.editor.id + ', readOnly: ' + $scope.model.readOnly + ', formname: ' +  $scope.$parent['formname'] + ') , pushing data');
                         $scope.model.dataProviderID = data;
                         $scope.svyServoyapi.apply('dataProviderID');
                     }
@@ -631,10 +631,15 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                         config.autosave = {
                             save(editor) {
                                 return new Promise(resolve => {
-                                    setTimeout(() => {
-                                        forceSaveData(editor.getData())
+                                    if($scope.editor.state == 'ready') {
+                                        console.log('bla bla save')
+                                        setTimeout(() => {
+                                            forceSaveData(editor.getData())
+                                            resolve();
+                                        }, 200);
+                                    } else {
                                         resolve();
-                                    }, 200);
+                                    }
                                 });
                             }
                         }
@@ -690,10 +695,10 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             } 
 
                             const setData = () => {
-                                console.debug('Update Editor Context (ID: ' + editor.id + ', hasFocus: ' + editor.editing.view.document.isFocused + ', formname: ' +  $scope.$parent['formname'] + ') : The data has changed from external!');
                                 if(!$scope.editor.editing.view.document.isFocused) {
                                     const data = editor.getData();
                                     const value = $scope.model.dataProviderID || ''
+                                    console.debug('Update Editor Context (ID: ' + editor.id + ', hasFocus: ' + editor.editing.view.document.isFocused + ', formname: ' +  $scope.$parent['formname'] + ', newData size: ' + value.length +') : The data has changed from external!');
                                     if (data !== value) {
                                         editor.setData(value);
                                     }

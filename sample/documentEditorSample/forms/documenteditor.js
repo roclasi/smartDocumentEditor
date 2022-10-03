@@ -124,7 +124,6 @@ function setupEditor(event) {
 			'pageNavigation',
 			'|',
 			'heading',
-			'simpleBox',
 			'|',
 			'fontfamily',
 			'fontsize',
