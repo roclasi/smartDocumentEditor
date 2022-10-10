@@ -83,11 +83,11 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                 feeds: this.getFeeds()
             }
 
-            if (!this.config.hasOwnProperty('extraPlugins') || this.config.extraPlugins.indexOf(this.SvyMentionConverter) === -1) {
+            if (!this.config.hasOwnProperty('extraPlugins') || this.config.extraPlugins.indexOf(SvyMentionConverter) === -1) {
                 if (this.config.hasOwnProperty('extraPlugins')) {
-                    this.config.extraPlugins.push(this.SvyMentionConverter);
+                    this.config.extraPlugins.push(SvyMentionConverter);
                 } else {
-                    this.config.extraPlugins = [this.SvyMentionConverter];
+                    this.config.extraPlugins = [SvyMentionConverter];
                 }
             }
         }
@@ -109,6 +109,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
         if (!this.config.language) {
             this.config.language = this.getCurrentLanguage();
         }
+
         import(`../assets/lib/translations/${this.config.language.toLowerCase()}.js`);
         
          
@@ -301,58 +302,6 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                 }
             })
         }
-    }
-
-    SvyMentionConverter(editor: any) {
-        editor.conversion.for('upcast').elementToAttribute({
-            view: {
-                name: 'span',
-                key: 'data-mention',
-                classes: 'mention',
-                attributes: {
-                    'data-real-value': true,
-                    'contenteditable': true
-                }
-            },
-            model: {
-                key: 'mention',
-                value: viewItem => {
-                    return editor.plugins.get('Mention').toMentionAttribute(viewItem, {
-                        realValue: viewItem.getAttribute('data-real-value'),
-                        format: viewItem.getAttribute('data-format'),
-                        contenteditable: viewItem.getAttribute('contenteditable')
-                    });
-                }
-            },
-            converterPriority: 'high'
-        });
-
-        editor.conversion.for('downcast').attributeToElement({
-            model: 'mention',
-            view: (modelAttributeValue, { writer }) => {
-                // Do not convert empty attributes (lack of value means no mention).
-                if (!modelAttributeValue) {
-                    return;
-                }
-
-                let elementType = 'span';
-                let attributes = {
-                    class: 'mention svy-mention',
-                    'data-mention': modelAttributeValue.id,
-                    'data-real-value': (modelAttributeValue.realValue == undefined ? '' : modelAttributeValue.realValue),
-                    'contenteditable': (modelAttributeValue.editable == undefined ? false : modelAttributeValue.editable),
-                    'data-format': (modelAttributeValue.format || ''),
-                }
-
-                return writer.createAttributeElement(elementType, attributes, {
-                    // Make mention attribute to be wrapped by other attribute elements.
-                    priority: 20,
-                    // Prevent merging mentions together.
-                    id: modelAttributeValue.uid
-                });
-            },
-            converterPriority: 'high'
-        });
     }
 
     svyMentionRenderer(item) {
@@ -786,6 +735,60 @@ class ServoyUploadAdapter {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
+        });
+    }
+}
+
+class SvyMentionConverter {
+        constructor(editor: any) {
+        editor.conversion.for('upcast').elementToAttribute({
+            view: {
+                name: 'span',
+                key: 'data-mention',
+                classes: 'mention',
+                attributes: {
+                    'data-real-value': true,
+                    'contenteditable': true
+                }
+            },
+            model: {
+                key: 'mention',
+                value: viewItem => {
+                    return editor.plugins.get('Mention').toMentionAttribute(viewItem, {
+                        realValue: viewItem.getAttribute('data-real-value'),
+                        format: viewItem.getAttribute('data-format'),
+                        contenteditable: viewItem.getAttribute('contenteditable')
+                    });
+                }
+            },
+            converterPriority: 'high'
+        });
+
+        editor.conversion.for('downcast').attributeToElement({
+            model: 'mention',
+            view: (modelAttributeValue, { writer }) => {
+                // Do not convert empty attributes (lack of value means no mention).
+                if (!modelAttributeValue) {
+                    return;
+                }
+
+                let elementType = 'span';
+                let attributes = {
+                    class: 'mention svy-mention',
+                    'data-mention': modelAttributeValue.id,
+                    'data-real-value': (modelAttributeValue.realValue == undefined ? '' : modelAttributeValue.realValue),
+                    'contenteditable': (modelAttributeValue.editable == undefined ? false : modelAttributeValue.editable),
+                    'data-format': (modelAttributeValue.format || ''),
+                }
+
+                return writer.createAttributeElement(elementType, attributes, {
+                    // Make mention attribute to be wrapped by other attribute elements.
+                    priority: 20,
+                    // Prevent merging mentions together.
+                    id: modelAttributeValue.uid
+                });
+            },
+            converterPriority: 'high'
         });
     }
 }
