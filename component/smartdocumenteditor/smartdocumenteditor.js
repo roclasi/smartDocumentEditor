@@ -632,7 +632,6 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                             save(editor) {
                                 return new Promise(resolve => {
                                     if($scope.editor.state == 'ready') {
-                                        console.log('bla bla save')
                                         setTimeout(() => {
                                             forceSaveData(editor.getData())
                                             resolve();
