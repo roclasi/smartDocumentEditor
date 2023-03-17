@@ -305,7 +305,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     svyMentionRenderer(item) {
-        const itemElement = this.document.createElement('span');
+        const itemElement = document.createElement('span');
         itemElement.classList.add('svy-mention');
         itemElement.id = 'mention-id-' + item.id;
         itemElement.textContent = item.name;
