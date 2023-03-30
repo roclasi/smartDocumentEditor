@@ -419,7 +419,7 @@
         "saveData": {
             "delayUntilFormLoads": true,
             "discardPreviouslyQueuedSimilarCalls": true,
-            "returns": "boolean",
+            "returns": "object",
             "parameters": []
         },
         "addInputAtCursor": {
@@ -475,8 +475,8 @@
         },
         "requestFocus": {
             "delayUntilFormLoads": true,
-            "parameters": [],
-            "returns":"boolean"
+            "discardPreviouslyQueuedSimilarCalls": true,
+            "parameters": []
         }
     }
 }

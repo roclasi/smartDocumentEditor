@@ -792,9 +792,9 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             $scope.api.saveData = function() {
                 if($scope.editor) {
                     forceSaveData( $scope.editor.getData() );
-                    return true;
+                    return $scope.editor.getData();
                 } 
-                return false;
+                return null;
             }
 
             /**

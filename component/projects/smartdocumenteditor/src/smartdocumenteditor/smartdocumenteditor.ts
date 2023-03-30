@@ -12,7 +12,8 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
     public Editor;
     public shouldshow = 0;
     private Inspector;
-
+    private getFocusWhenReady = false;
+    
     @ViewChild('editor') editorComponent: CKEditorComponent;
     @ViewChild('element', { static: true }) elementRef: ElementRef;
      
@@ -279,7 +280,10 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
                 }
             });
         }
-
+        if (this.getFocusWhenReady){
+            this.getFocusWhenReady = false;
+            editor.focus();
+        }
         if (this.onFocusGainedMethodID || this.onFocusLostMethodID) {
             editor.ui.focusTracker.on('change:isFocused', (evt, data, isFocused) => {
                 if (isFocused) {
@@ -460,9 +464,9 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
     saveData() {
         if (this.editorComponent) {
             this.forceSaveData(this.editorComponent.editorInstance.getData());
-            return true;
+            return this.editorComponent.editorInstance.getData();
         }
-        return false;
+        return null;
     }
 
     addInputAtCursor(input: string) {
@@ -578,10 +582,10 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
     requestFocus() {
         if (this.editorComponent) {
             this.editorComponent.editorInstance.focus();
-            return true;
         }
-
-        return false;
+        else{
+             this.getFocusWhenReady = true;
+        }
     }
 }
 export class ToolbarItem extends BaseCustomObject {
