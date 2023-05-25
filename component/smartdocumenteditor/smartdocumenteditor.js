@@ -787,15 +787,14 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             /**
              * Force the autosave trigger of the editor to get all latest changes
              * @example elements.%%elementName%%.saveData();
-             * @returns {Boolean}
+             * @returns {Object}
              */
             $scope.api.saveData = function() {
                 if($scope.editor) {
                     forceSaveData( $scope.editor.getData() );
                     return $scope.editor.getData();
                 } 
-                return null;
-            }
+                return null;            }
 
             /**
              * Add input to current cursor position, will return false when in readOnly mode
