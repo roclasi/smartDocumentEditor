@@ -582,7 +582,8 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 var emptyConfig = {}
 
                 emptyConfig.toolbar = {
-                    items: getToolbarItems()
+                    items: getToolbarItems(),
+                    shouldNotGroupWhenFull: $scope.model.shouldNotGroupWhenFull,
                 }
                 emptyConfig.svyToolbarItems = getSvyToolbarItems();
 

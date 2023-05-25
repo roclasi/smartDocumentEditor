@@ -112,15 +112,26 @@
             ]
         },
         "showToolbar": { "type": "boolean", "default": true },
-        "overWriteTabForEditor": { "type": "boolean", "default": true, "tags": {"scope": "design"} },
+        "shouldNotGroupWhenFull": { 
+            "type": "boolean", 
+            "default": false, 
+            "tags": { 
+                "doc": "When set to true, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. When true it also honours the wrappingBreakpoint item.", 
+                "scope": "design"
+            } 
+        },
+        "overWriteTabForEditor": { 
+            "type": "boolean", 
+            "default": true, 
+            "tags": {"scope": "design"} 
+        },
         "styleClass": {"type": "styleclass"},
         "readOnly": { "type": "protected", "blockingOn": true, "default": false, "for": [ "dataProviderID", "onDataChangeMethodID" ], "tags": {"scope": "runtime"} },
         "responsiveHeight": { "type": "int", "default": 500, "tags": {"doc": "Editor's height to be set in a responsive form. When responsiveHeight is set to 0, the editor will use 100% height of the parent container. When value is set to -1 it will be based on the content."} },
         "minHeight": { "type": "int", "default": null, "tags": {"doc": "Editor's min height. It's none by default. So when you want the height to be resposive and would like to have a min height for the editor, set responsiveHeight as 0 and this property with the value that fits your needs."} },
         "visible": "visible",
         "viewType": { "type": "string", "values": [ "WEB", "DOCUMENT" ], "default": "DOCUMENT", "tags": {"scope": "design"} },
-        "language": {
-            "type": "string",
+        "language": {            "type": "string",
             "values": [
                 {"Afrikaans": "af"},
                 {"Albanian": "sq"},

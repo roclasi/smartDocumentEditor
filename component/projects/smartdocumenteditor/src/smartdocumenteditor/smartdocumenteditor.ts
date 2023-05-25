@@ -25,6 +25,7 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
     @Input() dataProviderID: any;
     @Input() toolbarItems: Array<ToolbarItem>;
     @Input() showToolbar: boolean;
+    @Input() shouldNotGroupWhenFull: boolean;
     @Input() overWriteTabForEditor: boolean;
     @Input() styleClass: string;
     @Input() readOnly: boolean;
@@ -71,7 +72,8 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
             this.config = {};
         }
         this.config.toolbar = {
-            items: this.getToolbarItems()
+            items: this.getToolbarItems(),
+            shouldNotGroupWhenFull: this.shouldNotGroupWhenFull
         }
 
         //make sure custom toolbar items are created
