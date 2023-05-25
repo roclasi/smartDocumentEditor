@@ -15,8 +15,8 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             $scope.createEditorQueue = [];
 
             const VIEW_TYPE = {
-            	WEB: 'WEB',
-				DOCUMENT: 'DOCUMENT'
+              WEB: 'WEB',
+              DOCUMENT: 'DOCUMENT'
             }
             
             /*********************************************
@@ -65,9 +65,9 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                                 },0)
                             }
                         break;
-					case "responsiveHeight":
-						setHeight();
-						break;
+                    case "responsiveHeight":
+                      setHeight();
+                      break;
 
                     case "editorStyleSheet":
                         
@@ -115,22 +115,22 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
              * Set the editor height
              *********************************************/
             
-			function isResponsive() {
-				return !$scope.$parent.absoluteLayout;
-			}
+            function isResponsive() {
+		          return !$scope.$parent.absoluteLayout;
+            }
 
-			function setHeight() {
-				if (isResponsive()) {
-		            /** The html Div container of the smartdocument editor */
-		            let editorDiv = $element.children()[0];
-                     if ($scope.model.responsiveHeight) {
-						editorDiv.style.height = $scope.model.responsiveHeight + 'px';
-					} else {
-						// when responsive height is 0 or undefined, use 100% of the parent container.
-						editorDiv.style.height = '100%';
-					}
-				} 
-			}
+	          function setHeight() {
+		          if (isResponsive()) {
+                /** The html Div container of the smartdocument editor */
+                let editorDiv = $element.children()[0];
+                if ($scope.model.responsiveHeight) {
+				          editorDiv.style.height = $scope.model.responsiveHeight + 'px';
+			            } else {
+				            // when responsive height is 0 or undefined, use 100% of the parent container.
+				            editorDiv.style.height = '100%';
+		              }
+	              } 
+            }
 
             /*********************************************
              * General Functions / Classes for CKEditor
@@ -568,7 +568,7 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                 }
             })
 			
-			$scope.$watch('model.mentionFeeds', (newVal, oldVal) => {
+			      $scope.$watch('model.mentionFeeds', (newVal, oldVal) => {
                 if (newVal && newVal != oldVal) {
                     $scope.createEditorQueue.push($scope.model.config);
                 }
@@ -794,7 +794,8 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
                     forceSaveData( $scope.editor.getData() );
                     return $scope.editor.getData();
                 } 
-                return null;            }
+                return null;
+            }
 
             /**
              * Add input to current cursor position, will return false when in readOnly mode
