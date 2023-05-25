@@ -589,6 +589,19 @@ export class SmartDocumentEditor extends ServoyBaseComponent<HTMLDivElement> {
              this.getFocusWhenReady = true;
         }
     }
+    
+    getAvailableToolbarItems() {
+        return ['servoyToolbarItem'].concat(Array.from( this.editorComponent.editorInstance.ui.componentFactory.names() ));
+    }
+    
+    getAvailableCommands() {
+        var map = this.editorComponent.editorInstance.commands._commands;
+        var commands = [];
+        map.forEach(function(value, key, map) {
+          commands.push(key);
+        });
+        return commands;
+    }
 }
 export class ToolbarItem extends BaseCustomObject {
     name: string;

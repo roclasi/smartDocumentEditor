@@ -944,6 +944,33 @@ function($sabloConstants, $sabloApplication, $window, $utils, $timeout) {
             $scope.api.isInPreviewMode = function() {
                 return !!$scope.editor.isReadOnly;
             }
+            
+            /**
+               * Returns an Array with names of all the build-in toolbar items
+               * @returns Array<String>
+               */
+              $scope.api.getAvailableToolbarItems = function () {
+                var items = Array.from(
+                  $scope.editor.ui.componentFactory.names(),
+                ).concat(["servoyToolbarItem"]);
+                items.sort();
+                return items;
+              };
+            
+              /**
+               * Returns an Array with names of all the build-in commands
+               * @returns Array<String>
+               */
+              $scope.api.getAvailableCommands = function () {
+                var map = $scope.editor.ui.editor.commands._commands;
+                var commands = [];
+                map.forEach(function (value, key, map) {
+                  commands.push(key);
+                });
+                commands.sort();
+                return commands;
+              };
+              
         },
       templateUrl: 'smartdocumenteditor/smartdocumenteditor/smartdocumenteditor.html'
     };

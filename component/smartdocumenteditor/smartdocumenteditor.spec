@@ -488,6 +488,16 @@
             "delayUntilFormLoads": true,
             "discardPreviouslyQueuedSimilarCalls": true,
             "parameters": []
+        },
+        "getAvailableToolbarItems": {
+            "delayUntilFormLoads": true,
+            "parameters": [],
+            "returns":"string[]"
+        },
+        "getAvailableCommands": {
+            "delayUntilFormLoads": true,
+            "parameters": [],
+            "returns":"string[]"
         }
     }
 }
