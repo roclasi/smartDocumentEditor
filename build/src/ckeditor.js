@@ -6,55 +6,65 @@
 // The editor creator to use.
 import DecoupledEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+// Open Source plugins
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
-import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
-import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import Autosave from '@ckeditor/ckeditor5-autosave/src/autosave';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
+import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
+import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
+// TODO Link image ?
 import List from '@ckeditor/ckeditor5-list/src/list';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import Mention from '@ckeditor/ckeditor5-mention/src/mention';
+import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
-import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
-import Autosave from '@ckeditor/ckeditor5-autosave/src/autosave';
-import Mention from '@ckeditor/ckeditor5-mention/src/mention';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
+// TODO Standard Editing Mode or Restricted editing mode?
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+// TODO Text Part Language ?
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
+
+// Premium plugins, require a license key
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Pagination from '@ckeditor/ckeditor5-pagination/src/pagination';
 
+// Custom plugins
 import SvyToolbarItem from '../../plugins/svyToolbarItem/src/svy-toolbar-item';
 // import svyPlaceholder from '../../plugins/svyPlaceholder/src/svy-placeholder';
 
@@ -64,55 +74,58 @@ export default class DecoupledEditor extends DecoupledEditorBase {}
 
 // Plugins to include in the build.
 DecoupledEditor.builtinPlugins = [
-	Essentials,
-	Alignment,
-	FontSize,
-	FontFamily,
-	FontColor,
-	FontBackgroundColor,
-	UploadAdapter,
-	Autoformat,
-	Bold,
-	Italic,
-	Strikethrough,
-	Underline,
-	BlockQuote,
-    Code,
-    Subscript,
-    Superscript,
-	CKFinder,
+    Alignment,
+    Autoformat,
+    Autosave,
+    BlockQuote,
+    Bold,
+    CKFinder,
     CloudServices,
-	EasyImage,
-	Heading,
-	HorizontalLine,
-	Image,
-	ImageCaption,
-	ImageStyle,
-	ImageToolbar,
-    ImageUpload,
-    ImageResize,
-	ImageInsert,
-	Indent,
-	IndentBlock,
-	Link,
-	List,
-	MediaEmbed,
-	Paragraph,
-	PasteFromOffice,
-	Table,
-    TableToolbar,
-    TableProperties,
-    TableCellProperties,
-    TextTransformation,
+    Code,
+    EasyImage,
+    Essentials,
+    FindAndReplace,
+    FontBackgroundColor,
+    FontColor,
+    FontFamily,
+    FontSize,
+    GeneralHtmlSupport,
+    Heading,
     Highlight,
-    TodoList,
+    HorizontalLine,
+    HtmlEmbed,
+    Image,
+    ImageCaption,
+    ImageInsert,
+    ImageResize,
+    ImageStyle,
+    ImageToolbar,
+    ImageUpload,
+    Indent,
+    IndentBlock,
+    Italic,
+    Link,
+    List,
+    MediaEmbed,
+    Mention,
     PageBreak,
+    Pagination,
+    Paragraph,
+    PasteFromOffice,
     SpecialCharacters,
     SpecialCharactersEssentials,
-    Autosave,
-    Mention,
-    Pagination,
-	SvyToolbarItem
+    Strikethrough,
+    Subscript,
+    Superscript,
+    Table,
+    TableCellProperties,
+    TableProperties,
+    TableToolbar,
+    TextTransformation,
+    TodoList,
+    Underline,
+    UploadAdapter,
+    SvyToolbarItem
 ];
 
 DecoupledEditor.getInlineStyle = function(data, style) {
